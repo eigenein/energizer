@@ -13,10 +13,11 @@ setuptools.setup(
     python_requires='>=3.7',
     install_requires=[
         'aiohttp',
+        'click',
     ],
     extras_require={},
     entry_points={
-        'console_scripts': ['iftttie = iftttie:main'],
+        'console_scripts': ['iftttie = iftttie.__main__:main'],
     },
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
