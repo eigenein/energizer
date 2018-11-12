@@ -11,5 +11,5 @@ WORKDIR /app
 RUN pip install --no-cache-dir --no-deps .
 
 STOPSIGNAL SIGINT
-ENTRYPOINT ["energizer"]
+ENTRYPOINT ["iftttie"]
 CMD []
