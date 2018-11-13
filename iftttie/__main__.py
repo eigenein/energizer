@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import logging
+from asyncio import Queue
 from typing import Optional, Tuple
 
 import click
+from aiohttp import web
 
-from iftttie import utils, web
+from iftttie import middleware, utils
+from iftttie.core import handle_event_queue
+from iftttie.web import routes
 
 logger = logging.getLogger('iftttie')
 
@@ -24,9 +28,29 @@ def main(
     buienradar_station_id: Optional[int],
 ):
     utils.setup_logging()
-    logger.info('🚀 IFFTTie is starting…')
-    web.run(http_port, set(access_tokens))
-    logger.info('🛬 IFFTTie stopped.')
+
+    logger.info('🛫 Starting IFTTTie…')
+    app = web.Application(middlewares=[middleware.authenticate])
+    app['access_tokens'] = access_tokens
+    app['event_queue'] = Queue(maxsize=1000)  # TODO: option.
+    app.add_routes(routes)
+    app.on_startup.append(start_event_handler)
+    app.on_cleanup.append(stop_event_handler)
+
+    web.run_app(app, port=http_port, print=None)
+
+    logger.info('🛬 IFTTTie stopped.')
+
+
+async def start_event_handler(app: web.Application):
+    logger.info('🛫 Starting event queue…')
+    app['handle_event_queue'] = app.loop.create_task(handle_event_queue(app['event_queue']))
+
+
+async def stop_event_handler(app: web.Application):
+    logger.info('🛫 Stopping event queue…')
+    app['handle_event_queue'].cancel()
+    await app['handle_event_queue']
 
 
 if __name__ == '__main__':
