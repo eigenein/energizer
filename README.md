@@ -22,10 +22,6 @@ Dashboard is available at the root URL.
 
 ## API
 
-### POST `/api/from/{channel_id}`
+### POST `/api/events/{key}`
 
-Submit a value coming _from_ the channel, so from a service or a device.
-
-#### POST `/api/to/{channel_id}`
-
-Submit a value _to_ the channel, so to a device.
+Post value coming from service or device.

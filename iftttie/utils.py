@@ -10,5 +10,5 @@ def setup_logging():
         format='%(asctime)s [%(levelname).1s] (%(name)s) %(message)s',
         stream=click.get_text_stream('stderr'),
         datefmt='%b %d %H:%M:%S',
-        level=logging.INFO,
+        level=logging.DEBUG,
     )

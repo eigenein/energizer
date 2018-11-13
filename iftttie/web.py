@@ -6,5 +6,5 @@ routes = web.RouteTableDef()
 
 
 @routes.get('/')
-async def hello(request: web.Request) -> web.Response:
+async def index(request: web.Request) -> web.Response:
     return web.Response(text="Hello, world")
