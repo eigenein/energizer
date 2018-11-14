@@ -6,7 +6,7 @@ from asyncio import Queue
 import click
 from aiohttp import web
 
-from iftttie import event_queue, middleware, utils
+from iftttie import ifttt, middleware, utils
 from iftttie.core import append_background_task
 from iftttie.event_sources import nest
 from iftttie.web import routes
@@ -30,7 +30,7 @@ def main(http_port: int, **kwargs):
     app['event_queue'] = Queue(maxsize=1000)  # TODO: option.
     app.add_routes(routes)
 
-    append_background_task(app, 'event_queue.run', event_queue.run(app))
+    append_background_task(app, 'ifttt.run', ifttt.run(app))
     append_background_task(app, 'nest.run', nest.run(app))
 
     web.run_app(app, port=http_port, print=None)
