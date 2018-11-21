@@ -6,9 +6,8 @@ from asyncio import Queue
 import click
 from aiohttp import web
 
-from iftttie import ifttt, middleware, utils
-from iftttie.core import append_background_task
-from iftttie.event_sources import nest
+from iftttie import middleware, utils
+from iftttie.core import start_queue, stop_queue
 from iftttie.web import routes
 
 logger = logging.getLogger('iftttie')
@@ -25,14 +24,18 @@ def main(http_port: int, **kwargs):
 
     logger.info('Starting IFTTTie…')
     app = web.Application(middlewares=[middleware.authenticate])
+
+    # Channels options.
     for key, value in kwargs.items():
         app[key] = value
     app['event_queue'] = Queue(maxsize=1000)  # TODO: option.
+
+    # Setup queue.
+    app.on_startup.append(start_queue)
+    app.on_cleanup.append(stop_queue)
+
+    # Start app.
     app.add_routes(routes)
-
-    append_background_task(app, 'ifttt.run', ifttt.run(app))
-    append_background_task(app, 'nest.run', nest.run(app))
-
     web.run_app(app, port=http_port, print=None)
 
     logger.info('IFTTTie stopped.')

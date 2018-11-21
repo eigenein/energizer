@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import logging
 from asyncio import Queue
-from typing import AsyncIterable
+from typing import AsyncIterable, TypeVar
 
 import click
 from aiohttp import StreamReader
+
+T = TypeVar('T')
 
 
 def setup_logging():
@@ -25,6 +27,6 @@ async def read_lines(reader: StreamReader) -> AsyncIterable[str]:
         yield line.decode()
 
 
-async def iterate_queue(queue: Queue) -> AsyncIterable:
+async def iterate_queue(queue: Queue[T]) -> AsyncIterable[T]:
     while True:
         yield await queue.get()

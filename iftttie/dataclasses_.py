@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 
 @dataclass
-class Event:
+class ChannelEvent:
     key: str
     value_1: Any = None  # IFTTT `value1`
     value_2: Any = None  # IFTTT `value2`
