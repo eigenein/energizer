@@ -31,6 +31,7 @@ def main(http_port: int):
 
     # Start app.
     aiohttp_jinja2.setup(app, loader=PackageLoader('iftttie'), autoescape=select_autoescape())
+    # TODO: https://aiohttp.readthedocs.io/en/stable/web_advanced.html#static-file-handling
     app.add_routes(routes)
     web.run_app(app, port=http_port, print=None)
 

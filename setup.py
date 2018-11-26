@@ -19,6 +19,7 @@ setuptools.setup(
         'aiohttp_jinja2',
         'aiosqlite',
         'click',
+        'pypika',
     ],
     extras_require={},
     entry_points={
