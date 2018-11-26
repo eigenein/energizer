@@ -1,20 +1,17 @@
 from __future__ import annotations
 
 import logging
-from asyncio import CancelledError, gather, Queue
+from asyncio import CancelledError, Queue, gather
 from contextlib import suppress
 
 from aiohttp import ClientSession, web
 
-from iftttie.channels import nest
 from iftttie.dataclasses_ import ChannelEvent
 from iftttie.utils import iterate_queue
 
 logger = logging.getLogger(__name__)
 
-channels = (
-    nest.run,
-)
+channels = ()  # FIXME: replaced with web configuration.
 
 
 async def start_queue(app: web.Application):
