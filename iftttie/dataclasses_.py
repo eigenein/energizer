@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 
 @dataclass
-class ChannelEvent:
+class Update:
     key: str
     value: Any = None
 

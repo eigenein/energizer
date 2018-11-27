@@ -14,13 +14,13 @@ logger = logging.getLogger(__name__)
 
 
 async def read_events(reader: StreamReader) -> AsyncIterable[ServerSideEvent]:
-    """Read server-side events."""
+    """Read server-side events as an iterable."""
     while True:
         yield await read_event(reader)
 
 
 async def read_event(reader: StreamReader) -> ServerSideEvent:
-    """Read single event."""
+    """Read a single server-side event."""
     name, values = None, []
     async for line in read_lines(reader):
         line = line.rstrip('\n')
@@ -37,7 +37,7 @@ async def read_event(reader: StreamReader) -> ServerSideEvent:
 
 
 def parse_line(line: str) -> Tuple[str, str]:
-    """Parse SSE line like `data: hello`."""
+    """Parse server-side event line like `data: hello`."""
     key, value = line.split(':', maxsplit=1)  # type: str, str
     if value.startswith(' '):
         value = value[1:]

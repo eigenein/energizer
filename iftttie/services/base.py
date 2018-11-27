@@ -5,7 +5,7 @@ from abc import ABCMeta, abstractmethod
 from aiohttp import web
 
 
-class Base(metaclass=ABCMeta):
+class BaseService(metaclass=ABCMeta):
     @abstractmethod
     async def run(self, app: web.Application):
         raise NotImplementedError()

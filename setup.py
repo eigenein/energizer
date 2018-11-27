@@ -5,7 +5,7 @@ setuptools.setup(
     version='0.1',
     author='Pavel Perestoronin',
     author_email='eigenein@gmail.com',
-    description="Because I don't like Home Assistant…",
+    description="Yet another home assistant",
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/eigenein/iftttie',
