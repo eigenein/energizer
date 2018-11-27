@@ -74,6 +74,8 @@ Options:
 
 TODO
 
+The image supports running on Raspberry Pi out-of-the-box.
+
 ## Startup
 
 - IFTTTie imports the configuration module at its (re-)start.
