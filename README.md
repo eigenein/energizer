@@ -58,7 +58,7 @@ Yeah, that's just HTTP port to listen to.
 
 ### `async def handle(event: Event)`
 
-This is a function that will be called for every generated event. You can use apply logic in there, of course.
+This is a function that will be called for every generated event. You can use apply any logic in there, of course.
 
 ## `class Event`
 
