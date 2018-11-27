@@ -45,7 +45,7 @@ The term stands for itself. Update contains information that something has chang
 
 IFTTTie reads its configuration from a single file. And there're two important things:
 
-- It's **non-local**. You pass a **URL** via command line parameter or environment variable. IFTTTie loads the file when (re-)started.
+- It's **non-local**. You pass a **URL** via command line parameter or environment variable. IFTTTie loads the file when (re-)started. Think here of a secret [Gist](https://gist.github.com/) URL, for example. **Never share your configuration publicly as soon as it contains any credentials.** **Don't blindly trust others code.**
 - It's a **Python module**. You can write any valid Python code in there.
 
 ### Startup
