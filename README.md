@@ -99,7 +99,7 @@ async def handle(update: Update):
 
 ### `key: str`
 
-This is just update *key* that I described above.
+This is just update *key* that's described above.
 
 ### `value: Any`
 
