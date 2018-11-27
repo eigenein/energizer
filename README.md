@@ -11,3 +11,32 @@ There're multiple reasons why I didn't like them:
 - Too flexible. While this may be good, I'm getting tired configuring all those _things_.
 - Custom automation syntax. This may be perfect for non-developers, but I prefer to write in [my favorite language](https://www.python.org/).
 - Inconvenient configuration. It's stored inside a container, separate web interfaces are needed to edit it via browser.
+
+## So what?
+
+In IFFTTie there're only **two** terms to understand: *service* and *update*.
+
+### What's a *service*?
+
+*Service* is an interface to the outside world. It serves two goals:
+
+- You control the outside world with its public methods.
+- It generates *updates*.
+
+#### Examples
+
+- [Nest API](https://developers.nest.com/documentation/api-reference)
+- [Buienradar](https://www.buienradar.nl/)
+- [IFFTT](https://ifttt.com/maker_webhooks)
+
+### What's *update*?
+
+The term stands for itself. Update contains information that something has changed in the world. An update consists of a *key* and a *value*. *Key* is a globally unique identifier which is used to refer to a particular *value* in the world.
+
+#### Examples
+
+| key                                  | value     |
+| ------------------------------------ | --------- |
+| `buienradar:6391:temperature`        | `2.8`     |
+| `nest:camera:0123…9876:is_streaming` | `true`    |
+| `webhook:hello`                      | `'world'` |
