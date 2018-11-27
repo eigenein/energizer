@@ -86,6 +86,8 @@ def run_services(app: web.Application) -> Iterable[Awaitable]:
     logger.info('Discovering and running services…')
     configuration: ModuleType = app['configuration']
     for name in dir(configuration):
+        if name.startswith('_'):
+            continue
         value = getattr(configuration, name)
         if isinstance(value, BaseService):
             logger.info(f'Running {name}…')

@@ -51,7 +51,7 @@ IFTTTie reads its configuration from a single file. And there're two important t
 ## Startup
 
 - IFTTTie imports the configuration module at its (re-)start.
-- **All service instances from the global namespace will be automatically run and start generating updates.** So you only need to assign variables there.
+- **All service instances from the global namespace will be automatically run and start generating updates.** If you want to avoid a particular service from generating updates, name a variable with an underscore.
 
 The following function from the imported module will be run for every update:
 
