@@ -40,3 +40,46 @@ The term stands for itself. Update contains information that something has chang
 | `buienradar:6391:temperature`        | `2.8`     |
 | `nest:camera:0123…9876:is_streaming` | `true`    |
 | `webhook:hello`                      | `'world'` |
+
+## Configuration
+
+IFTTTie reads its configuration from a single file. And there're two important things:
+
+- It's **non-local**. You pass a **URL** via command line parameter or environment variable. IFTTTie loads the file when (re-)started.
+- It's a **Python module**. You can write any valid Python code in there.
+
+### Startup
+
+IFTTTie imports the configuration module at its (re-)start. There're some special globals that you want to define:
+
+#### `http_port: int`
+
+Yeah, that's just HTTP port to listen to.
+
+#### `async def handle(event: Event)`
+
+This is a function that will be called for every generated event. You can use apply logic in there, of course.
+
+### `class Event`
+
+#### `key: str`
+
+This just an event key that I described above.
+
+#### `value: Any`
+
+The related value. Very specific to a particular service.
+
+### Service classes
+
+#### `Nest`
+
+TODO
+
+#### `IFTTT`
+
+TODO
+
+#### `Buienradar`
+
+TODO
