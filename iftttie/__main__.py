@@ -32,7 +32,7 @@ configuration_globals = {
 @click.option('http_port', '--http-port', type=int, default=8080, help='Web server port.', show_default=True)
 @click.option('verbosity', '-v', '--verbose', count=True, help='Logging verbosity.')
 def main(configuration_url: str, http_port: int, verbosity: int):
-    """Entry point."""
+    """Yet another home assistant."""
     utils.setup_logging(verbosity)
 
     while True:

@@ -2,6 +2,12 @@
 
 This is yet another home automation service.
 
+## Web Interface
+
+Picture to attract your attention:
+
+TODO
+
 ## Why not [Home Assistant](https://www.home-assistant.io/) or [OpenHAB](https://www.openhab.org/)?
 
 There're multiple reasons why I didn't like them:
@@ -48,6 +54,26 @@ IFTTTie reads its configuration from a single file. And there're two important t
 - It's **non-local**. You pass a **URL** via command line parameter or environment variable. IFTTTie loads the file when (re-)started. Think here of a secret [Gist](https://gist.github.com/) URL, for example. **Never share your configuration publicly as soon as it contains any credentials.**
 - It's a **Python module**. You can write any valid Python code in there. **Don't blindly trust others' code.**
 
+## Running
+
+### Via Command Line
+
+```text
+Usage: iftttie [OPTIONS]
+
+  Yet another home assistant.
+
+Options:
+  -c, --config TEXT    Configuration URL.  [required]
+  --http-port INTEGER  Web server port.  [default: 8080]
+  -v, --verbose        Logging verbosity.
+  --help               Show this message and exit.
+```
+
+### Via Docker
+
+TODO
+
 ## Startup
 
 - IFTTTie imports the configuration module at its (re-)start.
@@ -90,6 +116,12 @@ TODO
 TODO
 
 ### `Buienradar`
+
+TODO
+
+## Public HTTP API
+
+You can send custom updates to IFTTTie from outside via its public API.
 
 TODO
 
