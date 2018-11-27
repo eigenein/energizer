@@ -12,7 +12,7 @@ There're multiple reasons why I didn't like them:
 - Custom automation syntax. This may be perfect for non-developers, but I prefer to write in [my favorite language](https://www.python.org/).
 - Inconvenient configuration. It's stored inside a container, separate web interfaces are needed to edit it via browser.
 
-## So what?
+## General Idea
 
 In IFFTTie there're only **two** terms to understand: *service* and *update*.
 
@@ -48,38 +48,38 @@ IFTTTie reads its configuration from a single file. And there're two important t
 - It's **non-local**. You pass a **URL** via command line parameter or environment variable. IFTTTie loads the file when (re-)started. Think here of a secret [Gist](https://gist.github.com/) URL, for example. **Never share your configuration publicly as soon as it contains any credentials.**
 - It's a **Python module**. You can write any valid Python code in there. **Don't blindly trust others code.**
 
-### Startup
+## Startup
 
 IFTTTie imports the configuration module at its (re-)start. There're some special globals that you want to define:
 
-#### `http_port: int`
+### `http_port: int`
 
 Yeah, that's just HTTP port to listen to.
 
-#### `async def handle(event: Event)`
+### `async def handle(event: Event)`
 
 This is a function that will be called for every generated event. You can use apply logic in there, of course.
 
-### `class Event`
+## `class Event`
 
-#### `key: str`
+### `key: str`
 
 This just an event key that I described above.
 
-#### `value: Any`
+### `value: Any`
 
 The related value. Very specific to a particular service.
 
-### Service classes
+## Service classes
 
-#### `Nest`
-
-TODO
-
-#### `IFTTT`
+### `Nest`
 
 TODO
 
-#### `Buienradar`
+### `IFTTT`
+
+TODO
+
+### `Buienradar`
 
 TODO
