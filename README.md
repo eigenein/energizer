@@ -102,27 +102,29 @@ async def handle(update: Update):
     print(update)
 ```
 
-## `class Update`
+## Python API
 
-### `key: str`
+### `class Update`
+
+#### `key: str`
 
 This is just update *key* that's described above.
 
-### `value: Any`
+#### `value: Any`
 
 The related *value*. Very specific to a particular service.
 
-## Service Classes
+### Service Classes
 
-### `Nest`
-
-TODO
-
-### `IFTTT`
+#### `Nest`
 
 TODO
 
-### `Buienradar`
+#### `IFTTT`
+
+TODO
+
+#### `Buienradar`
 
 TODO
 
