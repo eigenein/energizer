@@ -3,7 +3,7 @@
 This is yet another home automation service.
 
 ![License](https://img.shields.io/github/license/eigenein/iftttie.svg)
-![Docker Build Status](https://img.shields.io/docker/build/eigenein/iftttie.svg)
+![Docker Pulls](https://img.shields.io/docker/pulls/eigenein/iftttie.svg)
 
 ## Web Interface
 
@@ -55,7 +55,7 @@ The term stands for itself. Update contains information that something has chang
 IFTTTie reads its configuration from a single file. And there're two important things:
 
 - It's **non-local**. You pass a **URL** via command line parameter or environment variable. IFTTTie loads the file when (re-)started. Think here of a secret [Gist](https://gist.github.com/) URL, for example. **Never share your configuration publicly as soon as it contains any credentials.**
-- It's a **Python module**. You can write any valid Python code in there. **Don't blindly trust others' code.**
+- It's a **Python module**. You can write any valid Python code in there. IFTTTie Python API is described further. **Don't blindly trust others' code.**
 
 ## Running
 
@@ -75,14 +75,16 @@ Options:
 
 ### Via Docker
 
-TODO
+```sh
+docker run -it --rm eigenein/iftttie iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw
+```
 
 The image supports running on Raspberry Pi out-of-the-box.
 
 ## Startup
 
 - IFTTTie imports the configuration module at its (re-)start.
-- **All service instances from the global namespace will be automatically run and start generating updates.** If you want to avoid a particular service from generating updates, name a variable with an underscore.
+- **All service instances from the global namespace will be automatically run and start generating updates.** If you want to avoid a particular service from generating updates, name a variable with a leading underscore.
 
 The following function from the imported module will be run for every update:
 
@@ -104,27 +106,29 @@ async def on_update(update: Update):
     print(update)
 ```
 
-## `class Update`
+## Python API
 
-### `key: str`
+### `class Update`
+
+#### `key: str`
 
 This is just update *key* that's described above.
 
-### `value: Any`
+#### `value: Any`
 
 The related *value*. Very specific to a particular service.
 
-## Service Classes
+### Service Classes
 
-### `Nest`
-
-TODO
-
-### `IFTTT`
+#### `Nest`
 
 TODO
 
-### `Buienradar`
+#### `IFTTT`
+
+TODO
+
+#### `Buienradar`
 
 TODO
 
