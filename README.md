@@ -75,7 +75,9 @@ Options:
 
 ### Via Docker
 
-TODO
+```sh
+docker run -it --rm eigenein/iftttie iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw
+```
 
 The image supports running on Raspberry Pi out-of-the-box.
 
