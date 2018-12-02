@@ -21,11 +21,6 @@ from iftttie.web import routes
 
 logger = logging.getLogger('iftttie')
 
-configuration_globals = {
-    'Nest': Nest,
-    'Update': Update,
-}
-
 
 @click.command()
 @click.option('configuration_url', '-c', '--config', required=True, help='Configuration URL.')
@@ -76,7 +71,7 @@ async def import_configuration(app: web.Application) -> Optional[ModuleType]:
     logger.info(f'Importing configuration from {configuration_url}...')
     try:
         async with session.get(configuration_url, ssl=False) as response:  # type: ClientResponse
-            return import_from_string('configuration', await response.text(), configuration_globals)
+            return import_from_string('configuration', await response.text())
     except Exception as e:
         logger.error(f'Failed to import configuration: "{e}". No services will be run.')
 
@@ -114,19 +109,19 @@ async def run_queue(app: web.Application, *tasks: Awaitable):
 async def handle_updates(app: web.Application):
     """Handle updates from the queue."""
     queue: Queue[Update] = app['event_queue']
-    handle: Optional[Callable[[Update], Awaitable]] = getattr(app['configuration'], 'handle', None)
+    on_update: Optional[Callable[[Update], Awaitable]] = getattr(app['configuration'], 'on_update', None)
 
-    if handle is None:
-        logger.warning('`handle` is not defined in the configuration.')
+    if on_update is None:
+        logger.warning('`on_update` is not defined in the configuration.')
 
     with suppress(CancelledError):
         async for update in iterate_queue(queue):
             logger.info(f'{update.key}({update.value!r})')
             # TODO: store it in database.
-            if handle is None:
+            if on_update is None:
                 continue
             try:
-                await handle(update)
+                await on_update(update)
             except Exception as e:
                 logger.error('Error while handling the event.', exc_info=e)
 

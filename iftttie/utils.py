@@ -44,10 +44,9 @@ async def iterate_queue(queue: Queue[T]) -> AsyncIterable[T]:
         yield await queue.get()
 
 
-def import_from_string(name: str, code: str, globals_: Dict[str, Any]) -> ModuleType:
+def import_from_string(name: str, code: str) -> ModuleType:
     """Imports module from code passed as the parameter."""
     module = ModuleType(name)
     module.__package__ = 'iftttie'
-    module.__dict__.update(globals_)
     exec(code, module.__dict__)
     return module

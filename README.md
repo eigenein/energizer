@@ -87,16 +87,20 @@ The image supports running on Raspberry Pi out-of-the-box.
 The following function from the imported module will be run for every update:
 
 ```python
-async def handle(update: Update):
+async def on_update(update: Update):
     ...
 ```
 
 ### Configuration Example
 
 ```python
+from iftttie.dataclasses_ import Update
+from iftttie.services.nest import Nest
+
 nest = Nest('nest-api-token')
 
-async def handle(update: Update):
+
+async def on_update(update: Update):
     print(update)
 ```
 
