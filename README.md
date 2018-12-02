@@ -84,7 +84,7 @@ The image supports running on Raspberry Pi out-of-the-box.
 ## Startup
 
 - IFTTTie imports the configuration module at its (re-)start.
-- **All service instances from the global namespace will be automatically run and start generating updates.** If you want to avoid a particular service from generating updates, name a variable with an underscore.
+- **All service instances from the global namespace will be automatically run and start generating updates.** If you want to avoid a particular service from generating updates, name a variable with a leading underscore.
 
 The following function from the imported module will be run for every update:
 
