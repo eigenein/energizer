@@ -3,7 +3,7 @@
 This is yet another home automation service.
 
 ![License](https://img.shields.io/github/license/eigenein/iftttie.svg)
-![Docker Build Status](https://img.shields.io/docker/build/eigenein/iftttie.svg)
+![Docker Pulls](https://img.shields.io/docker/pulls/eigenein/iftttie.svg)
 
 ## Web Interface
 
