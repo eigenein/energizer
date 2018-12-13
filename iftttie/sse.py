@@ -30,7 +30,8 @@ async def read_event(reader: StreamReader) -> ServerSideEvent:
         elif key == 'data':
             values.append(value)
         else:
-            logger.warning(f'Unknown key: {key}.')
+            logger.warning('Unknown key: {key}.', key=key)
+    logger.trace('Event: {name}.', name=name)
     return ServerSideEvent(name=name, data='\n'.join(values))
 
 

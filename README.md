@@ -83,12 +83,15 @@ The image supports running on Raspberry Pi out-of-the-box.
 
 ## Startup
 
-- IFTTTie imports the configuration module at its (re-)start.
-- **All service instances from the global namespace will be automatically run and start generating updates.** If you want to avoid a particular service from generating updates, name a variable with a leading underscore.
+At its (re-)start, IFTTTie imports the configuration module. Then, it starts all services specified in `services` module attribute.
 
 The following function from the imported module will be run for every update:
 
 ```python
+from iftttie.dataclasses_ import Update
+
+
+# Name must be `on_update`.
 async def on_update(update: Update):
     ...
 ```
@@ -104,6 +107,9 @@ nest = Nest('nest-api-token')
 
 async def on_update(update: Update):
     print(update)
+   
+
+services = [nest]
 ```
 
 ## Python API

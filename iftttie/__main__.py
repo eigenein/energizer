@@ -31,7 +31,7 @@ def main(configuration_url: str, http_port: int, verbosity: int):
     logger.add(sys.stderr, format=LOGURU_FORMAT, level=VERBOSITY_LEVELS.get(verbosity, 'TRACE'))
 
     while True:
-        logger.info('Starting IFTTTie…')
+        logger.success('Starting IFTTTie…')
         try:
             start_web_app(http_port, configuration_url)
         except HotReloadException:
@@ -59,7 +59,7 @@ def start_web_app(port: int, configuration_url: str):
 async def on_startup(app: web.Application):
     """Import configuration, run services and return async tasks."""
     app['client_session'] = ClientSession(raise_for_status=True)
-    await import_configuration(app)
+    app['configuration'] = await import_configuration(app)
     app[run_queue.__name__] = app.loop.create_task(run_queue(app, *run_services(app)))
 
 
@@ -71,22 +71,20 @@ async def import_configuration(app: web.Application) -> Optional[ModuleType]:
     logger.info(f'Importing configuration from {configuration_url}...')
     try:
         async with session.get(configuration_url, ssl=False) as response:  # type: ClientResponse
-            app['configuration'] = import_from_string('configuration', await response.text())
+            return import_from_string('configuration', await response.text())
     except Exception as e:
-        logger.error(f'Failed to import configuration: "{e}". No services will be run.')
+        logger.error('Failed to import configuration: "{e}".', e=e)
 
 
 def run_services(app: web.Application) -> Iterable[Awaitable]:
     """Discover and run services in the configuration."""
     logger.info('Discovering and running services…')
-    configuration: ModuleType = app['configuration']
-    for name in dir(configuration):
-        if name.startswith('_'):
-            continue
-        value = getattr(configuration, name)
-        if isinstance(value, BaseService):
-            logger.info(f'Running {name}…')
-            yield value.run(app)
+    services: Iterable[BaseService] = getattr(app['configuration'], 'services', [])
+    if not services:
+        logger.warning('`services` is not defined or empty in the configuration.')
+    for service in services:
+        logger.info(f'Running {service}…')
+        yield service.run(app)
 
 
 async def on_cleanup(app: web.Application):
@@ -116,7 +114,7 @@ async def handle_updates(app: web.Application):
 
     with suppress(CancelledError):
         async for update in iterate_queue(queue):
-            logger.success(f'{update.key}({update.value!r})')
+            logger.success('{key} = {value!r}', key=update.key, value=update.value)
             # TODO: store it in database.
             if on_update is None:
                 continue

@@ -29,7 +29,10 @@ class Nest(BaseService):
                 if event.name == 'put':
                     await put_updates(json.loads(event.data)['data'], queue)
                 else:
-                    logger.debug(f'Ignoring event: {event.name}.')
+                    logger.debug('Ignoring event: {name}.', name=event.name)
+
+    def __str__(self) -> str:
+        return Nest.__name__
 
 
 async def put_updates(data: Any, queue: Queue[Update]):
