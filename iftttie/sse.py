@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-import logging
 from typing import AsyncIterable, Tuple
 
 from aiohttp import StreamReader
+from loguru import logger
 
 from iftttie.dataclasses_ import ServerSideEvent
 from iftttie.utils import read_lines
-
-logger = logging.getLogger(__name__)
 
 
 async def read_events(reader: StreamReader) -> AsyncIterable[ServerSideEvent]:

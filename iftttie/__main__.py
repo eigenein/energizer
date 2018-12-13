@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import logging
+import sys
 from asyncio import CancelledError, Queue, gather
 from contextlib import suppress
 from types import ModuleType
@@ -10,16 +10,14 @@ import aiohttp_jinja2
 import click
 from aiohttp import ClientResponse, ClientSession, web
 from jinja2 import PackageLoader, select_autoescape
+from loguru import logger
 
-from iftttie import utils
+from iftttie.constants import LOGURU_FORMAT, VERBOSITY_LEVELS
 from iftttie.dataclasses_ import Update
 from iftttie.exceptions import HotReloadException
 from iftttie.services.base import BaseService
-from iftttie.services.nest import Nest
 from iftttie.utils import import_from_string, iterate_queue
 from iftttie.web import routes
-
-logger = logging.getLogger('iftttie')
 
 
 @click.command()
@@ -28,7 +26,9 @@ logger = logging.getLogger('iftttie')
 @click.option('verbosity', '-v', '--verbose', count=True, help='Logging verbosity.')
 def main(configuration_url: str, http_port: int, verbosity: int):
     """Yet another home assistant."""
-    utils.setup_logging(verbosity)
+
+    logger.stop()
+    logger.add(sys.stderr, format=LOGURU_FORMAT, level=VERBOSITY_LEVELS.get(verbosity, 'TRACE'))
 
     while True:
         logger.info('Starting IFTTTie…')
@@ -59,7 +59,7 @@ def start_web_app(port: int, configuration_url: str):
 async def on_startup(app: web.Application):
     """Import configuration, run services and return async tasks."""
     app['client_session'] = ClientSession(raise_for_status=True)
-    app['configuration'] = await import_configuration(app)
+    await import_configuration(app)
     app[run_queue.__name__] = app.loop.create_task(run_queue(app, *run_services(app)))
 
 
@@ -71,7 +71,7 @@ async def import_configuration(app: web.Application) -> Optional[ModuleType]:
     logger.info(f'Importing configuration from {configuration_url}...')
     try:
         async with session.get(configuration_url, ssl=False) as response:  # type: ClientResponse
-            return import_from_string('configuration', await response.text())
+            app['configuration'] = import_from_string('configuration', await response.text())
     except Exception as e:
         logger.error(f'Failed to import configuration: "{e}". No services will be run.')
 
@@ -116,7 +116,7 @@ async def handle_updates(app: web.Application):
 
     with suppress(CancelledError):
         async for update in iterate_queue(queue):
-            logger.info(f'{update.key}({update.value!r})')
+            logger.success(f'{update.key}({update.value!r})')
             # TODO: store it in database.
             if on_update is None:
                 continue

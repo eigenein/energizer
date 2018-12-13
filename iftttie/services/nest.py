@@ -1,17 +1,15 @@
 from __future__ import annotations
 
 import json
-import logging
 from asyncio import Queue
 from typing import Any
 
 from aiohttp import ClientSession, web
+from loguru import logger
 
 from iftttie.dataclasses_ import Update
 from iftttie.services.base import BaseService
 from iftttie.sse import read_events
-
-logger = logging.getLogger(__name__)
 
 url = 'https://developer-api.nest.com'
 headers = [('Accept', 'text/event-stream')]
@@ -25,7 +23,7 @@ class Nest(BaseService):
         queue: Queue[Update] = app['event_queue']
         session: ClientSession = app['client_session']
 
-        logger.info('Listening to the stream…')
+        logger.debug('Listening to the stream…')
         async with session.get(url, params={'auth': self.token}, headers=headers, ssl=False) as response:
             async for event in read_events(response.content):
                 if event.name == 'put':

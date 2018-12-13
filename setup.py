@@ -20,6 +20,7 @@ setuptools.setup(
         'aiosqlite',
         'click',
         'pypika',
+        'loguru',
     ],
     extras_require={},
     entry_points={
