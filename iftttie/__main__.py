@@ -157,7 +157,7 @@ async def handle_updates(app: web.Application):
             try:
                 await on_update(update)
             except Exception as e:
-                logger.error('Error while handling the event.', exc_info=e)
+                logger.opt(exception=e).error('Error while handling the event.')
 
 
 if __name__ == '__main__':
