@@ -30,3 +30,8 @@ def import_from_string(name: str, code: str) -> ModuleType:
     module.__package__ = 'iftttie'
     exec(code, module.__dict__)
     return module
+
+
+def cancel_all(*coros):
+    for coro in coros:
+        coro.cancel()
