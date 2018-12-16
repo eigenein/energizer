@@ -116,6 +116,10 @@ services = [nest]
 
 ### `class Update`
 
+#### `timestamp: datetime`
+
+Time and date when the event has occurred.
+
 #### `key: str`
 
 This is just update *key* that's described above.
@@ -125,6 +129,10 @@ This is just update *key* that's described above.
 The related *value*. Very specific to a particular service.
 
 ### Service Classes
+
+#### `Clock`
+
+TODO
 
 #### `Nest`
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from asyncio import Queue
+from datetime import datetime
 from types import ModuleType
 from typing import AsyncIterable, TypeVar
 
@@ -35,3 +36,7 @@ def import_from_string(name: str, code: str) -> ModuleType:
 def cancel_all(*coros):
     for coro in coros:
         coro.cancel()
+
+
+def now() -> datetime:
+    return datetime.now().astimezone()
