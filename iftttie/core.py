@@ -4,8 +4,10 @@ from asyncio.queues import Queue
 from asyncio.tasks import FIRST_COMPLETED, gather, sleep, wait
 from concurrent.futures import CancelledError
 from contextlib import suppress
+from json import dumps
 from typing import Any, Awaitable, Callable, Dict, Iterable, NoReturn, Optional, Tuple
 
+import aiosqlite
 from aiohttp import web
 from loguru import logger
 
@@ -79,10 +81,21 @@ async def handle_updates(app: web.Application):
     with suppress(CancelledError):
         async for update in iterate_queue(queue):
             logger.success('{key} = {value!r}', key=update.key, value=update.value)
-            # TODO: store it in database.
-            if on_update is None:
-                continue
-            try:
-                await on_update(update)
-            except Exception as e:
-                logger.opt(exception=e).error('Error while handling the event.')
+            await insert_update(app['db'], update)
+            if on_update is not None:
+                try:
+                    await on_update(update)
+                except Exception as e:
+                    logger.opt(exception=e).error('Error while handling the event.')
+
+
+async def insert_update(db: aiosqlite.Connection, update: Update):
+    await db.execute(
+        'INSERT INTO history (key, value, timestamp) VALUES (?, ?, ?)',
+        (update.key, dumps(update.value), update.timestamp.timestamp()),
+    )
+    await db.execute(
+        'INSERT OR REPLACE INTO latest (key, history_id) VALUES (?, last_insert_rowid())',
+        (update.key,),
+    )
+    await db.commit()

@@ -6,12 +6,13 @@ from types import ModuleType
 from typing import Optional
 
 import aiohttp_jinja2
+import aiosqlite
 import click
 from aiohttp import ClientResponse, ClientSession, web
 from jinja2 import PackageLoader, select_autoescape
 from loguru import logger
 
-from iftttie.constants import LOGURU_FORMAT, VERBOSITY_LEVELS
+from iftttie.constants import LOGURU_FORMAT, VERBOSITY_LEVELS, DATABASE_INIT_SCRIPT
 from iftttie.core import run_queue
 from iftttie.exceptions import HotReloadException
 from iftttie.utils import import_from_string
@@ -56,9 +57,15 @@ def start_web_app(port: int, configuration_url: str):
 
 async def on_startup(app: web.Application):
     """Import configuration, run services and return async tasks."""
-    app['client_session'] = ClientSession(raise_for_status=True)
+    app['db'] = await aiosqlite.connect('db.sqlite3', loop=app.loop).__aenter__()
+    await init_database(app['db'])
+    app['client_session'] = await ClientSession(raise_for_status=True).__aenter__()
     app['configuration'] = await import_configuration(app)
     app[run_queue.__name__] = app.loop.create_task(run_queue(app))
+
+
+async def init_database(db: aiosqlite.Connection):
+    await db.executescript(DATABASE_INIT_SCRIPT)
 
 
 async def import_configuration(app: web.Application) -> Optional[ModuleType]:
@@ -81,6 +88,7 @@ async def on_cleanup(app: web.Application):
     app[run_queue.__name__].cancel()
     await app[run_queue.__name__]
     await app['client_session'].close()
+    await app['db'].close()
     logger.info('Event queue stopped.')
 
 
