@@ -50,7 +50,6 @@ def start_web_app(port: int, configuration_url: str):
     app.on_startup.append(on_startup)
     app.on_cleanup.append(on_cleanup)
     aiohttp_jinja2.setup(app, loader=PackageLoader('iftttie'), autoescape=select_autoescape())
-    # TODO: https://aiohttp.readthedocs.io/en/stable/web_advanced.html#static-file-handling
     app.add_routes(routes)
     web.run_app(app, port=port, print=None)
 
