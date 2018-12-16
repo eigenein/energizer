@@ -13,14 +13,14 @@ from iftttie.services.base import BaseService
 
 url = 'https://api.buienradar.nl/data/public/2.0/jsonfeed'
 keys = (
-    ('airpressure', 'air_pressure', ValueKind.RAW),
-    ('feeltemperature', 'feel_temperature', ValueKind.TEMPERATURE),
-    ('groundtemperature', 'ground_temperature', ValueKind.TEMPERATURE),
+    ('airpressure', 'air_pressure', ValueKind.HPA),
+    ('feeltemperature', 'feel_temperature', ValueKind.CELSIUS),
+    ('groundtemperature', 'ground_temperature', ValueKind.CELSIUS),
     ('humidity', 'humidity', ValueKind.HUMIDITY),
-    ('temperature', 'temperature', ValueKind.TEMPERATURE),
+    ('temperature', 'temperature', ValueKind.CELSIUS),
     ('winddirection', 'wind_direction', ValueKind.RAW),
-    ('windspeed', 'windspeed', ValueKind.RAW),
-    ('windspeedBft', 'windspeed_bft', ValueKind.RAW),
+    ('windspeed', 'wind_speed', ValueKind.RAW),
+    ('windspeedBft', 'wind_speed_bft', ValueKind.BFT),
 )
 
 

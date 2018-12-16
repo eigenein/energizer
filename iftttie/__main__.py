@@ -67,6 +67,7 @@ async def on_startup(app: web.Application):
     await init_database(app['db'])
     app['client_session'] = await ClientSession(raise_for_status=True).__aenter__()
     app['configuration'] = await import_configuration(app)
+    app['display_names'] = getattr(app['configuration'], 'display_names', {})
     app[run_queue.__name__] = app.loop.create_task(run_queue(app))
 
 
@@ -81,7 +82,7 @@ async def import_configuration(app: web.Application) -> Optional[ModuleType]:
 
     logger.info(f'Importing configuration from {configuration_url}...')
     try:
-        async with session.get(configuration_url, ssl=False) as response:  # type: ClientResponse
+        async with session.get(configuration_url, headers=[('Cache-Control', 'no-cache')]) as response:  # type: ClientResponse
             return import_from_string('configuration', await response.text())
     except Exception as e:
         logger.error('Failed to import configuration: "{e}".', e=e)

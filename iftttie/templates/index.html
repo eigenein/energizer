@@ -2,17 +2,22 @@
 {% block body %}
   <section class="section">
     <div class="container">
-      {% for batch in latest|batch(6, '') %}
+      {% for batch in latest|batch(4, '') %}
         <div class="tile is-ancestor">
           {% for update in batch %}
             {% if update %}
-              <div class="tile is-parent is-2">
-                <a class="tile is-child notification {{ update|updatetileclass }}" href="/key/{{ update.key }}">
-                  <p class="title is-6">{{ update.key }}</p>
+              <div class="tile is-parent is-3">
+                <a
+                  class="tile is-child notification {{ update|updatetileclass }}"
+                  href="/view/{{ update.key }}"
+                >
+                  <p class="title is-6">{{ app['display_names'].get(update.key, update.key) }}</p>
                   <p class="subtitle is-7" title="{{ update.timestamp }}">
                     {{ update.timestamp.strftime('%b %-d, %H:%M:%S') }}
                   </p>
-                  <p class="has-text-centered has-text-weight-bold {{ update|updatebodyclass }}">{{ update|updatecontent|safe }}</p>
+                  <p
+                    class="has-text-centered has-text-weight-bold {{ update|updatebodyclass }}"
+                  >{{ update|updatecontent|safe }}</p>
                 </a>
               </div>
             {% endif %}

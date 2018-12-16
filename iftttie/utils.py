@@ -43,7 +43,7 @@ def cancel_all(*coros):
 def update_tile_class(update: Update) -> str:
     if update.kind in (ValueKind.ON_OFF, ValueKind.YES_NO):
         return 'is-success' if update.value else 'is-danger'
-    if update.kind == ValueKind.TEMPERATURE:
+    if update.kind == ValueKind.CELSIUS:
         value = update.value
         if value < 0.0:
             return 'is-link'
@@ -76,8 +76,14 @@ def update_content(update: Update) -> str:
             return '<i class="fas fa-toggle-on"></i> <span>yes</span>'
         else:
             return '<i class="fas fa-toggle-off"></i> <span>no</span>'
-    if update.kind == ValueKind.TEMPERATURE:
-        return f'{update.value}&nbsp;°C'
+    if update.kind == ValueKind.CELSIUS:
+        return f'<i class="fas fa-thermometer-half"></i> {update.value}&nbsp;°C'
     if update.kind == ValueKind.HUMIDITY:
-        return f'{update.value}%'
+        return f'<i class="fas fa-water"></i> {update.value}%'
+    if update.kind == ValueKind.IMAGE_URL:
+        return f'<figure class="image"><img src="{update.value}"></figure>'
+    if update.kind == ValueKind.HPA:
+        return f'{update.value} hPa'
+    if update.kind == ValueKind.BFT:
+        return f'<i class="fas fa-wind"></i> {update.value} BFT'
     return str(update.value)

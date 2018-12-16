@@ -5,7 +5,7 @@ This is yet another home automation service.
 ![License](https://img.shields.io/github/license/eigenein/iftttie.svg)
 ![Docker Pulls](https://img.shields.io/docker/pulls/eigenein/iftttie.svg)
 
-## Web Interface
+## Web interface
 
 Picture to attract your attention:
 
@@ -21,7 +21,7 @@ There're multiple reasons why I didn't like them:
 - Custom automation syntax. This may be perfect for non-developers, but I prefer to write in [my favorite language](https://www.python.org/).
 - Inconvenient configuration. It's stored inside a container, separate web interfaces are needed to edit it via browser.
 
-## General Idea
+## General idea
 
 In IFFTTie there're only **two** terms to understand: *service* and *update*.
 
@@ -59,7 +59,7 @@ IFTTTie reads its configuration from a single file. And there're two important t
 
 ## Running
 
-### Via Command Line
+### Via command line
 
 ```text
 Usage: iftttie [OPTIONS]
@@ -96,31 +96,54 @@ async def on_update(update: Update):
     ...
 ```
 
-### Configuration Example
+### Configuration example
 
 ```python
+from datetime import timedelta
+
 from iftttie.dataclasses_ import Update
 from iftttie.services.buienradar import Buienradar
+from iftttie.services.clock import Clock
 from iftttie.services.nest import Nest
 
-nest = Nest('nest-api-token')
-buienradar = Buienradar(6240)
+nest = Nest(NEST_TOKEN)
+clock = Clock('hello', timedelta(seconds=1.0))
+buienradar = Buienradar(BUIENRADAR_STATION_ID)
+
+services = [nest, clock, buienradar]
+display_names = {
+    f'buienradar:{BUIENRADAR_STATION_ID}:humidity': 'Humidity',
+    f'buienradar:{BUIENRADAR_STATION_ID}:feel_temperature': 'Feels',
+    f'buienradar:{BUIENRADAR_STATION_ID}:ground_temperature': 'Ground',
+    f'buienradar:{BUIENRADAR_STATION_ID}:temperature': 'Temperature',
+    f'nest:camera:{LIVING_ROOM_CAMERA_ID}:is_streaming': 'Living Room Streaming',
+    f'nest:camera:{LIVING_ROOM_CAMERA_ID}:is_online': 'Living Room Online',
+}
 
 
 async def on_update(update: Update):
     print(update)
-   
+```
 
-services = [nest, buienradar]
+## Recipes
+
+This section aims to demonstrate different practical examples of IFTTTie configuration.
+
+### Display names
+
+If you add `display_name: Dict[str, str]` attribute to your configuration, it will be used to replace long and ugly identifiers in the web interface.
+
+For instance:
+
+```python
+display_name = {
+    f'buienradar:{BUIENRADAR_STATION_ID}:humidity': 'Humidity',
+}
 ```
 
 ## Python API
 
 ### `class Update`
-
-#### `timestamp: datetime`
-
-Time and date when the event has occurred.
 
 #### `key: str`
 
@@ -130,32 +153,83 @@ This is just update *key* that's described above.
 
 The related *value*. Very specific to a particular service.
 
-### Service Classes
+#### `timestamp: datetime`
+
+Time and date when the event has occurred.
+
+#### `kind: ValueKind`
+
+Specifies what this value is. For instance, `ValueKind.TEMPERATURE` or `ValueKind.ON_OFF`.
+
+### Service classes
 
 #### `Clock`
 
-TODO
+Yields periodical events with the specified `key`. Value then increments by one from zero on every tick.
+
+```python
+def __init__(self, key: str, interval: timedelta):
+    ...
+```
+
+##### Example configuration
+
+```python
+from datetime import timedelta
+
+from iftttie.services.clock import Clock
+
+clock = Clock('hello', timedelta(seconds=1.0))
+```
+
+##### Example output
+
+```text
+Nov 17 00:09:03 (iftttie.core:54) [D] Requesting updates from Clock(key='hello', interval=1.0)…
+Nov 17 00:09:04 (iftttie.core:83) [S] clock:hello = 219
+```
 
 #### `Nest`
 
-TODO
+Yields events from your Nest structure.
 
-#### `IFTTT`
-
-TODO
+```python
+def __init__(self, token: str):
+    ...
+```
 
 #### `Buienradar`
 
-TODO
+Yields weather information from Dutch [Buienradar](https://www.buienradar.nl/) service.
+
+```python
+def __init__(self, station_id: int, interval=timedelta(seconds=300.0)):
+    ...
+```
+
+##### Example configuration
+
+```python
+from iftttie.services.buienradar import Buienradar
+
+buienradar = Buienradar(6240)
+```
+
+##### Example output
+
+```text
+Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:air_pressure = 1012.19
+Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:feel_temperature = -1.5
+Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:ground_temperature = 3.2
+Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:humidity = 97.0
+Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:temperature = 3.1
+Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:wind_direction = 'ZZO'
+Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:wind_speed = 5.87
+Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:wind_speed_bft = 4
+```
 
 ## Public HTTP API
 
 You can send custom updates to IFTTTie from outside via its public API.
-
-TODO
-
-## Recipes
-
-This section aims to demonstrate practical examples of IFTTTie configuration.
 
 TODO

@@ -44,9 +44,16 @@ def yield_updates(data: Any) -> Iterable[Update]:
     for camera_id, camera in devices['cameras'].items():
         yield Update(key=f'nest:camera:{camera_id}:is_streaming', value=camera['is_streaming'], kind=ValueKind.ON_OFF)
         yield Update(key=f'nest:camera:{camera_id}:is_online', value=camera['is_online'], kind=ValueKind.YES_NO)
+        last_event = camera.get('last_event')
+        if last_event:
+            yield Update(
+                key=f'nest:camera:{camera_id}:last_animated_image_url',
+                value=last_event['animated_image_url'],
+                kind=ValueKind.IMAGE_URL,
+            )
     for thermostat_id, thermostat in devices['thermostats'].items():
         yield Update(
             key=f'nest:thermostat:{thermostat_id}:ambient_temperature_c',
             value=thermostat['ambient_temperature_c'],
-            kind=ValueKind.TEMPERATURE,
+            kind=ValueKind.CELSIUS,
         )

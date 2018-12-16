@@ -17,15 +17,22 @@
   >
 </head>
 <body>
-<!--
 <nav class="navbar is-light" role="navigation" aria-label="main navigation">
   <div class="navbar-menu">
-    <div class="navbar-brand">
-      <a class="navbar-item" href="/"><span class="has-text-weight-bold">IFTTTie</span></a>
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons">
+          <a class="button is-danger" href="/system/restart">
+            <span class="icon">
+              <i class="fas fa-power-off"></i>
+            </span>
+            <span>Restart</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
--->
 
 {% block body %}{% endblock %}
 </body>

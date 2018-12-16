@@ -22,6 +22,7 @@ async def index(request: web.Request) -> dict:
     async with db.execute('''
         SELECT latest.key, value, timestamp, kind FROM latest
         JOIN history on latest.history_id = history.id
+        ORDER BY latest.key
     ''') as cursor:  # type: aiosqlite.Cursor
         latest = [
             Update(key, loads(value), datetime.fromtimestamp(timestamp).astimezone(), ValueKind(kind))
