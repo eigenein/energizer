@@ -100,16 +100,18 @@ async def on_update(update: Update):
 
 ```python
 from iftttie.dataclasses_ import Update
+from iftttie.services.buienradar import Buienradar
 from iftttie.services.nest import Nest
 
 nest = Nest('nest-api-token')
+buienradar = Buienradar(6240)
 
 
 async def on_update(update: Update):
     print(update)
    
 
-services = [nest]
+services = [nest, buienradar]
 ```
 
 ## Python API

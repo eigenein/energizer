@@ -3,7 +3,7 @@ from __future__ import annotations
 from asyncio import Queue
 from datetime import datetime
 from types import ModuleType
-from typing import AsyncIterable, TypeVar
+from typing import AsyncIterable, TypeVar, Any
 
 from aiohttp import StreamReader
 
@@ -40,3 +40,13 @@ def cancel_all(*coros):
 
 def now() -> datetime:
     return datetime.now().astimezone()
+
+
+def value_tile_class(value: Any) -> str:
+    if isinstance(value, bool):
+        return 'is-success' if value else 'is-danger'
+    return 'is-light'
+
+
+def value_body_class(value: Any) -> str:
+    return ''

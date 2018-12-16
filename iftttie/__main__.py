@@ -12,10 +12,10 @@ from aiohttp import ClientResponse, ClientSession, web
 from jinja2 import PackageLoader, select_autoescape
 from loguru import logger
 
-from iftttie.constants import LOGURU_FORMAT, VERBOSITY_LEVELS, DATABASE_INIT_SCRIPT
+from iftttie.constants import DATABASE_INIT_SCRIPT, LOGURU_FORMAT, VERBOSITY_LEVELS
 from iftttie.core import run_queue
 from iftttie.exceptions import HotReloadException
-from iftttie.utils import import_from_string
+from iftttie.utils import import_from_string, value_body_class, value_tile_class
 from iftttie.web import routes
 
 
@@ -45,11 +45,17 @@ def main(configuration_url: str, http_port: int, verbosity: int):
 def start_web_app(port: int, configuration_url: str):
     """Start the entire web app."""
     app = web.Application()
+
     app['configuration_url'] = configuration_url
     app['event_queue'] = Queue(maxsize=1000)  # TODO: option.
+
     app.on_startup.append(on_startup)
     app.on_cleanup.append(on_cleanup)
-    aiohttp_jinja2.setup(app, loader=PackageLoader('iftttie'), autoescape=select_autoescape())
+
+    env = aiohttp_jinja2.setup(app, loader=PackageLoader('iftttie'), autoescape=select_autoescape())
+    env.filters['valuetileclass'] = value_tile_class
+    env.filters['valuebodyclass'] = value_body_class
+
     app.add_routes(routes)
     web.run_app(app, port=port, print=None)
 
@@ -75,7 +81,6 @@ async def import_configuration(app: web.Application) -> Optional[ModuleType]:
     logger.info(f'Importing configuration from {configuration_url}...')
     try:
         async with session.get(configuration_url, ssl=False) as response:  # type: ClientResponse
-            # logger.info('ETag: {etag}.', response.headers.get('ETag'))
             return import_from_string('configuration', await response.text())
     except Exception as e:
         logger.error('Failed to import configuration: "{e}".', e=e)

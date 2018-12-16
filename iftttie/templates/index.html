@@ -2,8 +2,23 @@
 {% block body %}
   <section class="section">
     <div class="container">
-      <h1 class="title">Hello World</h1>
-      <p class="subtitle">My first website with <strong>Bulma</strong>!</p>
+      {% for batch in latest|batch(6, '') %}
+        <div class="tile is-ancestor">
+          {% for update in batch %}
+            {% if update %}
+              <div class="tile is-parent is-2">
+                <a class="tile is-child notification {{ update.value|valuetileclass }}" href="/key/{{ update.key }}">
+                  <p class="title is-6">{{ update.key }}</p>
+                  <p class="subtitle is-7" title="{{ update.timestamp }}">
+                    {{ update.timestamp.strftime('%b %-d, %H:%M:%S') }}
+                  </p>
+                  <p class="{{ update.value|valuebodyclass }}">{{ update.value }}</p>
+                </a>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endfor %}
     </div>
   </section>
 {% endblock %}

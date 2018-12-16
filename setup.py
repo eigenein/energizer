@@ -19,7 +19,6 @@ setuptools.setup(
         'aiohttp_jinja2',
         'aiosqlite',
         'click',
-        'pypika',
         'loguru',
     ],
     extras_require={},
