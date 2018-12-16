@@ -9,6 +9,7 @@ from aiohttp import web
 from aiohttp_jinja2 import template
 
 from iftttie.dataclasses_ import Update
+from iftttie.enums import ValueKind
 
 routes = web.RouteTableDef()
 favicon_body = pkg_resources.resource_string('iftttie', 'static/favicon.png')
@@ -19,12 +20,12 @@ favicon_body = pkg_resources.resource_string('iftttie', 'static/favicon.png')
 async def index(request: web.Request) -> dict:
     db: aiosqlite.Connection = request.app['db']
     async with db.execute('''
-        SELECT latest.key, value, timestamp FROM latest
+        SELECT latest.key, value, timestamp, kind FROM latest
         JOIN history on latest.history_id = history.id
     ''') as cursor:  # type: aiosqlite.Cursor
         latest = [
-            Update(key, loads(value), datetime.fromtimestamp(timestamp).astimezone())
-            for key, value, timestamp in await cursor.fetchall()
+            Update(key, loads(value), datetime.fromtimestamp(timestamp).astimezone(), ValueKind(kind))
+            for key, value, timestamp, kind in await cursor.fetchall()
         ]
     return {'latest': latest}
 

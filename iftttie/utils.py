@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from asyncio import Queue
-from datetime import datetime
 from types import ModuleType
-from typing import AsyncIterable, TypeVar, Any
+from typing import AsyncIterable, TypeVar
 
 from aiohttp import StreamReader
+
+from iftttie.dataclasses_ import Update
+from iftttie.enums import ValueKind
 
 T = TypeVar('T')
 
@@ -38,15 +40,44 @@ def cancel_all(*coros):
         coro.cancel()
 
 
-def now() -> datetime:
-    return datetime.now().astimezone()
-
-
-def value_tile_class(value: Any) -> str:
-    if isinstance(value, bool):
-        return 'is-success' if value else 'is-danger'
+def update_tile_class(update: Update) -> str:
+    if update.kind in (ValueKind.ON_OFF, ValueKind.YES_NO):
+        return 'is-success' if update.value else 'is-danger'
+    if update.kind == ValueKind.TEMPERATURE:
+        value = update.value
+        if value < 0.0:
+            return 'is-link'
+        if value < 10.0:
+            return 'is-info'
+        if value < 20.0:
+            return 'is-primary'
+        if value < 25.0:
+            return 'is-success'
+        if value < 30.0:
+            return 'is-warning'
+        return 'is-danger'
     return 'is-light'
 
 
-def value_body_class(value: Any) -> str:
+def update_body_class(update: Update) -> str:
+    if update.kind in (ValueKind.ON_OFF, ValueKind.YES_NO):
+        return 'is-uppercase'
     return ''
+
+
+def update_content(update: Update) -> str:
+    if update.kind == ValueKind.ON_OFF:
+        if update.value:
+            return '<i class="fas fa-toggle-on"></i> <span>on</span>'
+        else:
+            return '<i class="fas fa-toggle-off"></i> <span>off</span>'
+    if update.kind == ValueKind.YES_NO:
+        if update.value:
+            return '<i class="fas fa-toggle-on"></i> <span>yes</span>'
+        else:
+            return '<i class="fas fa-toggle-off"></i> <span>no</span>'
+    if update.kind == ValueKind.TEMPERATURE:
+        return f'{update.value}&nbsp;°C'
+    if update.kind == ValueKind.HUMIDITY:
+        return f'{update.value}%'
+    return str(update.value)

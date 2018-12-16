@@ -4,14 +4,15 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Optional
 
-from iftttie.utils import now
+from iftttie.enums import ValueKind
 
 
 @dataclass
 class Update:
     key: str
     value: Any = None
-    timestamp: datetime = field(default_factory=now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now().astimezone())
+    kind: ValueKind = ValueKind.RAW
 
 
 @dataclass

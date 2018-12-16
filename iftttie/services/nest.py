@@ -7,6 +7,7 @@ from aiohttp import ClientSession, web
 from loguru import logger
 
 from iftttie.dataclasses_ import Update
+from iftttie.enums import ValueKind
 from iftttie.services.base import BaseService
 from iftttie.sse import read_events
 
@@ -22,7 +23,7 @@ class Nest(BaseService):
         session: ClientSession = app['client_session']
 
         logger.debug('Listening to the stream…')
-        async with session.get(url, params={'auth': self.token}, headers=headers, ssl=False) as response:
+        async with session.get(url, params={'auth': self.token}, headers=headers, timeout=None) as response:
             async for event in read_events(response.content):
                 if event.name != 'put':
                     logger.debug('Ignoring event: {name}.', name=event.name)
@@ -31,7 +32,7 @@ class Nest(BaseService):
                     yield update
 
     def __str__(self) -> str:
-        return Nest.__name__
+        return f'{Nest.__name__}(token={self.token!r})'
 
 
 def yield_updates(data: Any) -> Iterable[Update]:
@@ -41,10 +42,11 @@ def yield_updates(data: Any) -> Iterable[Update]:
 
     devices = data['devices']
     for camera_id, camera in devices['cameras'].items():
-        yield Update(key=f'nest:camera:{camera_id}:is_streaming', value=camera['is_streaming'])
-        yield Update(key=f'nest:camera:{camera_id}:is_online', value=camera['is_online'])
+        yield Update(key=f'nest:camera:{camera_id}:is_streaming', value=camera['is_streaming'], kind=ValueKind.ON_OFF)
+        yield Update(key=f'nest:camera:{camera_id}:is_online', value=camera['is_online'], kind=ValueKind.YES_NO)
     for thermostat_id, thermostat in devices['thermostats'].items():
         yield Update(
             key=f'nest:thermostat:{thermostat_id}:ambient_temperature_c',
             value=thermostat['ambient_temperature_c'],
+            kind=ValueKind.TEMPERATURE,
         )

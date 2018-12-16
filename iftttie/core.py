@@ -95,7 +95,7 @@ async def insert_update(db: aiosqlite.Connection, update: Update):
         (update.key, dumps(update.value), update.timestamp.timestamp()),
     )
     await db.execute(
-        'INSERT OR REPLACE INTO latest (key, history_id) VALUES (?, last_insert_rowid())',
-        (update.key,),
+        'INSERT OR REPLACE INTO latest (key, history_id, kind) VALUES (?, last_insert_rowid(), ?)',
+        (update.key, update.kind.value),
     )
     await db.commit()

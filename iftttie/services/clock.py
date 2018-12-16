@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from asyncio import sleep
+from datetime import timedelta
 from typing import AsyncIterator
 
 from aiohttp import web
@@ -11,9 +12,9 @@ from iftttie.services.base import BaseService
 
 
 class Clock(BaseService):
-    def __init__(self, key: str, interval: float):
+    def __init__(self, key: str, interval: timedelta):
         self.key = key
-        self.interval = interval
+        self.interval = interval.total_seconds()
         self.counter = 0
 
     async def yield_updates(self, app: web.Application) -> AsyncIterator[Update]:
