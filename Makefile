@@ -4,4 +4,4 @@ venv : requirements.txt
 	@venv/bin/pip install -e .
 
 requirements.txt : setup.py
-	@venv/bin/pip-compile --no-index --no-emit-trusted-host --output-file requirements.txt setup.py
+	@venv/bin/pip-compile --no-index --no-emit-trusted-host --generate-hashes --output-file requirements.txt setup.py
