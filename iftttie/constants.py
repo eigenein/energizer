@@ -28,11 +28,10 @@ DATABASE_INIT_SCRIPT = '''
     -- Latest table contains references to the latest values in the history table.
     CREATE TABLE IF NOT EXISTS latest (
         history_id INTEGER NOT NULL,
-        key TEXT NOT NULL,
+        key TEXT PRIMARY KEY NOT NULL,
         kind TEXT NOT NULL,
         FOREIGN KEY (history_id) REFERENCES history(id)
     );
-    CREATE UNIQUE INDEX IF NOT EXISTS latest_key ON latest (key);
     CREATE INDEX IF NOT EXISTS latest_kind_key ON latest (kind, key);
 '''
 
