@@ -9,6 +9,7 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY . /app
 WORKDIR /app
+RUN touch db.sqlite3
 RUN pip install --no-cache-dir --no-deps .
 
 STOPSIGNAL SIGINT
