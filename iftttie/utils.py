@@ -36,7 +36,7 @@ def import_from_string(name: str, code: str) -> ModuleType:
 
 
 def update_tile_class(update: Update) -> str:
-    if update.kind in (ValueKind.ON_OFF, ValueKind.YES_NO):
+    if update.kind == ValueKind.BOOLEAN:
         return 'is-success' if update.value else 'is-danger'
     if update.kind == ValueKind.CELSIUS:
         value = update.value
@@ -64,7 +64,7 @@ def update_tile_class(update: Update) -> str:
         if value < 85.0:
             return 'is-warning'
         return 'is-danger'
-    if update.kind == ValueKind.BFT:
+    if update.kind == ValueKind.BEAUFORT:
         value = update.value
         if value == 0:
             return 'is-light'
@@ -83,18 +83,13 @@ def update_tile_class(update: Update) -> str:
 
 
 def update_body_class(update: Update) -> str:
-    if update.kind in (ValueKind.ON_OFF, ValueKind.YES_NO):
+    if update.kind == ValueKind.BOOLEAN:
         return 'is-uppercase'
     return ''
 
 
 def update_content(update: Update) -> str:
-    if update.kind == ValueKind.ON_OFF:
-        if update.value:
-            return '<i class="fas fa-toggle-on"></i> <span>on</span>'
-        else:
-            return '<i class="fas fa-toggle-off"></i> <span>off</span>'
-    if update.kind == ValueKind.YES_NO:
+    if update.kind == ValueKind.BOOLEAN:
         if update.value:
             return '<i class="fas fa-toggle-on"></i> <span>yes</span>'
         else:
@@ -107,7 +102,7 @@ def update_content(update: Update) -> str:
         return f'<figure class="image"><img src="{update.value}"></figure>'
     if update.kind == ValueKind.HPA:
         return f'{update.value} hPa'
-    if update.kind == ValueKind.BFT:
+    if update.kind == ValueKind.BEAUFORT:
         return f'<i class="fas fa-wind"></i> {update.value} BFT'
     if update.kind == ValueKind.MPS:
         return f'<i class="fas fa-tachometer-alt"></i> {update.value} m/s'

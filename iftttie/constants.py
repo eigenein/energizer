@@ -36,13 +36,12 @@ DATABASE_INIT_SCRIPT = '''
 '''
 
 VALUE_KIND_TITLES = {
-    ValueKind.BFT: 'Beaufort',
+    ValueKind.BEAUFORT: 'Beaufort',
+    ValueKind.BOOLEAN: 'Boolean',
     ValueKind.CELSIUS: 'Temperature',
     ValueKind.HPA: 'Pressure',
     ValueKind.HUMIDITY: 'Humidity',
     ValueKind.IMAGE_URL: 'Image',
     ValueKind.MPS: 'Speed',
-    ValueKind.ON_OFF: 'On or Off',
-    ValueKind.RAW: 'Other',
-    ValueKind.YES_NO: 'Yes or No',
+    ValueKind.OTHER: 'Other',
 }

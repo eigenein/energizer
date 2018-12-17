@@ -12,7 +12,7 @@ class Update:
     key: str
     value: Any = None
     timestamp: datetime = field(default_factory=lambda: datetime.now().astimezone())
-    kind: ValueKind = ValueKind.RAW
+    kind: ValueKind = ValueKind.OTHER
 
 
 @dataclass

@@ -19,9 +19,9 @@ keys = (
     ('groundtemperature', 'ground_temperature', ValueKind.CELSIUS),
     ('humidity', 'humidity', ValueKind.HUMIDITY),
     ('temperature', 'temperature', ValueKind.CELSIUS),
-    ('winddirection', 'wind_direction', ValueKind.RAW),
+    ('winddirection', 'wind_direction', ValueKind.OTHER),
     ('windspeed', 'wind_speed', ValueKind.MPS),
-    ('windspeedBft', 'wind_speed_bft', ValueKind.BFT),
+    ('windspeedBft', 'wind_speed_bft', ValueKind.BEAUFORT),
 )
 timestamp_format = '%Y-%m-%dT%H:%M:%S'
 
