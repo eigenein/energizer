@@ -11,7 +11,7 @@ from aiohttp import ClientResponse, ClientSession, web
 from jinja2 import PackageLoader, select_autoescape
 from loguru import logger
 
-from iftttie.constants import DATABASE_INIT_SCRIPT
+from iftttie.constants import DATABASE_INIT_SCRIPT, VALUE_KIND_TITLES
 from iftttie.core import run_queue
 from iftttie.exceptions import HotReloadException
 from iftttie.logging_ import init_logging
@@ -55,6 +55,7 @@ def start_web_app(port: int, configuration_url: str):
     env.filters['updatetileclass'] = update_tile_class
     env.filters['updatebodyclass'] = update_body_class
     env.filters['updatecontent'] = update_content
+    env.globals['VALUE_KIND_TITLES'] = VALUE_KIND_TITLES
 
     app.add_routes(routes)
     web.run_app(app, port=port, print=None)

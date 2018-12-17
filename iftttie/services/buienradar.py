@@ -19,7 +19,7 @@ keys = (
     ('humidity', 'humidity', ValueKind.HUMIDITY),
     ('temperature', 'temperature', ValueKind.CELSIUS),
     ('winddirection', 'wind_direction', ValueKind.RAW),
-    ('windspeed', 'wind_speed', ValueKind.RAW),
+    ('windspeed', 'wind_speed', ValueKind.MPS),
     ('windspeedBft', 'wind_speed_bft', ValueKind.BFT),
 )
 

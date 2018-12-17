@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from iftttie.enums import ValueKind
+
 LOGURU_FORMAT = ' '.join((
     '<green>{time:MMM DD HH:mm:ss}</green>',
     '<cyan>({name}:{line})</cyan>',
@@ -30,5 +32,16 @@ DATABASE_INIT_SCRIPT = '''
         kind TEXT NOT NULL,
         FOREIGN KEY (history_id) REFERENCES history(id)
     );
-    CREATE UNIQUE INDEX IF NOT EXISTS latest_key ON latest (key);
+    CREATE UNIQUE INDEX IF NOT EXISTS latest_kind_key ON latest (kind, key);
 '''
+
+VALUE_KIND_TITLES = {
+    ValueKind.BFT: 'Beaufort',
+    ValueKind.CELSIUS: 'Temperature',
+    ValueKind.HPA: 'Pressure',
+    ValueKind.HUMIDITY: 'Humidity',
+    ValueKind.IMAGE_URL: 'Image',
+    ValueKind.ON_OFF: 'On or Off',
+    ValueKind.RAW: 'Unknown',
+    ValueKind.YES_NO: 'Yes or No',
+}

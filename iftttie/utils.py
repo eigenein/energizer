@@ -81,4 +81,6 @@ def update_content(update: Update) -> str:
         return f'{update.value} hPa'
     if update.kind == ValueKind.BFT:
         return f'<i class="fas fa-wind"></i> {update.value} BFT'
-    return str(update.value)
+    if update.kind == ValueKind.MPS:
+        return f'<i class="fas fa-tachometer-alt"></i> {update.value} m/s'
+    return f'<i class="far fa-question-circle"></i> {update.value}'

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from json import loads
+from typing import Dict
 
 import aiosqlite
 import pkg_resources
@@ -19,16 +20,21 @@ favicon_body = pkg_resources.resource_string('iftttie', 'static/favicon.png')
 @template('index.html')
 async def index(request: web.Request) -> dict:
     db: aiosqlite.Connection = request.app['db']
+    display_names: Dict[str, str] = request.app['display_names']
+
     async with db.execute('''
         SELECT latest.key, value, timestamp, kind FROM latest
         JOIN history on latest.history_id = history.id
-        ORDER BY latest.key
+        ORDER BY latest.kind, latest.key
     ''') as cursor:  # type: aiosqlite.Cursor
-        latest = [
+        updates = [
             Update(key, loads(value), datetime.fromtimestamp(timestamp).astimezone(), ValueKind(kind))
             for key, value, timestamp, kind in await cursor.fetchall()
         ]
-    return {'latest': latest}
+    return {
+        'with_names': [update for update in updates if update.key in display_names],
+        'without_names': [update for update in updates if update.key not in display_names],
+    }
 
 
 @routes.get('/favicon.png')
