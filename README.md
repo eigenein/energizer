@@ -75,11 +75,15 @@ Options:
 
 ### Via Docker
 
-```sh
+```bash
 docker run -it --rm eigenein/iftttie iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw
 ```
 
-The image supports running on Raspberry Pi out-of-the-box.
+The image supports running on Raspberry Pi out-of-the-box. With useful flags:
+
+```bash
+docker run --detach --restart always --name iftttie -p 8080:8080 eigenein/iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw
+```
 
 ## Startup
 
