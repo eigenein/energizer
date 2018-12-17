@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from asyncio import sleep
+from asyncio import Queue, sleep
 from datetime import timedelta
-from typing import AsyncIterator
+from typing import Any
 
-from aiohttp import ClientSession, web
+from aiohttp import ClientSession
 from loguru import logger
 
 from iftttie.dataclasses_ import Update
@@ -29,22 +29,22 @@ class Buienradar(BaseService):
         self.station_id = station_id
         self.interval = interval.total_seconds()
 
-    async def yield_updates(self, app: web.Application) -> AsyncIterator[Update]:
-        session: ClientSession = app['client_session']
+    async def run(self, client_session: ClientSession, event_queue: Queue[Update], **kwargs: Any):
         while True:
-            async with session.get(url) as response:  # type ClientResponse
+            async with client_session.get(url) as response:  # type ClientResponse
                 feed = await response.json()
             for measurement in feed['actual']['stationmeasurements']:
                 if measurement['stationid'] == self.station_id:
                     for source_key, target_key, kind in keys:
-                        yield Update(
+                        await event_queue.put(Update(
                             key=f'buienradar:{self.station_id}:{target_key}',
                             value=measurement[source_key],
                             kind=kind,
-                        )
+                        ))
                     break
             else:
                 logger.error('Station {station_id} is not found.', station_id=self.station_id)
+            logger.debug('Next reading in {interval} seconds.', interval=self.interval)
             await sleep(self.interval)
 
     def __str__(self) -> str:

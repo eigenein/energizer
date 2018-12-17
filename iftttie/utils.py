@@ -35,11 +35,6 @@ def import_from_string(name: str, code: str) -> ModuleType:
     return module
 
 
-def cancel_all(*coros):
-    for coro in coros:
-        coro.cancel()
-
-
 def update_tile_class(update: Update) -> str:
     if update.kind in (ValueKind.ON_OFF, ValueKind.YES_NO):
         return 'is-success' if update.value else 'is-danger'

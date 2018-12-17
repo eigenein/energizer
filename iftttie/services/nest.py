@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Iterable, AsyncIterator
+from asyncio import Queue
+from typing import Any, Iterable
 
-from aiohttp import ClientSession, web
+from aiohttp import ClientSession
 from loguru import logger
 
 from iftttie.dataclasses_ import Update
@@ -19,20 +20,18 @@ class Nest(BaseService):
     def __init__(self, token: str):
         self.token = token
 
-    async def yield_updates(self, app: web.Application) -> AsyncIterator[Update]:
-        session: ClientSession = app['client_session']
-
+    async def run(self, client_session: ClientSession, event_queue: Queue[Update], **kwargs: Any):
         logger.debug('Listening to the stream…')
-        async with session.get(url, params={'auth': self.token}, headers=headers, timeout=None) as response:
+        async with client_session.get(url, params={'auth': self.token}, headers=headers, timeout=None) as response:
             async for event in read_events(response.content):
                 if event.name != 'put':
                     logger.debug('Ignoring event: {name}.', name=event.name)
                     continue
                 for update in yield_updates(json.loads(event.data)['data']):
-                    yield update
+                    await event_queue.put(update)
 
     def __str__(self) -> str:
-        return f'{Nest.__name__}(token={self.token!r})'
+        return f'{Nest.__name__}(token="{self.token[:4]}…{self.token[-4:]}")'
 
 
 def yield_updates(data: Any) -> Iterable[Update]:

@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from typing import AsyncIterator
+from asyncio import Queue
+from typing import Any
 
-from aiohttp import web
+from aiohttp import ClientSession
 
 from iftttie.dataclasses_ import Update
 
 
 class BaseService(metaclass=ABCMeta):
     @abstractmethod
-    async def yield_updates(self, app: web.Application) -> AsyncIterator[Update]:
+    async def run(self, client_session: ClientSession, event_queue: Queue[Update], **kwargs: Any):
+        """
+        Runs the service. May raise unhandled exceptions.
+        """
         raise NotImplementedError()

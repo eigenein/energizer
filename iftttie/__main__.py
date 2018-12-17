@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import sys
 from asyncio import Queue
 from types import ModuleType
 from typing import Optional
@@ -12,9 +11,10 @@ from aiohttp import ClientResponse, ClientSession, web
 from jinja2 import PackageLoader, select_autoescape
 from loguru import logger
 
-from iftttie.constants import DATABASE_INIT_SCRIPT, LOGURU_FORMAT, VERBOSITY_LEVELS
+from iftttie.constants import DATABASE_INIT_SCRIPT
 from iftttie.core import run_queue
 from iftttie.exceptions import HotReloadException
+from iftttie.logging_ import init_logging
 from iftttie.utils import import_from_string, update_body_class, update_content, update_tile_class
 from iftttie.web import routes
 
@@ -26,8 +26,7 @@ from iftttie.web import routes
 def main(configuration_url: str, http_port: int, verbosity: int):
     """Yet another home assistant."""
 
-    logger.stop()
-    logger.add(sys.stderr, format=LOGURU_FORMAT, level=VERBOSITY_LEVELS.get(verbosity, 'TRACE'))
+    init_logging(verbosity)
 
     while True:
         logger.success('Starting IFTTTie…')
