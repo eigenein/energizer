@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from asyncio import Queue
 from datetime import datetime
-from typing import Any, Iterable
+from typing import Any, Iterable, List, Tuple
 
 from aiohttp import ClientSession
 from loguru import logger
@@ -37,15 +37,29 @@ class Nest(BaseService):
 
 
 def yield_updates(data: Any) -> Iterable[Update]:
-    for structure_id, structure in data['structures'].items():
-        yield Update(key=f'nest:structure:{structure_id}:away', value=structure['away'])
-        yield Update(key=f'nest:structure:{structure_id}:wwn_security_state', value=structure['wwn_security_state'])
+    yield from yield_devices_updates(data['structures'], 'nest:structure', [
+        ('away', ValueKind.OTHER),
+        ('wwn_security_state', ValueKind.OTHER),
+    ])
 
     devices = data['devices']
+
+    yield from yield_devices_updates(devices['cameras'], 'nest:camera', [
+        ('is_streaming', ValueKind.BOOLEAN),
+        ('is_online', ValueKind.BOOLEAN),
+        ('snapshot_url', ValueKind.IMAGE_URL),
+    ])
+    yield from yield_devices_updates(devices['thermostats'], 'nest:thermostat', [
+        ('ambient_temperature_c', ValueKind.CELSIUS),
+        ('humidity', ValueKind.HUMIDITY),
+        ('is_online', ValueKind.BOOLEAN),
+        ('hvac_state', ValueKind.OTHER),
+    ])
+    yield from yield_devices_updates(devices['smoke_co_alarms'], 'nest:smoke_co_alarm', [
+        ('is_online', ValueKind.BOOLEAN),
+    ])
+
     for camera_id, camera in devices['cameras'].items():
-        yield Update(key=f'nest:camera:{camera_id}:is_streaming', value=camera['is_streaming'], kind=ValueKind.BOOLEAN)
-        yield Update(key=f'nest:camera:{camera_id}:is_online', value=camera['is_online'], kind=ValueKind.BOOLEAN)
-        yield Update(key=f'nest:camera:{camera_id}:snapshot_url', value=camera['snapshot_url'], kind=ValueKind.IMAGE_URL)
         last_event = camera.get('last_event')
         if last_event:
             yield Update(
@@ -54,30 +68,9 @@ def yield_updates(data: Any) -> Iterable[Update]:
                 kind=ValueKind.IMAGE_URL,
                 timestamp=datetime.strptime(last_event['start_time'], timestamp_format).astimezone(),
             )
-    for thermostat_id, thermostat in devices['thermostats'].items():
-        yield Update(
-            key=f'nest:thermostat:{thermostat_id}:ambient_temperature_c',
-            value=thermostat['ambient_temperature_c'],
-            kind=ValueKind.CELSIUS,
-        )
-        yield Update(
-            key=f'nest:thermostat:{thermostat_id}:humidity',
-            value=thermostat['humidity'],
-            kind=ValueKind.HUMIDITY,
-        )
-        yield Update(
-            key=f'nest:thermostat:{thermostat_id}:is_online',
-            value=thermostat['is_online'],
-            kind=ValueKind.BOOLEAN,
-        )
-        yield Update(
-            key=f'nest:thermostat:{thermostat_id}:hvac_state',
-            value=thermostat['hvac_state'],
-            kind=ValueKind.OTHER,
-        )
-    for smoke_co_alarm_id, smoke_co_alarm in devices['smoke_co_alarms'].items():
-        yield Update(
-            key=f'nest:smoke_co_alarm:{smoke_co_alarm_id}:is_online',
-            value=smoke_co_alarm['is_online'],
-            kind=ValueKind.BOOLEAN,
-        )
+
+
+def yield_devices_updates(devices: dict, prefix: str, keys: List[Tuple[str, ValueKind]]) -> Iterable[Update]:
+    for id_, device in devices.items():
+        for key, kind in keys:
+            yield Update(key=f'{prefix}:{id_}:{key}', value=device[key], kind=kind)
