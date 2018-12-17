@@ -23,14 +23,15 @@ class Nest(BaseService):
         self.token = token
 
     async def run(self, client_session: ClientSession, event_queue: Queue[Update], **kwargs: Any):
-        logger.debug('Listening to the stream…')
-        async with client_session.get(url, params={'auth': self.token}, headers=headers, timeout=None) as response:
-            async for event in read_events(response.content):
-                if event.name != 'put':
-                    logger.debug('Ignoring event: {name}.', name=event.name)
-                    continue
-                for update in yield_updates(json.loads(event.data)['data']):
-                    await event_queue.put(update)
+        while True:
+            logger.debug('Listening to the stream…')
+            async with client_session.get(url, params={'auth': self.token}, headers=headers, timeout=None) as response:
+                async for event in read_events(response.content):
+                    if event.name != 'put':
+                        logger.debug('Ignoring event: {name}.', name=event.name)
+                        continue
+                    for update in yield_updates(json.loads(event.data)['data']):
+                        await event_queue.put(update)
 
     def __str__(self) -> str:
         return f'{Nest.__name__}(token="{self.token[:4]}…{self.token[-4:]}")'

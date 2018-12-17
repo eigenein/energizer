@@ -154,7 +154,7 @@ display_name = {
 
 ## Python API
 
-### `class Update`
+### `iftttie.dataclasses_.Update`
 
 #### `key: str`
 
@@ -174,7 +174,7 @@ Specifies what this value is. For instance, `ValueKind.TEMPERATURE` or `ValueKin
 
 ### Service classes
 
-#### `Clock`
+#### `iftttie.services.clock.Clock`
 
 Yields periodical events with the specified `key`. Value then increments by one from zero on every tick.
 
@@ -200,7 +200,7 @@ Nov 17 00:09:03 (iftttie.core:54) [D] Requesting updates from Clock(key='hello',
 Nov 17 00:09:04 (iftttie.core:83) [S] clock:hello = 219
 ```
 
-#### `Nest`
+#### `iftttie.services.nest.Nest`
 
 Yields events from your Nest structure.
 
@@ -209,7 +209,7 @@ def __init__(self, token: str):
     ...
 ```
 
-#### `Buienradar`
+#### `iftttie.services.buienradar.Buienradar`
 
 Yields weather information from Dutch [Buienradar](https://www.buienradar.nl/) service.
 
@@ -237,6 +237,42 @@ Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:temperature = 3.1
 Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:wind_direction = 'ZZO'
 Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:wind_speed = 5.87
 Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:wind_speed_bft = 4
+```
+
+#### `iftttie.services.file_.File`
+
+Periodically yields contents of the specified file.
+
+```python
+def __init__(self, path: Path, key: str, interval: timedelta, kind: ValueKind):
+    ...
+```
+
+#### `iftttie.services.file_.FloatFile`
+
+Periodically yields floating-point value from the specified file.
+
+```python
+def __init__(self, path: Path, key: str, interval: timedelta, kind: ValueKind, scale=1.0):
+    ...
+```
+
+##### Example configuration
+
+```python
+from datetime import timedelta
+from pathlib import Path
+
+from iftttie.enums import ValueKind
+from iftttie.services.file_ import FloatFile
+
+cpu_temperature = FloatFile(
+    Path('/sys/class/thermal/thermal_zone0/temp'), 
+    'cpu_temperature', 
+    timedelta(seconds=10.0),
+    ValueKind.CELSIUS,
+    0.001, 
+)
 ```
 
 ## Public HTTP API

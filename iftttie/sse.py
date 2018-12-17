@@ -13,8 +13,9 @@ from iftttie.utils import read_lines
 
 async def read_events(reader: StreamReader) -> AsyncIterable[ServerSideEvent]:
     """Read server-side events as an iterable."""
-    while True:
+    while not reader.at_eof():
         yield await read_event(reader)
+    logger.debug('Event stream has ended.')
 
 
 async def read_event(reader: StreamReader) -> ServerSideEvent:
