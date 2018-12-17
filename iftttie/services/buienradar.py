@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from asyncio import Queue, sleep
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Any
 
 from aiohttp import ClientSession
@@ -22,6 +22,7 @@ keys = (
     ('windspeed', 'wind_speed', ValueKind.MPS),
     ('windspeedBft', 'wind_speed_bft', ValueKind.BFT),
 )
+timestamp_format = '%Y-%m-%dT%H:%M:%S'
 
 
 class Buienradar(BaseService):
@@ -40,6 +41,7 @@ class Buienradar(BaseService):
                             key=f'buienradar:{self.station_id}:{target_key}',
                             value=measurement[source_key],
                             kind=kind,
+                            timestamp=datetime.strptime(measurement['timestamp'], timestamp_format).astimezone(),
                         ))
                     break
             else:

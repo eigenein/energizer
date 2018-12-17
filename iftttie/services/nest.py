@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from asyncio import Queue
+from datetime import datetime
 from typing import Any, Iterable
 
 from aiohttp import ClientSession
@@ -14,6 +15,7 @@ from iftttie.sse import read_events
 
 url = 'https://developer-api.nest.com'
 headers = [('Accept', 'text/event-stream')]
+timestamp_format = '%Y-%m-%dT%H:%M:%S.%fZ'
 
 
 class Nest(BaseService):
@@ -49,6 +51,7 @@ def yield_updates(data: Any) -> Iterable[Update]:
                 key=f'nest:camera:{camera_id}:last_animated_image_url',
                 value=last_event['animated_image_url'],
                 kind=ValueKind.IMAGE_URL,
+                timestamp=datetime.strptime(last_event['start_time'], timestamp_format).astimezone(),
             )
     for thermostat_id, thermostat in devices['thermostats'].items():
         yield Update(
