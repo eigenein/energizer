@@ -42,6 +42,20 @@ async def favicon(_: web.Request) -> web.Response:
     return web.Response(body=favicon_body, content_type='image/png')
 
 
+@routes.get('/manifest.json')
+async def manifest(_: web.Request) -> web.Response:
+    return web.json_response({
+        'short_name': 'IFTTTie',
+        'name': 'IFTTTie',
+        'icons': [{'src': '/favicon.png', 'type': 'image/png', 'sizes': '32x32'}],
+        'start_url': '/',
+        'background_color': '#000000',
+        'display': 'standalone',
+        'scope': '/',
+        'theme_color': '#209cee',
+    })
+
+
 @routes.get('/system/db.sqlite3')
 async def restart(_: web.Request) -> web.Response:
     return web.FileResponse('db.sqlite3')
