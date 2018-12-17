@@ -19,8 +19,7 @@ DATABASE_INIT_SCRIPT = '''
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         timestamp FLOAT NOT NULL,
         key TEXT NOT NULL,
-        value TEXT NOT NULL,
-        kind TEXT NOT NULL
+        value TEXT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS history_key_timestamp ON history (key, timestamp);
     
@@ -28,6 +27,7 @@ DATABASE_INIT_SCRIPT = '''
     CREATE TABLE IF NOT EXISTS latest (
         history_id INTEGER NOT NULL,
         key TEXT NOT NULL,
+        kind TEXT NOT NULL,
         FOREIGN KEY (history_id) REFERENCES history(id)
     );
     CREATE UNIQUE INDEX IF NOT EXISTS latest_key ON latest (key);
