@@ -37,13 +37,12 @@ class Nest(BaseService):
 
 
 def yield_updates(data: Any) -> Iterable[Update]:
+    devices = data['devices']
+
     yield from yield_devices_updates(data['structures'], 'nest:structure', [
         ('away', ValueKind.OTHER),
         ('wwn_security_state', ValueKind.OTHER),
     ])
-
-    devices = data['devices']
-
     yield from yield_devices_updates(devices['cameras'], 'nest:camera', [
         ('is_streaming', ValueKind.BOOLEAN),
         ('is_online', ValueKind.BOOLEAN),
