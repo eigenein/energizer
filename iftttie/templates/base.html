@@ -17,31 +17,32 @@
   >
 </head>
 <body>
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-menu">
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="buttons">
-          <a class="button is-danger" href="/system/restart">
-            <span class="icon">
-              <i class="fas fa-power-off"></i>
-            </span>
-            <span>Restart</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</nav>
-
 {% block body %}{% endblock %}
 
 <footer class="footer">
   <div class="content has-text-centered">
     <p>
       <a href="https://github.com/eigenein/iftttie"><strong>IFTTTie</strong></a> by <a href="https://eigenein.com">eigenein</a>.
-      Made with <a href="https://bulma.io/">Bulma</a>.
-      Icons by <a href="https://fontawesome.com/">Font Awesome</a>.
+      <i class="fas fa-certificate has-text-primary"></i>
+      Made with <a href="https://bulma.io/"><strong>Bulma</strong></a>.
+      <i class="fab fa-fort-awesome has-text-success"></i>
+      Icons by <a href="https://fontawesome.com/"><strong>Font
+      Awesome</strong></a>.
+    </p>
+    <p class="buttons has-addons is-centered">
+      <a class="button is-success" href="{{ app['configuration_url'] }}">
+          <span class="icon">
+            <i class="fas fa-cog"></i>
+          </span>
+        <span>Configuration</span>
+      </a>
+
+      <a class="button is-info" href="/system/db.sqlite3">
+          <span class="icon">
+            <i class="fas fa-file-download"></i>
+          </span>
+        <span>Download db.sqlite3</span>
+      </a>
     </p>
   </div>
 </footer>

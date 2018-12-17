@@ -42,6 +42,6 @@ VALUE_KIND_TITLES = {
     ValueKind.HUMIDITY: 'Humidity',
     ValueKind.IMAGE_URL: 'Image',
     ValueKind.ON_OFF: 'On or Off',
-    ValueKind.RAW: 'Unknown',
+    ValueKind.RAW: 'Other',
     ValueKind.YES_NO: 'Yes or No',
 }

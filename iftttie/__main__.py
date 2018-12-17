@@ -13,7 +13,6 @@ from loguru import logger
 
 from iftttie.constants import DATABASE_INIT_SCRIPT, VALUE_KIND_TITLES
 from iftttie.core import run_queue
-from iftttie.exceptions import HotReloadException
 from iftttie.logging_ import init_logging
 from iftttie.utils import import_from_string, update_body_class, update_content, update_tile_class
 from iftttie.web import routes
@@ -25,20 +24,10 @@ from iftttie.web import routes
 @click.option('verbosity', '-v', '--verbose', count=True, help='Logging verbosity.')
 def main(configuration_url: str, http_port: int, verbosity: int):
     """Yet another home assistant."""
-
     init_logging(verbosity)
-
-    while True:
-        logger.success('Starting IFTTTie…')
-        try:
-            start_web_app(http_port, configuration_url)
-        except HotReloadException:
-            logger.info('Hot reload requested.')
-            continue  # start the app again
-        else:
-            break  # graceful exit
-        finally:
-            logger.success('IFTTTie stopped.')
+    logger.success('Starting IFTTTie…')
+    start_web_app(http_port, configuration_url)
+    logger.success('IFTTTie stopped.')
 
 
 def start_web_app(port: int, configuration_url: str):

@@ -51,6 +51,34 @@ def update_tile_class(update: Update) -> str:
         if value < 30.0:
             return 'is-warning'
         return 'is-danger'
+    if update.kind == ValueKind.HUMIDITY:
+        value = update.value
+        if value < 17.0:
+            return 'is-link'
+        if value < 34.0:
+            return 'is-info'
+        if value < 51.0:
+            return 'is-primary'
+        if value < 68.0:
+            return 'is-success'
+        if value < 85.0:
+            return 'is-warning'
+        return 'is-danger'
+    if update.kind == ValueKind.BFT:
+        value = update.value
+        if value == 0:
+            return 'is-light'
+        if value == 1:
+            return 'is-link'
+        if value == 2:
+            return 'is-info'
+        if value == 3:
+            return 'is-primary'
+        if value == 4:
+            return 'is-success'
+        if value == 5:
+            return 'is-warning'
+        return 'is-danger'
     return 'is-light'
 
 

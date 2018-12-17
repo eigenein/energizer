@@ -40,3 +40,8 @@ async def index(request: web.Request) -> dict:
 @routes.get('/favicon.png')
 async def favicon(_: web.Request) -> web.Response:
     return web.Response(body=favicon_body, content_type='image/png')
+
+
+@routes.get('/system/db.sqlite3')
+async def restart(_: web.Request) -> web.Response:
+    return web.FileResponse('db.sqlite3')

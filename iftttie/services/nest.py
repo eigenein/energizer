@@ -56,3 +56,13 @@ def yield_updates(data: Any) -> Iterable[Update]:
             value=thermostat['ambient_temperature_c'],
             kind=ValueKind.CELSIUS,
         )
+        yield Update(
+            key=f'nest:thermostat:{thermostat_id}:humidity',
+            value=thermostat['humidity'],
+            kind=ValueKind.HUMIDITY,
+        )
+        yield Update(
+            key=f'nest:thermostat:{thermostat_id}:is_online',
+            value=thermostat['is_online'],
+            kind=ValueKind.YES_NO,
+        )
