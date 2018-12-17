@@ -32,7 +32,8 @@ DATABASE_INIT_SCRIPT = '''
         kind TEXT NOT NULL,
         FOREIGN KEY (history_id) REFERENCES history(id)
     );
-    CREATE UNIQUE INDEX IF NOT EXISTS latest_kind_key ON latest (kind, key);
+    CREATE UNIQUE INDEX IF NOT EXISTS latest_key ON latest (key);
+    CREATE INDEX IF NOT EXISTS latest_kind_key ON latest (kind, key);
 '''
 
 VALUE_KIND_TITLES = {
