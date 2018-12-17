@@ -28,25 +28,24 @@ async def run_services(app: web.Application):
     while coros:
         logger.trace('{number} coroutines pending.', number=len(coros))
         try:
-            done, _ = await wait(coros.keys(), return_when=FIRST_COMPLETED)
+            (done,), _ = await wait(coros.keys(), return_when=FIRST_COMPLETED)
         except CancelledError:
             cancel_all(*coros)
             return
-        for coro in done:
-            service: BaseService = coros[coro]
-            if not coro.exception():
-                yield_updates, update = coro.result()
-                await queue.put(update)
-                # Advance to the next update.
-                coros[app.loop.create_task(async_next(yield_updates))] = service
-            else:
-                if not isinstance(coro.exception(), StopAsyncIteration):
-                    logger.opt(exception=coro.exception()).error('{service} has failed. Restart in a minute…', service=service)
-                    await sleep(60.0)
-                # Spawn `yield_updates` again.
-                coros[run_service(app, service)] = service
-            # Coroutine is done.
-            del coros[coro]
+        service: BaseService = coros[done]
+        if not done.exception():
+            yield_updates, update = done.result()
+            await queue.put(update)
+            # Advance to the next update.
+            coros[app.loop.create_task(async_next(yield_updates))] = service
+        else:
+            if not isinstance(done.exception(), StopAsyncIteration):
+                logger.opt(exception=done.exception()).error('{service} has failed. Restart in a minute…', service=service)
+                await sleep(60.0)
+            # Spawn `yield_updates` again.
+            coros[run_service(app, service)] = service
+        # Coroutine is done.
+        del coros[done]
     logger.critical('No services to run.')
 
 
