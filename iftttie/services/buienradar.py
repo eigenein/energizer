@@ -12,6 +12,7 @@ from iftttie.enums import ValueKind
 from iftttie.services.base import BaseService
 
 url = 'https://api.buienradar.nl/data/public/2.0/jsonfeed'
+headers=[('Cache-Control', 'no-cache')]
 keys = (
     ('airpressure', 'air_pressure', ValueKind.HPA),
     ('feeltemperature', 'feel_temperature', ValueKind.CELSIUS),
@@ -32,7 +33,7 @@ class Buienradar(BaseService):
 
     async def run(self, client_session: ClientSession, event_queue: Queue[Update], **kwargs: Any):
         while True:
-            async with client_session.get(url) as response:  # type ClientResponse
+            async with client_session.get(url, headers=headers) as response:  # type ClientResponse
                 feed = await response.json()
             for measurement in feed['actual']['stationmeasurements']:
                 if measurement['stationid'] == self.station_id:
