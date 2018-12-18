@@ -74,12 +74,13 @@ async def handle_updates(app: web.Application):
 
 
 async def insert_update(db: aiosqlite.Connection, update: Update):
+    timestamp = int(update.timestamp.timestamp() * 1000)
     await db.execute(
-        'INSERT INTO history (key, value, timestamp) VALUES (?, ?, ?)',
-        (update.key, dumps(update.value), update.timestamp.timestamp()),
+        'INSERT OR REPLACE INTO history (key, value, timestamp) VALUES (?, ?, ?)',
+        (update.key, dumps(update.value), timestamp),
     )
     await db.execute(
-        'INSERT OR REPLACE INTO latest (key, history_id, kind) VALUES (?, last_insert_rowid(), ?)',
-        (update.key, update.kind.value),
+        'INSERT OR REPLACE INTO latest (key, timestamp, kind) VALUES (?, ?, ?)',
+        (update.key, timestamp, update.kind.value),
     )
     await db.commit()

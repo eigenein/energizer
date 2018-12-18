@@ -18,19 +18,17 @@ VERBOSITY_LEVELS = {
 DATABASE_INIT_SCRIPT = '''
     -- History table contains all the historical values including the latest ones.
     CREATE TABLE IF NOT EXISTS history (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        timestamp FLOAT NOT NULL,
+        timestamp INTEGER NOT NULL,
         key TEXT NOT NULL,
-        value TEXT NOT NULL
+        value TEXT NOT NULL,
+        PRIMARY KEY (key, timestamp)
     );
-    CREATE INDEX IF NOT EXISTS history_key_timestamp ON history (key, timestamp);
     
     -- Latest table contains references to the latest values in the history table.
     CREATE TABLE IF NOT EXISTS latest (
-        history_id INTEGER NOT NULL,
         key TEXT PRIMARY KEY NOT NULL,
-        kind TEXT NOT NULL,
-        FOREIGN KEY (history_id) REFERENCES history(id)
+        timestamp INTEGER NOT NULL,
+        kind TEXT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS latest_kind_key ON latest (kind, key);
 '''

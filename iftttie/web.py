@@ -23,12 +23,12 @@ async def index(request: web.Request) -> dict:
     display_names: Dict[str, str] = request.app['display_names']
 
     async with db.execute('''
-        SELECT latest.key, value, timestamp, kind FROM latest
-        JOIN history on latest.history_id = history.id
+        SELECT latest.key, value, latest.timestamp, kind FROM latest
+        JOIN history on latest.key = history.key AND latest.timestamp = history.timestamp
         ORDER BY latest.kind, latest.key
     ''') as cursor:  # type: aiosqlite.Cursor
         updates = [
-            Update(key, loads(value), datetime.fromtimestamp(timestamp).astimezone(), ValueKind(kind))
+            Update(key, loads(value), datetime.fromtimestamp(timestamp / 1000).astimezone(), ValueKind(kind))
             for key, value, timestamp, kind in await cursor.fetchall()
         ]
     return {

@@ -7,7 +7,7 @@ This is yet another home automation service.
 
 ## Web interface
 
-![IFTTTie screenshot](README.png)
+![IFTTTie screenshot](https://eigenein.github.io/iftttie/README.png)
 
 ## Why not [Home Assistant](https://www.home-assistant.io/) or [OpenHAB](https://www.openhab.org/)?
 
