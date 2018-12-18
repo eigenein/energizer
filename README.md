@@ -89,6 +89,7 @@ docker run \
     --name iftttie \
     -p 8080:8080 \
     -v /home/pi/iftttie.sqlite3:/app/db.sqlite3 \
+    -e TZ=Europe/Amsterdam
     eigenein/iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw
 ```
 

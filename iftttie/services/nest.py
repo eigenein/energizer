@@ -15,7 +15,7 @@ from iftttie.sse import read_events
 
 url = 'https://developer-api.nest.com'
 headers = [('Accept', 'text/event-stream')]
-timestamp_format = '%Y-%m-%dT%H:%M:%S.%fZ'
+timestamp_format = '%Y-%m-%dT%H:%M:%S.%f%z'
 
 
 class Nest(BaseService):
@@ -66,7 +66,7 @@ def yield_updates(data: Any) -> Iterable[Update]:
                 key=f'nest:camera:{camera_id}:last_animated_image_url',
                 value=last_event['animated_image_url'],
                 kind=ValueKind.IMAGE_URL,
-                timestamp=datetime.strptime(last_event['start_time'], timestamp_format).astimezone(),
+                timestamp=datetime.strptime(last_event['start_time'], timestamp_format),
             )
 
 
