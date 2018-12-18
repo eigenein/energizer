@@ -14,7 +14,7 @@ from loguru import logger
 from iftttie.constants import DATABASE_INIT_SCRIPT, VALUE_KIND_TITLES
 from iftttie.core import run_queue
 from iftttie.logging_ import init_logging
-from iftttie.utils import import_from_string, update_body_class, update_content, update_tile_class
+from iftttie.utils import import_from_string, body_class_by_update, content_by_update, class_by_update
 from iftttie.web import routes
 
 
@@ -41,9 +41,9 @@ def start_web_app(port: int, configuration_url: str):
     app.on_cleanup.append(on_cleanup)
 
     env = aiohttp_jinja2.setup(app, loader=PackageLoader('iftttie'), autoescape=select_autoescape())
-    env.filters['updatetileclass'] = update_tile_class
-    env.filters['updatebodyclass'] = update_body_class
-    env.filters['updatecontent'] = update_content
+    env.filters['updateclass'] = class_by_update
+    env.filters['updatebodyclass'] = body_class_by_update
+    env.filters['updatecontent'] = content_by_update
     env.globals['VALUE_KIND_TITLES'] = VALUE_KIND_TITLES
 
     app.add_routes(routes)

@@ -17,7 +17,7 @@
             {% if update %}
               <div class="tile is-parent is-3">
                 <a
-                  class="tile is-child notification {{ update|updatetileclass }}"
+                  class="tile is-child notification {{ update|updateclass }}"
                   href="/view/{{ update.key }}"
                 >
                   <p class="title is-6">{{ app['display_names'].get(update.key, update.key) }}</p>

@@ -35,7 +35,7 @@ def import_from_string(name: str, code: str) -> ModuleType:
     return module
 
 
-def update_tile_class(update: Update) -> str:
+def class_by_update(update: Update) -> str:
     if update.kind == ValueKind.BOOLEAN:
         return 'is-success' if update.value else 'is-danger'
     if update.kind == ValueKind.CELSIUS:
@@ -82,13 +82,13 @@ def update_tile_class(update: Update) -> str:
     return 'is-light'
 
 
-def update_body_class(update: Update) -> str:
+def body_class_by_update(update: Update) -> str:
     if update.kind == ValueKind.BOOLEAN:
         return 'is-uppercase'
     return ''
 
 
-def update_content(update: Update) -> str:
+def content_by_update(update: Update) -> str:
     if update.kind == ValueKind.BOOLEAN:
         if update.value:
             return '<i class="fas fa-toggle-on"></i> <span>yes</span>'
