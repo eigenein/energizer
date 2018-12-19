@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from datetime import datetime
-from json import loads
 from typing import Dict
 
 import aiosqlite
 import pkg_resources
 from aiohttp import web
 from aiohttp_jinja2 import template
+from ujson import loads
 
 from iftttie.dataclasses_ import Update
 from iftttie.enums import ValueKind

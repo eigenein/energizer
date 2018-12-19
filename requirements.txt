@@ -134,6 +134,8 @@ pygments==2.3.0 \
     --hash=sha256:6301ecb0997a52d2d31385e62d0a4a4cf18d2f2da7054a5ddad5c366cd39cee7 \
     --hash=sha256:82666aac15622bd7bb685a4ee7f6625dd716da3ef7473620c192c0168aae64fc \
     # via better-exceptions-fork
+ujson==1.35 \
+    --hash=sha256:f66073e5506e91d204ab0c614a148d5aa938bdbf104751be66f8ad7a222f5f86
 yarl==1.2.6 \
     --hash=sha256:2556b779125621b311844a072e0ed367e8409a18fa12cbd68eb1258d187820f9 \
     --hash=sha256:4aec0769f1799a9d4496827292c02a7b1f75c0bab56ab2b60dd94ebb57cbd5ee \

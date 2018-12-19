@@ -20,6 +20,7 @@ setuptools.setup(
         'aiosqlite',
         'click',
         'loguru',
+        'ujson',
     ],
     extras_require={},
     entry_points={

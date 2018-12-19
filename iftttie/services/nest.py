@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import json
 from asyncio import Queue
 from datetime import datetime
 from typing import Any, Iterable, List, Tuple
 
 from aiohttp import ClientSession
 from loguru import logger
+from ujson import loads
 
 from iftttie.dataclasses_ import Update
 from iftttie.enums import ValueKind
@@ -30,7 +30,7 @@ class Nest(BaseService):
                     if event.name != 'put':
                         logger.debug('Ignoring event: {name}.', name=event.name)
                         continue
-                    for update in yield_updates(json.loads(event.data)['data']):
+                    for update in yield_updates(loads(event.data)['data']):
                         await event_queue.put(update)
 
     def __str__(self) -> str:
