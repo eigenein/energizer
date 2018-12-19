@@ -36,7 +36,7 @@ In IFFTTie there're only **two** terms to understand: *service* and *update*.
 - [Buienradar](https://www.buienradar.nl/)
 - [IFFTT](https://ifttt.com/maker_webhooks)
 
-### What's *update*?
+### What's an *update*?
 
 The term stands for itself. Update contains information that something has changed in the world. An update consists of a *key* and a *value*. *Key* is a globally unique identifier which is used to refer to a particular *value* in the world.
 
