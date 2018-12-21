@@ -4,14 +4,15 @@ MAINTAINER Pavel Perestoronin <eigenein@gmail.com>
 
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8
 
-COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
+COPY requirements.txt /tmp/iftttie/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/iftttie/requirements.txt
+COPY . /tmp/iftttie
+RUN pip install --no-cache-dir --no-deps /tmp/iftttie && rm -r /tmp/iftttie
 
-COPY . /app
+RUN mkdir /app && touch /app/db.sqlite3 && chown -R nobody:nogroup /app
 WORKDIR /app
-RUN touch db.sqlite3
-RUN pip install --no-cache-dir --no-deps .
 
+USER nobody:nogroup
 STOPSIGNAL SIGINT
 ENTRYPOINT ["iftttie"]
 CMD []

@@ -80,13 +80,13 @@ docker run -it --rm eigenein/iftttie iftttie -vvv -c https://gist.githubusercont
 The image supports running on Raspberry Pi out-of-the-box. With useful flags:
 
 ```bash
-touch iftttie.sqlite3
+docker volume create iftttie
 docker run \
     --detach \
     --restart always \
     --name iftttie \
     -p 8080:8080 \
-    -v /home/pi/iftttie.sqlite3:/app/db.sqlite3 \
+    -v iftttie:/app \
     -e TZ=Europe/Amsterdam
     eigenein/iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw
 ```
