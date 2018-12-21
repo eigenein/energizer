@@ -31,7 +31,7 @@ publish/tag : tag
 docker :
 	@docker build -t eigenein/iftttie .
 
-publish/docker :
+publish/docker : docker
 	@$(eval VERSION = $(shell $(PYTHON) setup.py --version))
 	@docker tag 'eigenein/iftttie:latest' 'eigenein/iftttie:$(VERSION)'
 	@docker push 'eigenein/iftttie:latest'
