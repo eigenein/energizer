@@ -1,0 +1,5 @@
+{%- if update.kind == ValueKind.BOOLEAN -%}
+  is-uppercase
+{%- elif update.kind == ValueKind.ENUM -%}
+  is-uppercase
+{%- endif -%}

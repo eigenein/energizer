@@ -2,13 +2,13 @@
 {% block body %}
   {% if with_names %}
     {% with title = 'Dashboard', class = 'is-light', updates = with_names %}
-      {% include "dashboard.html" %}
+      {% include "tiles.html" %}
     {% endwith %}
   {% endif %}
 
   {% if without_names %}
     {% with title = 'Without names', class = 'is-light', updates = without_names %}
-      {% include "dashboard.html" %}
+      {% include "tiles.html" %}
     {% endwith %}
   {% endif %}
 {% endblock %}

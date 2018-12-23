@@ -1,0 +1,53 @@
+{%- if update.kind == ValueKind.BOOLEAN -%}
+  {%- if update.value -%}
+    is-success
+  {%- else -%}
+    is-danger
+  {%- endif -%}
+{%- elif update.kind == ValueKind.CELSIUS -%}
+  {%- if update.value < 0.0 -%}
+    is-link
+  {%- elif update.value < 10.0 -%}
+    is-info
+  {%- elif update.value < 20.0 -%}
+    is-primary
+  {%- elif update.value < 25.0 -%}
+    is-success
+  {%- elif update.value < 30.0 -%}
+    is-warning
+  {%- else -%}
+    is-danger
+  {%- endif -%}
+{%- elif update.kind == ValueKind.HUMIDITY -%}
+  {%- if update.value < 17.0 -%}
+    is-link
+  {%- elif update.value < 34.0 -%}
+    is-info
+  {%- elif update.value < 51.0 -%}
+    is-primary
+  {%- elif update.value < 68.0 -%}
+    is-success
+  {%- elif update.value < 85.0 -%}
+    is-warning
+  {%- else -%}
+    is-danger
+  {%- endif -%}
+{%- elif update.kind == ValueKind.BEAUFORT -%}
+  {%- if update.value == 0 -%}
+    is-light
+  {%- elif update.value == 1 -%}
+    is-link
+  {%- elif update.value == 2 -%}
+    is-info
+  {%- elif update.value == 3 -%}
+    is-primary
+  {%- elif update.value == 4 -%}
+    is-success
+  {%- elif update.value == 5 -%}
+    is-warning
+  {%- else -%}
+    is-danger
+  {%- endif -%}
+{% else %}
+  is-light
+{%- endif -%}

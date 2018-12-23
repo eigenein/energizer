@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from asyncio import Queue
+from datetime import datetime, timedelta
 from types import ModuleType
 from typing import Optional
 
@@ -11,10 +12,11 @@ from aiohttp import ClientResponse, ClientSession, web
 from jinja2 import PackageLoader, select_autoescape
 from loguru import logger
 
-from iftttie.constants import DATABASE_INIT_SCRIPT, VALUE_KIND_TITLES
+from iftttie.constants import DATABASE_INIT_SCRIPT
 from iftttie.core import run_queue
+from iftttie.enums import ValueKind
 from iftttie.logging_ import init_logging
-from iftttie.utils import import_from_string, body_class_by_update, content_by_update, class_by_update
+from iftttie.utils import import_from_string
 from iftttie.web import routes
 
 
@@ -41,10 +43,10 @@ def start_web_app(port: int, configuration_url: str):
     app.on_cleanup.append(on_cleanup)
 
     env = aiohttp_jinja2.setup(app, loader=PackageLoader('iftttie'), autoescape=select_autoescape())
-    env.filters['updateclass'] = class_by_update
-    env.filters['updatebodyclass'] = body_class_by_update
-    env.filters['updatecontent'] = content_by_update
-    env.globals['VALUE_KIND_TITLES'] = VALUE_KIND_TITLES
+    env.globals['ValueKind'] = ValueKind
+    env.filters['datetime'] = '{:%b %d %H:%M:%S}'.format
+    env.filters['fromseconds'] = lambda value: timedelta(seconds=value)
+    env.filters['fromtimestamp'] = datetime.fromtimestamp
 
     app.add_routes(routes)
     web.run_app(app, port=port, print=None)

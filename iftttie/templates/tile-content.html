@@ -1,0 +1,29 @@
+{% if update.kind == ValueKind.BOOLEAN %}
+  {% if update.value %}
+    <i class="fas fa-toggle-on"></i> <span>yes</span>
+  {% else %}
+    <i class="fas fa-toggle-off"></i> <span>no</span>
+  {% endif %}
+{% elif update.kind == ValueKind.CELSIUS %}
+  <i class="fas fa-thermometer-half"></i> {{ update.value|round(1) }}&nbsp;°C
+{% elif update.kind == ValueKind.HUMIDITY %}
+  <i class="fas fa-water"></i> {{ update.value|round(1) }}%
+{% elif update.kind == ValueKind.IMAGE_URL %}
+  <figure class="image"><img src="{{ update.value }}" alt="Update image"></figure>
+{% elif update.kind == ValueKind.HPA %}
+  {{ update.value|round(1) }} hPa
+{% elif update.kind == ValueKind.BEAUFORT %}
+  <i class="fas fa-wind"></i> {{ update.value }} BFT
+{% elif update.kind == ValueKind.MPS %}
+  <i class="fas fa-tachometer-alt"></i> {{ update.value }} m/s
+{% elif update.kind == ValueKind.WATT %}
+  <i class="fas fa-plug"></i> {{ update.value }} W
+{% elif update.kind == ValueKind.ENUM %}
+  <i class="fas fa-list-ul"></i> {{ update.value }}
+{% elif update.kind == ValueKind.TIMEDELTA %}
+  <i class="fas fa-stopwatch"></i> {{ update.value|fromseconds }}
+{% elif update.kind == ValueKind.DATETIME %}
+  <i class="fas fa-clock"></i> {{ update.value|fromtimestamp|datetime }}
+{% else %}
+  <i class="far fa-question-circle"></i> {{ update.value }}
+{% endif %}

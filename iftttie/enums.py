@@ -5,10 +5,14 @@ from enum import Enum
 
 class ValueKind(str, Enum):
     BEAUFORT = 'BEAUFORT'
+    BOOLEAN = 'BOOLEAN'
     CELSIUS = 'CELSIUS'
+    DATETIME = 'DATETIME'
+    ENUM = 'ENUM'
     HPA = 'HPA'  # hPa
     HUMIDITY = 'HUMIDITY'
     IMAGE_URL = 'IMAGE_URL'
     MPS = 'MPS'  # m/s
-    BOOLEAN = 'BOOLEAN'
     OTHER = 'OTHER'
+    TIMEDELTA = 'TIMEDELTA'
+    WATT = 'WATT'

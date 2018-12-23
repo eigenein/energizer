@@ -1,0 +1,14 @@
+<div class="tile is-parent is-3">
+  <a
+    class="tile is-child notification {% with %}{% include "tile-class.html" %}{% endwith %}"
+    href="/view/{{ update.key }}"
+  >
+    <p class="title is-6">{{ app['display_names'].get(update.key, update.key) }}</p>
+    <p class="subtitle is-7" title="{{ update.timestamp }}">
+      {{ update.timestamp.strftime('%b %-d, %H:%M:%S') }}
+    </p>
+    <p
+      class="has-text-centered has-text-weight-bold {% with %}{% include "tile-body-class.html" %}{% endwith %}"
+    >{% with %}{% include "tile-content.html" %}{% endwith %}</p>
+  </a>
+</div>

@@ -1,0 +1,40 @@
+{% set VALUE_KIND_TITLES = {
+    ValueKind.BEAUFORT: 'Beaufort',
+    ValueKind.BOOLEAN: 'Boolean',
+    ValueKind.CELSIUS: 'Temperature',
+    ValueKind.DATETIME: 'Date and Time',
+    ValueKind.ENUM: 'Enumerations',
+    ValueKind.HPA: 'Pressure',
+    ValueKind.HUMIDITY: 'Humidity',
+    ValueKind.IMAGE_URL: 'Image',
+    ValueKind.MPS: 'Speed',
+    ValueKind.OTHER: 'Other',
+    ValueKind.TIMEDELTA: 'Duration',
+    ValueKind.WATT: 'Power',
+} %}
+
+<section class="hero {{ class }}">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title is-4">{{ title }}</h1>
+      <h2 class="subtitle is-5">{{ updates|length }} updates</h2>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {% for grouper, list in updates|groupby('kind') %}
+      <h3 class="title is-5">{{ VALUE_KIND_TITLES[grouper] }}</h3>
+      {% for batch in list|batch(4, '') %}
+        <div class="tile is-ancestor">
+          {% for update in batch %}
+            {% if update %}
+              {% with %}{% include "tile.html" %}{% endwith %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endfor %}
+    {% endfor %}
+  </div>
+</section>
