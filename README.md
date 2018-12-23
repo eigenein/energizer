@@ -94,10 +94,12 @@ docker run \
     --detach \
     --restart always \
     --name iftttie \
-    -p 8080:8080 \
+    -p 8443:8443 \
     -v iftttie:/app \
+    -v /etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro \
+    -v /etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro \
     -e TZ=Europe/Amsterdam
-    eigenein/iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw
+    eigenein/iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw --port 8443 --cert cert.pem --key privkey.pem
 ```
 
 ## Startup
