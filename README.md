@@ -60,9 +60,13 @@ IFTTTie reads its configuration from a single file. And there're two important t
 
 ## Running
 
-### Via command line
+### Locally
 
 ```text
+$ virtualenv -p python3.7 venv
+$ source venv/bin/activate
+$ pip install iftttie
+$ iftttie --help
 Usage: iftttie [OPTIONS]
 
   Yet another home assistant.
@@ -74,7 +78,7 @@ Options:
   --help               Show this message and exit.
 ```
 
-### Via Docker
+### Docker
 
 ```bash
 docker run -it --rm eigenein/iftttie iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw
