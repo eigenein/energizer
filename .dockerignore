@@ -1,5 +1,7 @@
-.git
-.idea
+*.sqlite3
+.travis.yml
+.git/
+.idea/
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Windows template
