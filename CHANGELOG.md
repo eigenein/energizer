@@ -4,6 +4,7 @@
 - Improve `Nest` and `Buienradar`
 - Move text constants to templates
 - Introduce new value kinds
+- Add SSL support
 
 ### `0.1`
 

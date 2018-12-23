@@ -1,3 +1,5 @@
+*.crt
+*.key
 *.sqlite3
 .travis.yml
 .git/

@@ -69,13 +69,15 @@ $ pip install iftttie
 $ iftttie --help
 Usage: iftttie [OPTIONS]
 
-  Yet another home assistant.
+  Yet another home automation service.
 
 Options:
-  -c, --config TEXT    Configuration URL.  [required]
-  --http-port INTEGER  Web server port.  [default: 8080]
-  -v, --verbose        Logging verbosity.
-  --help               Show this message and exit.
+  -c, --config TEXT  Configuration URL.  [required]
+  --port INTEGER     Web server HTTP port.  [default: 80]
+  --cert FILE        Server certificate path.
+  --key FILE         Server private key path.
+  -v, --verbose      Logging verbosity.
+  --help             Show this message and exit.
 ```
 
 ### Docker

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ssl
 from asyncio import Queue
 from datetime import datetime, timedelta
 from types import ModuleType
@@ -22,17 +23,30 @@ from iftttie.web import routes
 
 @click.command()
 @click.option('configuration_url', '-c', '--config', required=True, help='Configuration URL.')
-@click.option('http_port', '--http-port', type=int, default=8080, help='Web server port.', show_default=True)
+@click.option('port', '--port', type=int, default=80, help='Web server HTTP port.', show_default=True)
+@click.option('cert_path', '--cert', type=click.Path(exists=True, dir_okay=False), help="Server certificate path.")
+@click.option('key_path', '--key', type=click.Path(exists=True, dir_okay=False), help="Server private key path.")
 @click.option('verbosity', '-v', '--verbose', count=True, help='Logging verbosity.')
-def main(configuration_url: str, http_port: int, verbosity: int):
-    """Yet another home assistant."""
+def main(configuration_url: str, port: int, cert_path: Optional[str], key_path: Optional[str], verbosity: int):
+    """
+    Yet another home automation service.
+    """
     init_logging(verbosity)
     logger.success('Starting IFTTTie…')
-    start_web_app(http_port, configuration_url)
+
+    if cert_path and key_path:
+        logger.success('Using SSL.')
+        ssl_context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+        ssl_context.load_cert_chain(cert_path, key_path)
+    else:
+        logger.warning('Server certificate is not specified.')
+        ssl_context = None
+
+    start_web_app(port, ssl_context, configuration_url)
     logger.success('IFTTTie stopped.')
 
 
-def start_web_app(port: int, configuration_url: str):
+def start_web_app(port: int, ssl_context: Optional[ssl.SSLContext], configuration_url: str):
     """Start the entire web app."""
     app = web.Application()
 
@@ -49,7 +63,7 @@ def start_web_app(port: int, configuration_url: str):
     env.filters['fromtimestamp'] = datetime.fromtimestamp
 
     app.add_routes(routes)
-    web.run_app(app, port=port, print=None)
+    web.run_app(app, port=port, ssl_context=ssl_context, print=None)
 
 
 async def on_startup(app: web.Application):
