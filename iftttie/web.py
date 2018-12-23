@@ -57,5 +57,5 @@ async def manifest(_: web.Request) -> web.Response:
 
 
 @routes.get('/system/db.sqlite3')
-async def restart(_: web.Request) -> web.Response:
+async def download(_: web.Request) -> web.Response:
     return web.FileResponse('db.sqlite3')
