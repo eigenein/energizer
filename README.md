@@ -2,6 +2,7 @@
 
 Yet another home automation service.
 
+[![Build Status](https://travis-ci.com/eigenein/iftttie.svg?branch=master)](https://travis-ci.com/eigenein/iftttie)
 ![License](https://img.shields.io/github/license/eigenein/iftttie.svg)
 ![Docker Pulls](https://img.shields.io/docker/pulls/eigenein/iftttie.svg)
 
