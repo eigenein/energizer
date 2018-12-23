@@ -172,7 +172,7 @@ Time and date when the event has occurred.
 
 #### `kind: ValueKind`
 
-Specifies what this value is. For instance, `ValueKind.TEMPERATURE` or `ValueKind.ON_OFF`.
+Specifies what this value is. For instance, `ValueKind.CELSIUS` or `ValueKind.BOOLEAN`.
 
 ### Service classes
 
