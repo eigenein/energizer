@@ -8,7 +8,7 @@ from typing import Optional
 import aiohttp_jinja2
 import aiosqlite
 import click
-from aiohttp import ClientResponse, ClientSession, web
+from aiohttp import ClientSession, web
 from jinja2 import PackageLoader, select_autoescape
 from loguru import logger
 
@@ -73,7 +73,7 @@ async def import_configuration(app: web.Application) -> Optional[ModuleType]:
 
     logger.info(f'Importing configuration from {configuration_url}...')
     try:
-        async with session.get(configuration_url, headers=[('Cache-Control', 'no-cache')]) as response:  # type: ClientResponse
+        async with session.get(configuration_url, headers=[('Cache-Control', 'no-cache')]) as response:
             return import_from_string('configuration', await response.text())
     except Exception as e:
         logger.error('Failed to import configuration: "{e}".', e=e)

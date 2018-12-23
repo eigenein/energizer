@@ -21,7 +21,7 @@ DATABASE_INIT_SCRIPT = '''
         value TEXT NOT NULL,
         PRIMARY KEY (key, timestamp)
     );
-    
+
     -- Latest table contains references to the latest values in the history table.
     CREATE TABLE IF NOT EXISTS latest (
         key TEXT PRIMARY KEY NOT NULL,
