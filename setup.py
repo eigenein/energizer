@@ -21,6 +21,7 @@ setuptools.setup(
         'click',
         'loguru',
         'pygal',
+        'ujson',
     ],
     extras_require={},
     entry_points={
