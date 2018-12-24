@@ -22,7 +22,7 @@ from iftttie.web import routes
 
 @click.command()
 @click.option('configuration_url', '-c', '--config', required=True, help='Configuration URL.')
-@click.option('port', '--port', type=int, default=80, help='Web server HTTP port.', show_default=True)
+@click.option('port', '-p', '--port', type=int, default=80, help='Web server HTTP port.', show_default=True)
 @click.option('cert_path', '--cert', type=click.Path(exists=True, dir_okay=False), help="Server certificate path.")
 @click.option('key_path', '--key', type=click.Path(exists=True, dir_okay=False), help="Server private key path.")
 @click.option('verbosity', '-v', '--verbose', count=True, help='Logging verbosity.')
