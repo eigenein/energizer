@@ -14,7 +14,8 @@ TWINE := venv/bin/twine
 
 venv : requirements.txt
 	@virtualenv -p python3.7 venv
-	@$(PIP) install pip-tools isort ipython -r requirements.txt
+	@$(PIP) install pip-tools isort ipython
+	@$(PIP) install -r requirements.txt
 	@$(PIP) install -e .
 
 requirements.txt : setup.py
