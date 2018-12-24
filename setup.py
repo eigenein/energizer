@@ -20,7 +20,6 @@ setuptools.setup(
         'aiosqlite',
         'click',
         'loguru',
-        'ujson',
         'pygal',
     ],
     extras_require={},

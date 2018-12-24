@@ -18,7 +18,7 @@ DATABASE_INIT_SCRIPT = '''
     CREATE TABLE IF NOT EXISTS history (
         timestamp INTEGER NOT NULL,
         key TEXT NOT NULL,
-        value TEXT NOT NULL,
+        value BLOB NOT NULL,
         PRIMARY KEY (key, timestamp)
     );
 

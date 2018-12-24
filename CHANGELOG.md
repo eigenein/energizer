@@ -6,6 +6,7 @@
 - Introduce new value kinds
 - Add SSL support
 - Detail view page
+- Use `pickle` instead of JSON to store values in the database
 
 ### `0.1`
 

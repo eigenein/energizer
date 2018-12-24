@@ -4,12 +4,12 @@ from asyncio.queues import Queue
 from asyncio.tasks import gather, sleep
 from concurrent.futures import CancelledError
 from contextlib import suppress
+from pickle import dumps
 from typing import Awaitable, Callable, Iterable, NoReturn, Optional
 
 import aiosqlite
 from aiohttp import ClientConnectorError, ClientSession, web
 from loguru import logger
-from ujson import dumps
 
 from iftttie.dataclasses_ import Update
 from iftttie.services.base import BaseService

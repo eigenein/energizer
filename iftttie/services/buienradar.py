@@ -42,7 +42,7 @@ class Buienradar(BaseService):
             await event_queue.put(Update(key='buienradar:sunset', value=sunset, kind=ValueKind.DATETIME))
             await event_queue.put(Update(
                 key='buienradar:day_length',
-                value=(sunset - sunrise).total_seconds(),
+                value=(sunset - sunrise),
                 kind=ValueKind.TIMEDELTA,
             ))
             try:

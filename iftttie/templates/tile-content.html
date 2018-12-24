@@ -21,9 +21,9 @@
 {% elif update.kind == ValueKind.ENUM %}
   <i class="fas fa-list-ul"></i> {{ update.value }}
 {% elif update.kind == ValueKind.TIMEDELTA %}
-  <i class="fas fa-stopwatch"></i> {{ update.value|fromseconds }}
+  <i class="fas fa-stopwatch"></i> {{ update.value }}
 {% elif update.kind == ValueKind.DATETIME %}
-  <i class="fas fa-clock"></i> {{ update.value|fromtimestamp|datetime }}
+  <i class="fas fa-clock"></i> {{ update.value|datetime }}
 {% else %}
   <i class="far fa-question-circle"></i> {{ update.value }}
 {% endif %}

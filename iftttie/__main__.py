@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import ssl
 from asyncio import Queue
-from datetime import datetime, timedelta
 from types import ModuleType
 from typing import Optional
 
@@ -59,8 +58,6 @@ def start_web_app(port: int, ssl_context: Optional[ssl.SSLContext], configuratio
     env = aiohttp_jinja2.setup(app, loader=PackageLoader('iftttie'), autoescape=select_autoescape())
     env.globals['ValueKind'] = ValueKind
     env.filters['datetime'] = '{:%b %d %H:%M:%S}'.format
-    env.filters['fromseconds'] = lambda value: timedelta(seconds=value)
-    env.filters['fromtimestamp'] = datetime.fromtimestamp
 
     app.add_routes(routes)
     web.run_app(app, port=port, ssl_context=ssl_context, print=None)
