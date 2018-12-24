@@ -9,8 +9,16 @@
     <div class="hero-body">
       <div class="container">
         <h1 class="title is-4">{{ title }}</h1>
-        <h2 class="subtitle is-5">{% with %}{% include "tile-content.html" %}{% endwith %}</h2>
+        <h2 class="subtitle is-5 {% with %}{% include "value-class.html" %}{% endwith %}">
+          {% with %}{% include "value-content.html" %}{% endwith %}
+        </h2>
       </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <figure class="image">{{ line_chart|safe }}</figure>
     </div>
   </section>
 {% endblock %}

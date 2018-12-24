@@ -1,5 +1,7 @@
 ### `latest`
 
+### `0.2`
+
 - Improve `Dockerfile` and `Makefile`
 - Improve `Nest` and `Buienradar`
 - Move text constants to templates

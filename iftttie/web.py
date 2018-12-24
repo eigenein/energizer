@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+from datetime import datetime, timedelta
+from pickle import loads
 from typing import Dict
 
 import aiosqlite
 import pkg_resources
+import pygal
 from aiohttp import web
 from aiohttp_jinja2 import template
 
@@ -32,12 +35,24 @@ async def index(request: web.Request) -> dict:
 @template('view.html')
 async def view(request: web.Request) -> dict:
     db: aiosqlite.Connection = request.app['db']
-
     key: str = request.match_info['key']
+
+    since = (datetime.now() - timedelta(days=7)).timestamp() * 1000  # TODO
     async with db.execute(constants.SELECT_LATEST_BY_KEY_QUERY, [key]) as cursor:  # type: aiosqlite.Cursor
         update = Update.from_row(await cursor.fetchone())
+    async with db.execute(constants.SELECT_HISTORY_BY_KEY_QUERY, [key, since]) as cursor:  # type: aiosqlite.Cursor
+        values = [
+            (datetime.fromtimestamp(row['timestamp'] / 1000).astimezone(), loads(row['value']))
+            for row in await cursor.fetchall()
+        ]
+
+    line_chart = pygal.Line(show_legend=False, tooltip_border_radius=10)
+    line_chart.x_labels = [timestamp for timestamp, _ in values]
+    line_chart.add('Value', [value for _, value in values])
+
     return {
         'update': update,
+        'line_chart': line_chart.render(is_unicode=True),
     }
 
 

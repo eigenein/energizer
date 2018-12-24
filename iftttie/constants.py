@@ -43,5 +43,7 @@ SELECT_LATEST_BY_KEY_QUERY = '''
     ORDER BY latest.kind, latest.key
 '''
 SELECT_HISTORY_BY_KEY_QUERY = '''
-    TODO
+    SELECT timestamp, value FROM history
+    WHERE key = ? AND timestamp > ?
+    ORDER BY timestamp ASC
 '''
