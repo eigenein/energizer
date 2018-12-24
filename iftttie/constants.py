@@ -30,3 +30,18 @@ DATABASE_INIT_SCRIPT = '''
     );
     CREATE INDEX IF NOT EXISTS latest_kind_key ON latest (kind, key);
 '''
+
+SELECT_LATEST_QUERY = '''
+    SELECT latest.key AS key, value, latest.timestamp AS timestamp, kind FROM latest
+    JOIN history on latest.key = history.key AND latest.timestamp = history.timestamp
+    ORDER BY latest.kind, latest.key
+'''
+SELECT_LATEST_BY_KEY_QUERY = '''
+    SELECT latest.key AS key, value, latest.timestamp AS timestamp, kind FROM latest
+    JOIN history on latest.key = history.key AND latest.timestamp = history.timestamp
+    WHERE latest.key = ?
+    ORDER BY latest.kind, latest.key
+'''
+SELECT_HISTORY_BY_KEY_QUERY = '''
+    TODO
+'''

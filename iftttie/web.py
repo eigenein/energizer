@@ -1,39 +1,43 @@
 from __future__ import annotations
 
-from datetime import datetime
 from typing import Dict
 
 import aiosqlite
 import pkg_resources
 from aiohttp import web
 from aiohttp_jinja2 import template
-from ujson import loads
 
+from iftttie import constants
 from iftttie.dataclasses_ import Update
-from iftttie.enums import ValueKind
 
 routes = web.RouteTableDef()
 favicon_body = pkg_resources.resource_string('iftttie', 'static/favicon.png')
 
 
-@routes.get('/')
+@routes.get('/', name='index')
 @template('index.html')
 async def index(request: web.Request) -> dict:
     db: aiosqlite.Connection = request.app['db']
     display_names: Dict[str, str] = request.app['display_names']
 
-    async with db.execute('''
-        SELECT latest.key, value, latest.timestamp, kind FROM latest
-        JOIN history on latest.key = history.key AND latest.timestamp = history.timestamp
-        ORDER BY latest.kind, latest.key
-    ''') as cursor:  # type: aiosqlite.Cursor
-        updates = [
-            Update(key, loads(value), datetime.fromtimestamp(timestamp / 1000).astimezone(), ValueKind(kind))
-            for key, value, timestamp, kind in await cursor.fetchall()
-        ]
+    async with db.execute(constants.SELECT_LATEST_QUERY) as cursor:  # type: aiosqlite.Cursor
+        updates = [Update.from_row(row) for row in await cursor.fetchall()]
     return {
         'with_names': [update for update in updates if update.key in display_names],
         'without_names': [update for update in updates if update.key not in display_names],
+    }
+
+
+@routes.get('/view/{key}', name='view')
+@template('view.html')
+async def view(request: web.Request) -> dict:
+    db: aiosqlite.Connection = request.app['db']
+
+    key: str = request.match_info['key']
+    async with db.execute(constants.SELECT_LATEST_BY_KEY_QUERY, [key]) as cursor:  # type: aiosqlite.Cursor
+        update = Update.from_row(await cursor.fetchone())
+    return {
+        'update': update,
     }
 
 

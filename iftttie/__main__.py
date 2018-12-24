@@ -77,6 +77,7 @@ async def on_startup(app: web.Application):
 
 
 async def init_database(db: aiosqlite.Connection):
+    db.row_factory = aiosqlite.Row
     await db.executescript(DATABASE_INIT_SCRIPT)
 
 

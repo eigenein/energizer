@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% set title = app['display_names'].get(update.key, update.key) %}
+
+{% block title %}{{ title }} – IFTTTie{% endblock %}
+
+{% block body %}
+  <section class="hero {% with %}{% include "tile-class.html" %}{% endwith %}">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title is-4">{{ title }}</h1>
+        <h2 class="subtitle is-5">{% with %}{% include "tile-content.html" %}{% endwith %}</h2>
+      </div>
+    </div>
+  </section>
+{% endblock %}

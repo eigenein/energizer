@@ -5,6 +5,7 @@
 - Move text constants to templates
 - Introduce new value kinds
 - Add SSL support
+- Detail view page
 
 ### `0.1`
 

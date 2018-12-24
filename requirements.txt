@@ -130,6 +130,9 @@ multidict==4.4.2 \
     --hash=sha256:e8a048bfd7d5a280f27527d11449a509ddedf08b58a09a24314828631c099306 \
     --hash=sha256:f6dd28a0ac60e2426a6918f36f1b4e2620fc785a0de7654cd206ba842eee57fd \
     # via aiohttp, yarl
+pygal==2.4.0 \
+    --hash=sha256:27abab93cbc31e21f3c6bdecc05bda6cd3570cbdbd8297b7caa6904051b50d72 \
+    --hash=sha256:9204f05380b02a8a32f9bf99d310b51aa2a932cba5b369f7a4dc3705f0a4ce83
 pygments==2.3.0 \
     --hash=sha256:6301ecb0997a52d2d31385e62d0a4a4cf18d2f2da7054a5ddad5c366cd39cee7 \
     --hash=sha256:82666aac15622bd7bb685a4ee7f6625dd716da3ef7473620c192c0168aae64fc \
