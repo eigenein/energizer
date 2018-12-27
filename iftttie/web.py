@@ -38,6 +38,7 @@ async def view(request: web.Request) -> dict:
     key: str = request.match_info['key']
 
     # TODO: refactor.
+    # TODO: select fewer points.
     since = (datetime.now() - timedelta(days=7)).timestamp() * 1000  # TODO
     async with db.execute(constants.SELECT_LATEST_BY_KEY_QUERY, [key]) as cursor:  # type: aiosqlite.Cursor
         update = Update.from_row(await cursor.fetchone())
