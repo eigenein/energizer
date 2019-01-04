@@ -1,5 +1,7 @@
 ### `latest`
 
+- Charts in the detail views
+
 ### `0.2`
 
 - Improve `Dockerfile` and `Makefile`
