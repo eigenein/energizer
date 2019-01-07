@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 LOGURU_FORMAT = ' '.join((
-    '<green>{time:MMM DD HH:mm:ss}</green>',
+    '<green>{time:DD-MM HH:mm:ss}</green>',
     '<cyan>({name}:{line})</cyan>',
     '<level>[{level:.1}]</level>',
     '<level>{message}</level>',
