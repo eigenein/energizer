@@ -102,6 +102,30 @@ docker run \
     eigenein/iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw --port 8443 --cert cert.pem --key privkey.pem
 ```
 
+#### `docker-compose.yml`
+
+```yaml
+version: '3.7'
+services:
+  iftttie:
+    image: eigenein/iftttie:latest
+    ports:
+    - '8443:8443'
+    volumes:
+    - 'iftttie:/app'
+    - '/etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro'
+    - '/etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro'
+    environment:
+      TZ: 'Europe/Amsterdam'
+      IFTTTIE_VERBOSITY: '3'
+      IFTTTIE_CONFIGURATION_URL: 'https://gist.githubusercontent.com/user/repo/raw'
+      IFTTTIE_PORT: '8443'
+      IFTTTIE_CERT_PATH: 'cert.pem'
+      IFTTTIE_KEY_PATH: 'privkey.pem'
+volumes:
+  iftttie:
+```
+
 ## Startup
 
 At its (re-)start, IFTTTie imports the configuration module. Then, it starts all services specified in `services` module attribute.

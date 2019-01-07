@@ -1,6 +1,7 @@
 ### `latest`
 
-- Charts in the detail views
+- **Charts in the detail views**
+- Fix passing options via environment variables
 
 ### `0.2`
 

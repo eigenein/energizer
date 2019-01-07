@@ -20,12 +20,44 @@ from iftttie.utils import import_from_string
 from iftttie.web import routes
 
 
-@click.command()
-@click.option('configuration_url', '-c', '--config', required=True, help='Configuration URL.')
-@click.option('port', '-p', '--port', type=int, default=80, help='Web server HTTP port.', show_default=True)
-@click.option('cert_path', '--cert', type=click.Path(exists=True, dir_okay=False), help="Server certificate path.")
-@click.option('key_path', '--key', type=click.Path(exists=True, dir_okay=False), help="Server private key path.")
-@click.option('verbosity', '-v', '--verbose', count=True, help='Logging verbosity.')
+@click.command(context_settings={'max_content_width': 120})
+@click.option(
+    'configuration_url', '-c', '--config',
+    envvar='IFTTTIE_CONFIGURATION_URL',
+    show_envvar=True,
+    required=True,
+    help='Configuration URL.',
+)
+@click.option(
+    'port', '-p', '--port',
+    type=int,
+    default=80,
+    envvar='IFTTTIE_PORT',
+    show_envvar=True,
+    help='Web server HTTP port.',
+    show_default=True,
+)
+@click.option(
+    'cert_path', '--cert',
+    type=click.Path(exists=True, dir_okay=False),
+    envvar='IFTTTIE_CERT_PATH',
+    show_envvar=True,
+    help='Server certificate path.',
+)
+@click.option(
+    'key_path', '--key',
+    type=click.Path(exists=True, dir_okay=False),
+    envvar='IFTTTIE_KEY_PATH',
+    show_envvar=True,
+    help='Server private key path.',
+)
+@click.option(
+    'verbosity', '-v', '--verbose',
+    count=True,
+    envvar='IFTTTIE_VERBOSITY',
+    show_envvar=True,
+    help='Logging verbosity.',
+)
 def main(configuration_url: str, port: int, cert_path: Optional[str], key_path: Optional[str], verbosity: int):
     """
     Yet another home automation service.
@@ -74,6 +106,7 @@ async def on_startup(app: web.Application):
 
 
 async def init_database(db: aiosqlite.Connection):
+    # TODO: move to a separate module.
     db.row_factory = aiosqlite.Row
     await db.executescript(DATABASE_INIT_SCRIPT)
 
