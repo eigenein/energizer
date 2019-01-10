@@ -2,6 +2,7 @@
 
 - **Charts in the detail views**
 - Fix passing options via environment variables
+- Always start on port 8443
 
 ### `0.2`
 

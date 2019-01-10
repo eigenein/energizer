@@ -60,6 +60,8 @@ IFTTTie reads its configuration from a single file. And there're two important t
 
 ## Running
 
+Web server listens to the port `8443`.
+
 ### Locally
 
 ```text
@@ -73,7 +75,6 @@ Usage: iftttie [OPTIONS]
 
 Options:
   -c, --config TEXT  Configuration URL.  [required]
-  --port INTEGER     Web server HTTP port.  [default: 80]
   --cert FILE        Server certificate path.
   --key FILE         Server private key path.
   -v, --verbose      Logging verbosity.
@@ -99,7 +100,7 @@ docker run \
     -v /etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro \
     -v /etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro \
     -e TZ=Europe/Amsterdam
-    eigenein/iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw --port 8443 --cert cert.pem --key privkey.pem
+    eigenein/iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw --cert cert.pem --key privkey.pem
 ```
 
 #### `docker-compose.yml`
@@ -119,7 +120,6 @@ services:
       TZ: 'Europe/Amsterdam'
       IFTTTIE_VERBOSITY: '3'
       IFTTTIE_CONFIGURATION_URL: 'https://gist.githubusercontent.com/user/repo/raw'
-      IFTTTIE_PORT: '8443'
       IFTTTIE_CERT_PATH: 'cert.pem'
       IFTTTIE_KEY_PATH: 'privkey.pem'
 volumes:
@@ -144,6 +144,10 @@ async def on_update(update: Update):
 ### Configuration example
 
 ```python
+NEST_TOKEN = ...
+BUIENRADAR_STATION_ID = ...
+LIVING_ROOM_CAMERA_ID = ...
+
 from datetime import timedelta
 
 from iftttie.dataclasses_ import Update
@@ -181,6 +185,8 @@ If you add `display_name: Dict[str, str]` attribute to your configuration, it wi
 For instance:
 
 ```python
+BUIENRADAR_STATION_ID = ...
+
 display_name = {
     f'buienradar:{BUIENRADAR_STATION_ID}:humidity': 'Humidity',
 }
@@ -213,6 +219,9 @@ Specifies what this value is. For instance, `ValueKind.CELSIUS` or `ValueKind.BO
 Yields periodical events with the specified `key`. Value then increments by one from zero on every tick.
 
 ```python
+from datetime import timedelta
+
+
 def __init__(self, key: str, interval: timedelta):
     ...
 ```
@@ -248,6 +257,9 @@ def __init__(self, token: str):
 Yields weather information from Dutch [Buienradar](https://www.buienradar.nl/) service.
 
 ```python
+from datetime import timedelta
+
+
 def __init__(self, station_id: int, interval=timedelta(seconds=300.0)):
     ...
 ```
@@ -278,15 +290,27 @@ Nov 17 00:18:02 (iftttie.core:83) [S] buienradar:6240:wind_speed_bft = 4
 Periodically yields contents of the specified file.
 
 ```python
+from datetime import timedelta
+from pathlib import Path
+
+from iftttie.enums import ValueKind
+
+
 def __init__(self, path: Path, key: str, interval: timedelta, kind: ValueKind):
     ...
 ```
 
-#### `iftttie.services.file_.FloatFile`
+#### `iftttie.services.file_.FloatValueFile`
 
 Periodically yields floating-point value from the specified file.
 
 ```python
+from datetime import timedelta
+from pathlib import Path
+
+from iftttie.enums import ValueKind
+
+
 def __init__(self, path: Path, key: str, interval: timedelta, kind: ValueKind, scale=1.0):
     ...
 ```
@@ -298,9 +322,9 @@ from datetime import timedelta
 from pathlib import Path
 
 from iftttie.enums import ValueKind
-from iftttie.services.file_ import FloatFile
+from iftttie.services.file_ import FloatValueFile
 
-cpu_temperature = FloatFile(
+cpu_temperature = FloatValueFile(
     Path('/sys/class/thermal/thermal_zone0/temp'), 
     'cpu_temperature', 
     timedelta(seconds=10.0),

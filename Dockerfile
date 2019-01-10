@@ -13,6 +13,7 @@ RUN mkdir /app && touch /app/db.sqlite3 && chown -R nobody:nogroup /app
 WORKDIR /app
 
 USER nobody:nogroup
+EXPOSE 8443
 STOPSIGNAL SIGINT
 ENTRYPOINT ["iftttie"]
 CMD []

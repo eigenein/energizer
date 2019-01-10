@@ -3,6 +3,7 @@ from __future__ import annotations
 from enum import Enum
 
 
+# FIXME: perhaps change to `Unit`.
 class ValueKind(str, Enum):
     BEAUFORT = 'BEAUFORT'
     BOOLEAN = 'BOOLEAN'

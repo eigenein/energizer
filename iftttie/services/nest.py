@@ -25,6 +25,7 @@ class Nest(BaseService):
     async def run(self, client_session: ClientSession, event_queue: Queue[Update], **kwargs: Any):
         while True:
             logger.debug('Listening to the stream…')
+            # FIXME: use some existing library for SSE.
             async with client_session.get(url, params={'auth': self.token}, headers=headers, timeout=None) as response:
                 async for event in read_events(response.content):
                     if event.name != 'put':

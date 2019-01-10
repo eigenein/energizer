@@ -29,15 +29,6 @@ from iftttie.web import routes
     help='Configuration URL.',
 )
 @click.option(
-    'port', '-p', '--port',
-    type=int,
-    default=80,
-    envvar='IFTTTIE_PORT',
-    show_envvar=True,
-    help='Web server HTTP port.',
-    show_default=True,
-)
-@click.option(
     'cert_path', '--cert',
     type=click.Path(exists=True, dir_okay=False),
     envvar='IFTTTIE_CERT_PATH',
@@ -58,7 +49,7 @@ from iftttie.web import routes
     show_envvar=True,
     help='Logging verbosity.',
 )
-def main(configuration_url: str, port: int, cert_path: Optional[str], key_path: Optional[str], verbosity: int):
+def main(configuration_url: str, cert_path: Optional[str], key_path: Optional[str], verbosity: int):
     """
     Yet another home automation service.
     """
@@ -73,11 +64,11 @@ def main(configuration_url: str, port: int, cert_path: Optional[str], key_path: 
         logger.warning('Server certificate is not specified.')
         ssl_context = None
 
-    start_web_app(port, ssl_context, configuration_url)
+    start_web_app(ssl_context, configuration_url)
     logger.success('IFTTTie stopped.')
 
 
-def start_web_app(port: int, ssl_context: Optional[ssl.SSLContext], configuration_url: str):
+def start_web_app(ssl_context: Optional[ssl.SSLContext], configuration_url: str):
     """Start the entire web app."""
     app = web.Application()
 
@@ -92,7 +83,7 @@ def start_web_app(port: int, ssl_context: Optional[ssl.SSLContext], configuratio
     env.filters['datetime'] = '{:%b %d %H:%M:%S}'.format
 
     app.add_routes(routes)
-    web.run_app(app, port=port, ssl_context=ssl_context, print=None)
+    web.run_app(app, port=8443, ssl_context=ssl_context, print=None)
 
 
 async def on_startup(app: web.Application):

@@ -42,10 +42,13 @@ class File(BaseService):
         return f'{self.__class__.__name__}(path={self.path!r})'
 
 
-class FloatFile(File):
+class FloatValueFile(File):
     def __init__(self, path: Path, key: str, interval: timedelta, kind: ValueKind, scale=1.0):
         super().__init__(path, key, interval, kind)
         self.scale = scale
 
     def preprocess_value(self, value: str):
         return float(value.strip()) * self.scale
+
+
+FloatFile = FloatValueFile  # FIXME: deprecated name.
