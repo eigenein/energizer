@@ -22,6 +22,7 @@ setuptools.setup(
         'loguru',
         'pygal',
         'ujson',
+        'aiohttp-sse-client',
     ],
     extras_require={},
     entry_points={

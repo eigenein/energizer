@@ -2,7 +2,8 @@
 
 - **Charts in the detail views**
 - Fix passing options via environment variables
-- Always start on port 8443
+- Always start on port `8443`
+- Use [`aiohttp-sse-client`](https://pypi.org/project/aiohttp-sse-client/)
 
 ### `0.2`
 

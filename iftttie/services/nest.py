@@ -3,18 +3,19 @@ from __future__ import annotations
 from asyncio import Queue
 from datetime import datetime
 from typing import Any, Iterable, List, Tuple
+from ujson import loads
 
 from aiohttp import ClientSession
+from aiohttp_sse_client.client import EventSource, MessageEvent
 from loguru import logger
-from ujson import loads
+from multidict import MultiDict
 
 from iftttie.dataclasses_ import Update
 from iftttie.enums import ValueKind
 from iftttie.services.base import BaseService
-from iftttie.sse import read_events
 
 url = 'https://developer-api.nest.com'
-headers = [('Accept', 'text/event-stream')]
+headers = MultiDict([('Accept', 'text/event-stream')])
 timestamp_format = '%Y-%m-%dT%H:%M:%S.%f%z'
 
 
@@ -25,21 +26,22 @@ class Nest(BaseService):
     async def run(self, client_session: ClientSession, event_queue: Queue[Update], **kwargs: Any):
         while True:
             logger.debug('Listening to the stream…')
-            # FIXME: use some existing library for SSE.
-            async with client_session.get(url, params={'auth': self.token}, headers=headers, timeout=None) as response:
-                async for event in read_events(response.content):
-                    if event.name != 'put':
-                        logger.debug('Ignoring event: {name}.', name=event.name)
-                        continue
-                    for update in yield_updates(loads(event.data)['data']):
-                        await event_queue.put(update)
+            async with EventSource(url, params={'auth': self.token}, headers=headers) as source:
+                try:
+                    async for event in source:
+                        if event.type == 'put':
+                            for update in yield_updates(event):
+                                await event_queue.put(update)
+                except ConnectionError as e:
+                    logger.error('Connection error: {}', e)
 
     def __str__(self) -> str:
         return f'{Nest.__name__}(token="{self.token[:4]}…{self.token[-4:]}")'
 
 
-def yield_updates(data: Any) -> Iterable[Update]:
-    devices = data['devices']
+def yield_updates(event: MessageEvent) -> Iterable[Update]:
+    data: dict = loads(event.data)['data']
+    devices: dict = data['devices']
 
     yield from yield_devices_updates(data['structures'], 'nest:structure', [
         ('away', ValueKind.ENUM),
