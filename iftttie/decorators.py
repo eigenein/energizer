@@ -8,6 +8,7 @@ from aiohttp.web_exceptions import HTTPUnauthorized
 from aiohttp.web_request import Request
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
+from loguru import logger
 
 T = TypeVar('T')
 THandler = Callable[[Request], Awaitable[T]]
@@ -36,6 +37,7 @@ def authenticate_user(handler: THandler[T]):
             except VerifyMismatchError:
                 pass
             else:
+                logger.info('User: {}', login)
                 return await handler(request)
 
         raise HTTPUnauthorized(text='Invalid password. Please try again', headers=headers)
