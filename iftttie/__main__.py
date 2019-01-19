@@ -3,7 +3,7 @@ from __future__ import annotations
 import ssl
 from asyncio import Queue
 from types import ModuleType
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Tuple
 
 import click
 from aiohttp import ClientSession, web
@@ -40,10 +40,11 @@ from iftttie.web import routes
     help='Server private key path.',
 )
 @click.option(
-    'user_auth', '-a', '--user-auth',
+    'users', '-u', '--user',
+    type=click.Tuple([str, str]),
     multiple=True,
     required=True,
-    envvar='IFTTTIE_USER_AUTH',
+    envvar='IFTTTIE_USERS',
     show_envvar=True,
     help='User password hash. Use `iftttie.utils password-hash` to obtain it.',
 )
@@ -58,7 +59,7 @@ def main(
     configuration_url: str,
     cert_path: Optional[str],
     key_path: Optional[str],
-    user_auth: Sequence[str],
+    users: Sequence[Tuple[str, str]],
     verbosity: int,
 ):
     """
@@ -75,11 +76,11 @@ def main(
         logger.warning('Server certificate is not specified.')
         ssl_context = None
 
-    start_web_app(ssl_context, configuration_url, user_auth)
+    start_web_app(ssl_context, configuration_url, users)
     logger.success('IFTTTie stopped.')
 
 
-def start_web_app(ssl_context: Optional[ssl.SSLContext], configuration_url: str, user_auth: Sequence[str]):
+def start_web_app(ssl_context: Optional[ssl.SSLContext], configuration_url: str, users: Sequence[Tuple[str, str]]):
     """Start the entire web app."""
     app = web.Application()
     app.on_startup.append(on_startup)
@@ -87,7 +88,7 @@ def start_web_app(ssl_context: Optional[ssl.SSLContext], configuration_url: str,
     app.add_routes(routes)
 
     app['configuration_url'] = configuration_url
-    app['user_auth'] = user_auth
+    app['users'] = users
     app['event_queue'] = Queue(maxsize=1000)  # TODO: option.
 
     templates.setup(app)

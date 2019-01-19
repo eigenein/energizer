@@ -24,13 +24,15 @@ def authenticate_user(handler: THandler[T]):
             raise HTTPUnauthorized(text='Welcome to IFTTTie! Please authenticate', headers=headers)
 
         try:
-            password = BasicAuth.decode(auth_header=header).password
+            auth = BasicAuth.decode(auth_header=header)
         except ValueError:
             raise HTTPUnauthorized(text='Invalid authorization header', headers=headers)
 
-        for hash_ in request.app['user_auth']:
+        for login, hash_ in request.app['users']:
+            if login != auth.login:
+                continue
             try:
-                hasher.verify(hash_, password)
+                hasher.verify(hash_, auth.password)
             except VerifyMismatchError:
                 pass
             else:

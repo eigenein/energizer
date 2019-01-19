@@ -53,12 +53,12 @@ def hash_password(password: str):
 
     echo()
     echo(style("Success! Use this option to run `iftttie`:", fg="green"))
-    echo(style(f"-a '{hash_}'", fg="yellow"))
+    echo(style(f"-u <login> '{hash_}'", fg="yellow"))
     echo()
     echo(f'Example {style("docker-compose.yml", fg="blue")} entry:')
     echo()
     echo(style('    environment:', fg='yellow'))
-    echo(style(f"      IFTTTIE_USER_AUTH: '{hash_}'", fg='yellow'))
+    echo(style(f"      IFTTTIE_USERS: '<login> {hash_}'", fg='yellow'))
     echo()
 
 

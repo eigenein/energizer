@@ -1,3 +1,7 @@
+### `0.6`
+
+- Feat: #3 user authentication with login
+
 ### `0.5`
 
 - Feat: user authentication
