@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='iftttie',
-    version='0.3',
+    version='0.4',
     author='Pavel Perestoronin',
     author_email='eigenein@gmail.com',
     description='Yet another home assistant',
