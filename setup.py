@@ -23,7 +23,9 @@ setuptools.setup(
         'ujson',
         'aiohttp-sse-client',
     ],
-    extras_require={},
+    extras_require={
+        'dev': ['pip-tools', 'isort', 'ipython', 'twine'],
+    },
     entry_points={
         'console_scripts': ['iftttie = iftttie.__main__:main'],
     },

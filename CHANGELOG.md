@@ -1,5 +1,9 @@
 ### `latest`
 
+- Chore: add `dev` install extra
+
+### `0.4`
+
 - Fix `id_` for `File` and `Clock`
 - feat: set `PYTHONOPTIMIZE=2` for the Python interpreter
 - feat: #10 set up unit testing and get rid of `aiosqlite` for now
