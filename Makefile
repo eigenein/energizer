@@ -17,7 +17,7 @@ venv : requirements.txt
 	@$(PIP) install -r requirements.txt
 	@$(PIP) install -e .[dev]
 
-requirements.txt : setup.py
+requirements.txt :
 	@$(PIP-COMPILE) --no-index --no-emit-trusted-host --generate-hashes --output-file requirements.txt setup.py
 
 tag : venv
