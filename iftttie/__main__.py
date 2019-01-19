@@ -109,7 +109,7 @@ async def on_cleanup(app: web.Application):
     app[run_queue.__name__].cancel()
     await app[run_queue.__name__]
     await app['client_session'].close()
-    await app['db'].close()
+    app['db'].close()
     logger.info('Event queue stopped.')
 
 
