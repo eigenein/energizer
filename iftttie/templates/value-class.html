@@ -1,5 +1,5 @@
-{%- if update.kind == ValueKind.BOOLEAN -%}
+{%- if update.unit == Unit.BOOLEAN -%}
   is-uppercase
-{%- elif update.kind == ValueKind.ENUM -%}
+{%- elif update.unit == Unit.ENUM -%}
   is-uppercase
 {%- endif -%}

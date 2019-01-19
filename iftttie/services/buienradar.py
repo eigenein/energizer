@@ -8,21 +8,21 @@ from aiohttp import ClientSession
 from loguru import logger
 
 from iftttie.dataclasses_ import Update
-from iftttie.enums import ValueKind
+from iftttie.enums import Unit
 from iftttie.services.base import BaseService
 
 url = 'https://api.buienradar.nl/data/public/2.0/jsonfeed'
 headers = [('Cache-Control', 'no-cache')]
 keys = (
-    ('airpressure', 'air_pressure', ValueKind.HPA),
-    ('feeltemperature', 'feel_temperature', ValueKind.CELSIUS),
-    ('groundtemperature', 'ground_temperature', ValueKind.CELSIUS),
-    ('humidity', 'humidity', ValueKind.HUMIDITY),
-    ('temperature', 'temperature', ValueKind.CELSIUS),
-    ('winddirection', 'wind_direction', ValueKind.ENUM),
-    ('windspeed', 'wind_speed', ValueKind.MPS),
-    ('windspeedBft', 'wind_speed_bft', ValueKind.BEAUFORT),
-    ('sunpower', 'sun_power', ValueKind.WATT),
+    ('airpressure', 'air_pressure', Unit.HPA, 'Pressure'),
+    ('feeltemperature', 'feel_temperature', Unit.CELSIUS, 'Feels Like'),
+    ('groundtemperature', 'ground_temperature', Unit.CELSIUS, 'Ground Temperature'),
+    ('humidity', 'humidity', Unit.HUMIDITY, 'Humidity'),
+    ('temperature', 'temperature', Unit.CELSIUS, 'Air Temperature'),
+    ('winddirection', 'wind_direction', Unit.ENUM, 'Wind Direction'),
+    ('windspeed', 'wind_speed', Unit.MPS, 'Wind Speed'),
+    ('windspeedBft', 'wind_speed_bft', Unit.BEAUFORT, 'Wind BFT'),
+    ('sunpower', 'sun_power', Unit.WATT, 'Sun Power'),
 )
 timestamp_format = '%Y-%m-%dT%H:%M:%S'
 
@@ -34,28 +34,30 @@ class Buienradar(BaseService):
 
     async def run(self, client_session: ClientSession, event_queue: Queue[Update], **kwargs: Any):
         while True:
-            async with client_session.get(url, headers=headers) as response:  # type ClientResponse
+            async with client_session.get(url, headers=headers) as response:
                 feed = await response.json()
             sunrise = parse_datetime(feed['actual']['sunrise'])
-            await event_queue.put(Update(key='buienradar:sunrise', value=sunrise, kind=ValueKind.DATETIME))
+            await event_queue.put(Update(key='buienradar:sunrise', value=sunrise, unit=Unit.DATETIME, title='Sunrise'))
             sunset = parse_datetime(feed['actual']['sunset'])
-            await event_queue.put(Update(key='buienradar:sunset', value=sunset, kind=ValueKind.DATETIME))
+            await event_queue.put(Update(key='buienradar:sunset', value=sunset, unit=Unit.DATETIME, title='Sunset'))
             await event_queue.put(Update(
                 key='buienradar:day_length',
                 value=(sunset - sunrise),
-                kind=ValueKind.TIMEDELTA,
+                unit=Unit.TIMEDELTA,
+                title='Day Length',
             ))
             try:
                 measurement = self.find_measurement(feed)
             except KeyError as e:
                 logger.error('Station ID {} is not found.', e)
             else:
-                for source_key, target_key, kind in keys:
+                for source_key, target_key, unit, title in keys:
                     await event_queue.put(Update(
                         key=f'buienradar:{self.station_id}:{target_key}',
                         value=measurement[source_key],
-                        kind=kind,
+                        unit=unit,
                         timestamp=parse_datetime(measurement['timestamp']),
+                        title=f'{measurement["stationname"]} {title}',
                     ))
             logger.debug('Next reading in {interval} seconds.', interval=self.interval)
             await sleep(self.interval)

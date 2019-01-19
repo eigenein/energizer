@@ -1,28 +1,28 @@
-{% if update.kind == ValueKind.BOOLEAN %}
+{% if update.unit == Unit.BOOLEAN %}
   {% if update.value %}
     <i class="fas fa-toggle-on"></i> <span>yes</span>
   {% else %}
     <i class="fas fa-toggle-off"></i> <span>no</span>
   {% endif %}
-{% elif update.kind == ValueKind.CELSIUS %}
+{% elif update.unit == Unit.CELSIUS %}
   <i class="fas fa-thermometer-half"></i> {{ update.value|round(1) }}&nbsp;°C
-{% elif update.kind == ValueKind.HUMIDITY %}
+{% elif update.unit == Unit.HUMIDITY %}
   <i class="fas fa-water"></i> {{ update.value|round(1) }}%
-{% elif update.kind == ValueKind.IMAGE_URL %}
+{% elif update.unit == Unit.IMAGE_URL %}
   <figure class="image"><img src="{{ update.value }}" alt="Update image"></figure>
-{% elif update.kind == ValueKind.HPA %}
+{% elif update.unit == Unit.HPA %}
   {{ update.value|round(1) }} hPa
-{% elif update.kind == ValueKind.BEAUFORT %}
+{% elif update.unit == Unit.BEAUFORT %}
   <i class="fas fa-wind"></i> {{ update.value }} BFT
-{% elif update.kind == ValueKind.MPS %}
+{% elif update.unit == Unit.MPS %}
   <i class="fas fa-tachometer-alt"></i> {{ update.value }} m/s
-{% elif update.kind == ValueKind.WATT %}
+{% elif update.unit == Unit.WATT %}
   <i class="fas fa-plug"></i> {{ update.value }} W
-{% elif update.kind == ValueKind.ENUM %}
+{% elif update.unit == Unit.ENUM %}
   <i class="fas fa-list-ul"></i> {{ update.value }}
-{% elif update.kind == ValueKind.TIMEDELTA %}
+{% elif update.unit == Unit.TIMEDELTA %}
   <i class="fas fa-stopwatch"></i> {{ update.value }}
-{% elif update.kind == ValueKind.DATETIME %}
+{% elif update.unit == Unit.DATETIME %}
   <i class="fas fa-clock"></i> {{ update.value|datetime }}
 {% else %}
   <i class="far fa-question-circle"></i> {{ update.value }}

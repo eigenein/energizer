@@ -12,9 +12,9 @@ from aiohttp import ClientSession, web
 from jinja2 import PackageLoader, select_autoescape
 from loguru import logger
 
-from iftttie.constants import DATABASE_INIT_SCRIPT
 from iftttie.core import run_queue
-from iftttie.enums import ValueKind
+from iftttie.database import init_database
+from iftttie.enums import Unit
 from iftttie.logging_ import init_logging
 from iftttie.utils import import_from_string
 from iftttie.web import routes
@@ -79,7 +79,7 @@ def start_web_app(ssl_context: Optional[ssl.SSLContext], configuration_url: str)
     app.on_cleanup.append(on_cleanup)
 
     env = aiohttp_jinja2.setup(app, loader=PackageLoader('iftttie'), autoescape=select_autoescape())
-    env.globals['ValueKind'] = ValueKind
+    env.globals['Unit'] = Unit
     env.filters['datetime'] = '{:%b %d %H:%M:%S}'.format
 
     app.add_routes(routes)
@@ -94,12 +94,6 @@ async def on_startup(app: web.Application):
     app['configuration'] = await import_configuration(app)
     app['display_names'] = getattr(app['configuration'], 'display_names', {})
     app[run_queue.__name__] = app.loop.create_task(run_queue(app))
-
-
-async def init_database(db: aiosqlite.Connection):
-    # TODO: move to a separate module.
-    db.row_factory = aiosqlite.Row
-    await db.executescript(DATABASE_INIT_SCRIPT)
 
 
 async def import_configuration(app: web.Application) -> Optional[ModuleType]:

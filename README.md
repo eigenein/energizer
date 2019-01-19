@@ -160,14 +160,6 @@ clock = Clock('hello', timedelta(seconds=1.0))
 buienradar = Buienradar(BUIENRADAR_STATION_ID)
 
 services = [nest, clock, buienradar]
-display_names = {
-    f'buienradar:{BUIENRADAR_STATION_ID}:humidity': 'Humidity',
-    f'buienradar:{BUIENRADAR_STATION_ID}:feel_temperature': 'Feels',
-    f'buienradar:{BUIENRADAR_STATION_ID}:ground_temperature': 'Ground',
-    f'buienradar:{BUIENRADAR_STATION_ID}:temperature': 'Temperature',
-    f'nest:camera:{LIVING_ROOM_CAMERA_ID}:is_streaming': 'Living Room Streaming',
-    f'nest:camera:{LIVING_ROOM_CAMERA_ID}:is_online': 'Living Room Online',
-}
 
 
 async def on_update(update: Update):
@@ -208,9 +200,9 @@ The related *value*. Very specific to a particular service.
 
 Time and date when the event has occurred.
 
-#### `kind: ValueKind`
+#### `unit: Unit`
 
-Specifies what this value is. For instance, `ValueKind.CELSIUS` or `ValueKind.BOOLEAN`.
+Specifies what this value is. For instance, `Unit.CELSIUS` or `Unit.BOOLEAN`.
 
 ### Service classes
 
@@ -293,10 +285,10 @@ Periodically yields contents of the specified file.
 from datetime import timedelta
 from pathlib import Path
 
-from iftttie.enums import ValueKind
+from iftttie.enums import Unit
 
 
-def __init__(self, path: Path, key: str, interval: timedelta, kind: ValueKind):
+def __init__(self, path: Path, key: str, interval: timedelta, unit: Unit):
     ...
 ```
 
@@ -308,10 +300,10 @@ Periodically yields floating-point value from the specified file.
 from datetime import timedelta
 from pathlib import Path
 
-from iftttie.enums import ValueKind
+from iftttie.enums import Unit
 
 
-def __init__(self, path: Path, key: str, interval: timedelta, kind: ValueKind, scale=1.0):
+def __init__(self, path: Path, key: str, interval: timedelta, unit: Unit, scale=1.0):
     ...
 ```
 
@@ -321,14 +313,14 @@ def __init__(self, path: Path, key: str, interval: timedelta, kind: ValueKind, s
 from datetime import timedelta
 from pathlib import Path
 
-from iftttie.enums import ValueKind
+from iftttie.enums import Unit
 from iftttie.services.file_ import FloatValueFile
 
 cpu_temperature = FloatValueFile(
     Path('/sys/class/thermal/thermal_zone0/temp'), 
     'cpu_temperature', 
     timedelta(seconds=10.0),
-    ValueKind.CELSIUS,
+    Unit.CELSIUS,
     0.001, 
 )
 ```

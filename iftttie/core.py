@@ -4,13 +4,12 @@ from asyncio.queues import Queue
 from asyncio.tasks import gather, sleep
 from concurrent.futures import CancelledError
 from contextlib import suppress
-from pickle import dumps
 from typing import Awaitable, Callable, Iterable, NoReturn, Optional
 
-import aiosqlite
 from aiohttp import ClientConnectorError, ClientSession, web
 from loguru import logger
 
+from iftttie.database import insert_update
 from iftttie.dataclasses_ import Update
 from iftttie.services.base import BaseService
 from iftttie.utils import iterate_queue
@@ -71,16 +70,3 @@ async def handle_updates(app: web.Application):
             await on_update(update)
         except Exception as e:
             logger.opt(exception=e).error('Error while handling the event.')
-
-
-async def insert_update(db: aiosqlite.Connection, update: Update):
-    timestamp = int(update.timestamp.timestamp() * 1000)
-    await db.execute(
-        'INSERT OR REPLACE INTO history (key, value, timestamp) VALUES (?, ?, ?)',
-        (update.key, dumps(update.value), timestamp),
-    )
-    await db.execute(
-        'INSERT OR REPLACE INTO latest (key, timestamp, kind) VALUES (?, ?, ?)',
-        (update.key, timestamp, update.kind.value),
-    )
-    await db.commit()

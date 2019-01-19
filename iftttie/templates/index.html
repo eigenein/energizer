@@ -1,14 +1,44 @@
 {% extends "base.html" %}
-{% block body %}
-  {% if with_names %}
-    {% with title = 'Dashboard', class = 'is-light', updates = with_names %}
-      {% include "tiles.html" %}
-    {% endwith %}
-  {% endif %}
 
-  {% if without_names %}
-    {% with title = 'Without names', class = 'is-light', updates = without_names %}
-      {% include "tiles.html" %}
-    {% endwith %}
-  {% endif %}
+{% set UNIT_TITLES = {
+    Unit.BEAUFORT: 'Beaufort',
+    Unit.BOOLEAN: 'Boolean',
+    Unit.CELSIUS: 'Temperature',
+    Unit.DATETIME: 'Date and Time',
+    Unit.ENUM: 'Enumerations',
+    Unit.HPA: 'Pressure',
+    Unit.HUMIDITY: 'Humidity',
+    Unit.IMAGE_URL: 'Image',
+    Unit.MPS: 'Speed',
+    Unit.OTHER: 'Other',
+    Unit.TIMEDELTA: 'Duration',
+    Unit.WATT: 'Power',
+} %}
+
+{% block body %}
+  <section class="hero is-primary">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title is-4">Dashboard</h1>
+        <h2 class="subtitle is-5">{{ updates|length }} updates</h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      {% for grouper, list in updates|groupby('unit') %}
+        <h3 class="title is-5">{{ UNIT_TITLES[grouper] }}</h3>
+        {% for batch in list|batch(4, '') %}
+          <div class="tile is-ancestor">
+            {% for update in batch %}
+              {% if update %}
+                {% with %}{% include "tile.html" %}{% endwith %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </section>
 {% endblock %}
