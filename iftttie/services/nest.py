@@ -54,7 +54,7 @@ def yield_updates(event: MessageEvent) -> Iterable[Update]:
     ])
     yield from yield_devices_updates(devices['thermostats'], 'nest:thermostat', [
         ('ambient_temperature_c', Unit.CELSIUS, 'Ambient Temperature'),
-        ('humidity', Unit.HUMIDITY, 'Humidity'),
+        ('humidity', Unit.RH, 'Humidity'),
         ('is_online', Unit.BOOLEAN, 'Online'),
         ('hvac_state', Unit.ENUM, 'HVAC'),
         ('target_temperature_c', Unit.CELSIUS, 'Target Temperature'),

@@ -10,7 +10,7 @@ class Unit(str, Enum):
     DATETIME = 'DATETIME'
     ENUM = 'ENUM'
     HPA = 'HPA'  # hPa
-    HUMIDITY = 'HUMIDITY'
+    RH = 'RH'  # relative humidity
     IMAGE_URL = 'IMAGE_URL'
     MPS = 'MPS'  # m/s
     OTHER = 'OTHER'

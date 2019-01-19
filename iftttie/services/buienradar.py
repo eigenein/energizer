@@ -17,7 +17,7 @@ keys = (
     ('airpressure', 'air_pressure', Unit.HPA, 'Pressure'),
     ('feeltemperature', 'feel_temperature', Unit.CELSIUS, 'Feels Like'),
     ('groundtemperature', 'ground_temperature', Unit.CELSIUS, 'Ground Temperature'),
-    ('humidity', 'humidity', Unit.HUMIDITY, 'Humidity'),
+    ('humidity', 'humidity', Unit.RH, 'Humidity'),
     ('temperature', 'temperature', Unit.CELSIUS, 'Air Temperature'),
     ('winddirection', 'wind_direction', Unit.ENUM, 'Wind Direction'),
     ('windspeed', 'wind_speed', Unit.MPS, 'Wind Speed'),

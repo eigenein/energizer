@@ -18,7 +18,7 @@
   {%- else -%}
     is-danger
   {%- endif -%}
-{%- elif update.unit == Unit.HUMIDITY -%}
+{%- elif update.unit == Unit.RH -%}
   {%- if update.value < 17.0 -%}
     is-link
   {%- elif update.value < 34.0 -%}

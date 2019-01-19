@@ -5,6 +5,7 @@
 - Always start on port `8443`
 - Use [`aiohttp-sse-client`](https://pypi.org/project/aiohttp-sse-client/)
 - #2 #4 #6 Change database schema, rename `ValueKind` and add titles
+- Close #4: refine `Unit` class
 
 ### `0.2`
 

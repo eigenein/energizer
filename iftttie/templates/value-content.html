@@ -6,7 +6,7 @@
   {% endif %}
 {% elif update.unit == Unit.CELSIUS %}
   <i class="fas fa-thermometer-half"></i> {{ update.value|round(1) }}&nbsp;°C
-{% elif update.unit == Unit.HUMIDITY %}
+{% elif update.unit == Unit.RH %}
   <i class="fas fa-water"></i> {{ update.value|round(1) }}%
 {% elif update.unit == Unit.IMAGE_URL %}
   <figure class="image"><img src="{{ update.value }}" alt="Update image"></figure>
