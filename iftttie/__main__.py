@@ -5,16 +5,13 @@ from asyncio import Queue
 from types import ModuleType
 from typing import Optional
 
-import aiohttp_jinja2
-import aiosqlite
 import click
 from aiohttp import ClientSession, web
-from jinja2 import PackageLoader, select_autoescape
 from loguru import logger
 
+from iftttie import templates
 from iftttie.core import run_queue
 from iftttie.database import init_database
-from iftttie.enums import Unit
 from iftttie.logging_ import init_logging
 from iftttie.utils import import_from_string
 from iftttie.web import routes
@@ -78,9 +75,7 @@ def start_web_app(ssl_context: Optional[ssl.SSLContext], configuration_url: str)
     app.on_startup.append(on_startup)
     app.on_cleanup.append(on_cleanup)
 
-    env = aiohttp_jinja2.setup(app, loader=PackageLoader('iftttie'), autoescape=select_autoescape())
-    env.globals['Unit'] = Unit
-    env.filters['datetime'] = '{:%b %d %H:%M:%S}'.format
+    templates.setup(app)
 
     app.add_routes(routes)
     web.run_app(app, port=8443, ssl_context=ssl_context, print=None)
@@ -88,8 +83,7 @@ def start_web_app(ssl_context: Optional[ssl.SSLContext], configuration_url: str)
 
 async def on_startup(app: web.Application):
     """Import configuration, run services and return async tasks."""
-    app['db'] = await aiosqlite.connect('db.sqlite3', loop=app.loop).__aenter__()
-    await init_database(app['db'])
+    app['db'] = init_database('db.sqlite3')
     app['client_session'] = await ClientSession(raise_for_status=True).__aenter__()
     app['configuration'] = await import_configuration(app)
     app['display_names'] = getattr(app['configuration'], 'display_names', {})

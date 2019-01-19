@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+from contextlib import closing
 from datetime import datetime
-from pickle import loads, dumps
-from sqlite3 import Row
+from pickle import dumps, loads
+from sqlite3 import Connection, Row, connect
 from typing import List
 
-import aiosqlite
+from aiohttp.web import Application
 
 from iftttie.dataclasses_ import Update
 from iftttie.enums import Unit
@@ -41,27 +42,30 @@ SELECT_LOG_QUERY = '''
 '''
 
 
-async def init_database(db: aiosqlite.Connection):
-    db.row_factory = aiosqlite.Row
-    await db.executescript(INIT_SCRIPT)
+def init_database(path: str) -> Connection:
+    db = connect(path)
+    db.row_factory = Row
+    db.executescript(INIT_SCRIPT)
+    return db
 
 
-async def insert_update(db: aiosqlite.Connection, update: Update):
+def insert_update(db: Connection, update: Update):
     timestamp = update.timestamp.timestamp()
-    await db.execute(
-        'INSERT OR REPLACE INTO `latest` (`key`, `value`, `timestamp`, `unit`, `title`) VALUES (?, ?, ?, ?, ?)',
-        [update.key, dumps(update.value), timestamp, update.unit.value, update.title],
-    )
-    await db.execute(
-        'INSERT OR REPLACE INTO `log` (`key`, `update_id`, `timestamp`) VALUES (?, ?, ?)',
-        [update.key, str(update.id_), timestamp],
-    )
-    await db.commit()
+    with db, closing(db.cursor()) as cursor:
+        cursor.execute(
+            'INSERT OR REPLACE INTO `latest` (`key`, `value`, `timestamp`, `unit`, `title`) VALUES (?, ?, ?, ?, ?)',
+            [update.key, dumps(update.value), timestamp, update.unit.value, update.title],
+        )
+        cursor.execute(
+            'INSERT OR REPLACE INTO `log` (`key`, `update_id`, `timestamp`) VALUES (?, ?, ?)',
+            [update.key, str(update.id_), timestamp],
+        )
 
 
-async def select_latest(db: aiosqlite.Connection) -> List[Update]:
-    async with db.execute(SELECT_LATEST_QUERY) as cursor:  # type: aiosqlite.Cursor
-        return [update_from_row(row) for row in await cursor.fetchall()]
+def select_latest(db: Connection) -> List[Update]:
+    with closing(db.cursor()) as cursor:
+        cursor.execute(SELECT_LATEST_QUERY)
+        return [update_from_row(row) for row in cursor.fetchall()]
 
 
 def update_from_row(row: Row) -> Update:

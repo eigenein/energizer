@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-import aiosqlite
+from sqlite3 import Connection
+
 import pkg_resources
 from aiohttp import web
 from aiohttp_jinja2 import template
@@ -14,9 +15,9 @@ favicon_body = pkg_resources.resource_string('iftttie', 'static/favicon.png')
 @routes.get('/', name='index')
 @template('index.html')
 async def index(request: web.Request) -> dict:
-    db: aiosqlite.Connection = request.app['db']
+    db: Connection = request.app['db']
 
-    updates = await select_latest(db)
+    updates = select_latest(db)
     return {
         'updates': updates,
     }

@@ -17,7 +17,6 @@ setuptools.setup(
     install_requires=[
         'aiohttp',
         'aiohttp_jinja2',
-        'aiosqlite',
         'click',
         'loguru',
         'pygal',

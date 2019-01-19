@@ -26,7 +26,7 @@ class Nest(BaseService):
     async def run(self, client_session: ClientSession, event_queue: Queue[Update], **kwargs: Any):
         while True:
             logger.debug('Listening to the stream…')
-            async with EventSource(url, params={'auth': self.token}, headers=headers) as source:
+            async with EventSource(url, params={'auth': self.token}, headers=headers, session=client_session) as source:
                 try:
                     async for event in source:
                         if event.type == 'put':

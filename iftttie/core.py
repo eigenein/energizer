@@ -63,7 +63,7 @@ async def handle_updates(app: web.Application):
 
     async for update in iterate_queue(queue):
         logger.success('{key} = {value!r}', key=update.key, value=update.value)
-        await insert_update(app['db'], update)
+        insert_update(app['db'], update)
         if on_update is None:
             continue
         try:
