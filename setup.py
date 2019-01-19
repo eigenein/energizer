@@ -24,7 +24,7 @@ setuptools.setup(
         'aiohttp-sse-client',
     ],
     extras_require={
-        'dev': ['pip-tools', 'isort', 'ipython', 'twine'],
+        'dev': ['pip-tools', 'isort', 'ipython', 'twine', 'flake8'],
     },
     entry_points={
         'console_scripts': ['iftttie = iftttie.__main__:main'],

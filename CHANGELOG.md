@@ -1,6 +1,7 @@
 ### `latest`
 
 - Chore: add `dev` install extra
+- Chore: enable `pytest` in Travis
 
 ### `0.4`
 
