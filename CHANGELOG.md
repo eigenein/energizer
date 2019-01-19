@@ -1,6 +1,7 @@
 ### `latest`
 
 - Fix `id_` for `File` and `Clock`
+- feat: set `PYTHONOPTIMIZE=2` for the Python interpreter
 
 ### `0.3`
 
