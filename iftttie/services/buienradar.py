@@ -37,14 +37,27 @@ class Buienradar(BaseService):
             async with client_session.get(url, headers=headers) as response:
                 feed = await response.json()
             sunrise = parse_datetime(feed['actual']['sunrise'])
-            await event_queue.put(Update(key='buienradar:sunrise', value=sunrise, unit=Unit.DATETIME, title='Sunrise'))
+            await event_queue.put(Update(
+                key='buienradar:sunrise',
+                value=sunrise,
+                unit=Unit.DATETIME,
+                title='Sunrise',
+                id_=feed['actual']['sunrise'],
+            ))
             sunset = parse_datetime(feed['actual']['sunset'])
-            await event_queue.put(Update(key='buienradar:sunset', value=sunset, unit=Unit.DATETIME, title='Sunset'))
+            await event_queue.put(Update(
+                key='buienradar:sunset',
+                value=sunset,
+                unit=Unit.DATETIME,
+                title='Sunset',
+                id_=feed['actual']['sunset'],
+            ))
             await event_queue.put(Update(
                 key='buienradar:day_length',
                 value=(sunset - sunrise),
                 unit=Unit.TIMEDELTA,
                 title='Day Length',
+                id_=feed['actual']['sunrise'],
             ))
             try:
                 measurement = self.find_measurement(feed)
@@ -57,6 +70,7 @@ class Buienradar(BaseService):
                         value=measurement[source_key],
                         unit=unit,
                         timestamp=parse_datetime(measurement['timestamp']),
+                        id_=measurement['timestamp'],
                         title=f'{measurement["stationname"]} {title}',
                     ))
             logger.debug('Next reading in {interval} seconds.', interval=self.interval)

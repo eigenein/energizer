@@ -18,12 +18,26 @@ INIT_SCRIPT = '''
         `unit` TEXT NOT NULL,
         `title` TEXT NULL
     );
+    
+    CREATE TABLE IF NOT EXISTS `log` (
+        `key` TEXT NOT NULL,
+        `update_id` TEXT NOT NULL,
+        `timestamp` REAL NOT NULL,
+        PRIMARY KEY (`key`, `update_id`)
+    );
+    CREATE INDEX IF NOT EXISTS `log_timestamp` ON `log` (`timestamp`);
 '''
 
 # noinspection SqlResolve
 SELECT_LATEST_QUERY = '''
-    SELECT `key`, `value`, `timestamp`, `unit`, `title` FROM latest
+    SELECT `key`, `value`, `timestamp`, `unit`, `title` FROM `latest`
     ORDER BY `unit`, `key`
+'''
+
+# noinspection SqlResolve
+SELECT_LOG_QUERY = '''
+    SELECT `key`, `value`, `timestamp`, `unit`, `title` FROM `log`
+    ORDER BY `timestamp` DESC
 '''
 
 
@@ -36,7 +50,11 @@ async def insert_update(db: aiosqlite.Connection, update: Update):
     timestamp = update.timestamp.timestamp()
     await db.execute(
         'INSERT OR REPLACE INTO `latest` (`key`, `value`, `timestamp`, `unit`, `title`) VALUES (?, ?, ?, ?, ?)',
-        (update.key, dumps(update.value), timestamp, update.unit.value, update.title),
+        [update.key, dumps(update.value), timestamp, update.unit.value, update.title],
+    )
+    await db.execute(
+        'INSERT OR REPLACE INTO `log` (`key`, `update_id`, `timestamp`) VALUES (?, ?, ?)',
+        [update.key, str(update.id_), timestamp],
     )
     await db.commit()
 

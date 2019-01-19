@@ -6,6 +6,7 @@
 - Use [`aiohttp-sse-client`](https://pypi.org/project/aiohttp-sse-client/)
 - #2 #4 #6 Change database schema, rename `ValueKind` and add titles
 - Close #4: refine `Unit` class
+- Close #5 #6: denormalise database and add update IDs
 
 ### `0.2`
 
