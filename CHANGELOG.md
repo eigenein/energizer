@@ -1,3 +1,7 @@
+### `latest`
+
+- Fix `id_` for `File` and `Clock`
+
 ### `0.3`
 
 - **Charts in the detail views**

@@ -4,6 +4,7 @@ from asyncio import sleep
 from asyncio.queues import Queue
 from datetime import timedelta
 from pathlib import Path
+from time import time
 from typing import Any, Optional
 
 from aiohttp import ClientSession
@@ -30,6 +31,7 @@ class File(BaseService):
                     value=self.preprocess_value(self.path.read_text()),
                     unit=self.unit,
                     title=self.title,
+                    id_=str(time()),
                 ))
             except IOError as e:
                 logger.error('I/O error in {service}:', service=self)
@@ -41,7 +43,7 @@ class File(BaseService):
         return value
 
     def __str__(self) -> str:
-        return f'{self.__class__.__name__}(path={self.path!r})'
+        return f'{self.__class__.__name__}(path={self.path!r}, title={self.title!r})'
 
 
 class FloatValueFile(File):

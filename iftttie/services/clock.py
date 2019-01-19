@@ -3,6 +3,7 @@ from __future__ import annotations
 from asyncio import Queue, sleep
 from datetime import timedelta
 from itertools import count
+from time import time
 from typing import Any, Optional
 
 from aiohttp import ClientSession
@@ -22,7 +23,7 @@ class Clock(BaseService):
         for i in count():
             logger.trace('Sleeping for {interval} seconds…', interval=self.interval)
             await sleep(self.interval)
-            await event_queue.put(Update(key=f'clock:{self.key}', value=i, title=self.title))
+            await event_queue.put(Update(key=f'clock:{self.key}', value=i, title=self.title, id_=str(time())))
 
     def __str__(self) -> str:
-        return f'Clock(key={self.key!r}, interval={self.interval!r})'
+        return f'Clock(key={self.key!r}, interval={self.interval!r}, title={self.title!r})'
