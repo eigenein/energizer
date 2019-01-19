@@ -25,8 +25,8 @@ async def index(request: web.Request) -> dict:
 @routes.get('/view/{key}', name='view')
 @template('view.html')
 async def view(request: web.Request) -> dict:
-    db: aiosqlite.Connection = request.app['db']
-    key: str = request.match_info['key']
+    # TODO: db: aiosqlite.Connection = request.app['db']
+    # TODO: key: str = request.match_info['key']
 
     raise NotImplementedError()
 
