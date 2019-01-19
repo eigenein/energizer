@@ -1,4 +1,4 @@
-### `latest`
+### `0.3`
 
 - **Charts in the detail views**
 - Fix passing options via environment variables
