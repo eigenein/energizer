@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='iftttie',
-    version='0.4',
+    version='0.5',
     author='Pavel Perestoronin',
     author_email='eigenein@gmail.com',
     description='Yet another home assistant',
@@ -22,12 +22,16 @@ setuptools.setup(
         'pygal',
         'ujson',
         'aiohttp-sse-client',
+        'argon2_cffi',
     ],
     extras_require={
         'dev': ['pip-tools', 'isort', 'ipython', 'twine', 'flake8'],
     },
     entry_points={
-        'console_scripts': ['iftttie = iftttie.__main__:main'],
+        'console_scripts': [
+            'iftttie = iftttie.__main__:main',
+            'iftttie.utils = iftttie.utils:main',
+        ],
     },
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',

@@ -3,7 +3,7 @@ from __future__ import annotations
 import ssl
 from asyncio import Queue
 from types import ModuleType
-from typing import Optional
+from typing import Optional, Sequence
 
 import click
 from aiohttp import ClientSession, web
@@ -40,13 +40,27 @@ from iftttie.web import routes
     help='Server private key path.',
 )
 @click.option(
+    'user_auth', '-a', '--user-auth',
+    multiple=True,
+    required=True,
+    envvar='IFTTTIE_USER_AUTH',
+    show_envvar=True,
+    help='User password hash. Use `iftttie.utils password-hash` to obtain it.',
+)
+@click.option(
     'verbosity', '-v', '--verbose',
     count=True,
     envvar='IFTTTIE_VERBOSITY',
     show_envvar=True,
     help='Logging verbosity.',
 )
-def main(configuration_url: str, cert_path: Optional[str], key_path: Optional[str], verbosity: int):
+def main(
+    configuration_url: str,
+    cert_path: Optional[str],
+    key_path: Optional[str],
+    user_auth: Sequence[str],
+    verbosity: int,
+):
     """
     Yet another home automation service.
     """
@@ -61,23 +75,23 @@ def main(configuration_url: str, cert_path: Optional[str], key_path: Optional[st
         logger.warning('Server certificate is not specified.')
         ssl_context = None
 
-    start_web_app(ssl_context, configuration_url)
+    start_web_app(ssl_context, configuration_url, user_auth)
     logger.success('IFTTTie stopped.')
 
 
-def start_web_app(ssl_context: Optional[ssl.SSLContext], configuration_url: str):
+def start_web_app(ssl_context: Optional[ssl.SSLContext], configuration_url: str, user_auth: Sequence[str]):
     """Start the entire web app."""
     app = web.Application()
-
-    app['configuration_url'] = configuration_url
-    app['event_queue'] = Queue(maxsize=1000)  # TODO: option.
-
     app.on_startup.append(on_startup)
     app.on_cleanup.append(on_cleanup)
+    app.add_routes(routes)
+
+    app['configuration_url'] = configuration_url
+    app['user_auth'] = user_auth
+    app['event_queue'] = Queue(maxsize=1000)  # TODO: option.
 
     templates.setup(app)
 
-    app.add_routes(routes)
     web.run_app(app, port=8443, ssl_context=ssl_context, print=None)
 
 

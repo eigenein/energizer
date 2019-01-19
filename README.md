@@ -111,7 +111,7 @@ services:
   iftttie:
     image: eigenein/iftttie:latest
     ports:
-    - '8443:8443'
+    - '8443:443'
     volumes:
     - '/home/pi/iftttie.sqlite3:/app/db.sqlite3'
     - '/etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro'
@@ -122,6 +122,7 @@ services:
       IFTTTIE_CONFIGURATION_URL: 'https://gist.githubusercontent.com/user/repo/raw'
       IFTTTIE_CERT_PATH: 'cert.pem'
       IFTTTIE_KEY_PATH: 'privkey.pem'
+      IFTTTIE_USER_AUTH: '...'
 ```
 
 ## Startup

@@ -4,7 +4,10 @@ from asyncio import Queue
 from types import ModuleType
 from typing import AsyncIterable, TypeVar
 
+import click
 from aiohttp import StreamReader
+from argon2 import PasswordHasher
+from click import echo, style
 
 T = TypeVar('T')
 
@@ -30,3 +33,34 @@ def import_from_string(name: str, code: str) -> ModuleType:
     module.__package__ = 'iftttie'
     exec(code, module.__dict__)
     return module
+
+
+@click.group()
+def main():
+    """
+    IFTTTie utils.
+    """
+    pass
+
+
+@main.command()
+@click.password_option('-p', '--password')
+def hash_password(password: str):
+    """
+    Print password hash for the IFTTTie dashboard authentication.
+    """
+    hash_ = PasswordHasher().hash(password)
+
+    echo()
+    echo(style("Success! Use this option to run `iftttie`:", fg="green"))
+    echo(style(f"-a '{hash_}'", fg="yellow"))
+    echo()
+    echo(f'Example {style("docker-compose.yml", fg="blue")} entry:')
+    echo()
+    echo(style('    environment:', fg='yellow'))
+    echo(style(f"      IFTTTIE_USER_AUTH: '{hash_}'", fg='yellow'))
+    echo()
+
+
+if __name__ == '__main__':
+    main()

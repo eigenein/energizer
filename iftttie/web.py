@@ -7,6 +7,7 @@ from aiohttp import web
 from aiohttp_jinja2 import template
 
 from iftttie.database import select_latest
+from iftttie.decorators import authenticate_user
 
 routes = web.RouteTableDef()
 favicon_body = pkg_resources.resource_string('iftttie', 'static/favicon.png')
@@ -14,6 +15,7 @@ favicon_body = pkg_resources.resource_string('iftttie', 'static/favicon.png')
 
 @routes.get('/', name='index')
 @template('index.html')
+@authenticate_user
 async def index(request: web.Request) -> dict:
     db: Connection = request.app['db']
 

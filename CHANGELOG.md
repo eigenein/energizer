@@ -1,5 +1,6 @@
-### `latest`
+### `0.5`
 
+- Feat: user authentication
 - Chore: add `dev` install extra
 - Chore: enable `pytest` in Travis
 
