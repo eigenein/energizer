@@ -73,7 +73,7 @@ def update_from_row(row: Row) -> Update:
 
 migrations = [
     '''
-        -- Initial schema. 
+        -- Initial schema.
 
         CREATE TABLE IF NOT EXISTS `latest` (
             `key` TEXT PRIMARY KEY NOT NULL,
@@ -82,7 +82,7 @@ migrations = [
             `unit` TEXT NOT NULL,
             `title` TEXT NULL
         );
-    
+
         CREATE TABLE IF NOT EXISTS `log` (
             `key` TEXT NOT NULL,
             `update_id` TEXT NOT NULL,
@@ -90,7 +90,7 @@ migrations = [
             PRIMARY KEY (`key`, `update_id`)
         );
         CREATE INDEX IF NOT EXISTS `log_timestamp` ON `log` (`timestamp`);
-        
+
         PRAGMA user_version = 1;
     ''',
 ]
