@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from asyncio import Queue
 from datetime import datetime
 from typing import Any, Iterable, List, Tuple
@@ -32,7 +33,7 @@ class Nest(BaseService):
                         if event.type == 'put':
                             for update in yield_updates(event):
                                 await event_queue.put(update)
-                except (ConnectionError, TimeoutError) as e:
+                except (ConnectionError, asyncio.TimeoutError) as e:
                     logger.error('Connection error: {}', e)
 
     def __str__(self) -> str:
