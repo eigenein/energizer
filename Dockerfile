@@ -2,7 +2,7 @@ FROM python:3.7
 FROM resin/raspberry-pi-python:3.7-stretch
 MAINTAINER Pavel Perestoronin <eigenein@gmail.com>
 
-ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8 PYTHONOPTIMIZE=2
+ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8 PYTHONOPTIMIZE=1
 
 COPY requirements.txt /tmp/iftttie/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/iftttie/requirements.txt
