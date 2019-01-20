@@ -20,6 +20,8 @@ def authenticate_user(handler: THandler[T]):
 
     @wraps(handler)
     async def wrapper(request: Request) -> T:
+        logger.debug('Authenticating request…')
+
         header = request.headers.get(hdrs.AUTHORIZATION)
         if not header:
             raise HTTPUnauthorized(text='Welcome to IFTTTie! Please authenticate', headers=headers)
