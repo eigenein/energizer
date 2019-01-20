@@ -111,7 +111,7 @@ services:
   iftttie:
     image: eigenein/iftttie:latest
     ports:
-    - '8443:443'
+    - '443:8443'
     volumes:
     - '/home/pi/iftttie.sqlite3:/app/db.sqlite3'
     - '/etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro'
