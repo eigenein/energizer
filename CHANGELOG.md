@@ -2,6 +2,7 @@
 
 - Fix: #3 fix `hash-password` output
 - Fix: #3 adjust `PasswordHasher` parameters for Raspberry Pi Zero W
+- Fix: catch `TimeoutError` in `Nest`
 
 ### `0.6`
 

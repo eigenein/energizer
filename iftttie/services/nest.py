@@ -32,7 +32,7 @@ class Nest(BaseService):
                         if event.type == 'put':
                             for update in yield_updates(event):
                                 await event_queue.put(update)
-                except ConnectionError as e:
+                except (ConnectionError, TimeoutError) as e:
                     logger.error('Connection error: {}', e)
 
     def __str__(self) -> str:
