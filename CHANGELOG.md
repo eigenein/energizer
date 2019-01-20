@@ -1,6 +1,7 @@
 ### `latest`
 
 - Fix: #3 fix `hash-password` output
+- Fix: #3 adjust `PasswordHasher` parameters for Raspberry Pi Zero W
 
 ### `0.6`
 

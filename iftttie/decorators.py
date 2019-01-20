@@ -6,16 +6,16 @@ from typing import Awaitable, Callable, TypeVar
 from aiohttp import BasicAuth, hdrs
 from aiohttp.web_exceptions import HTTPUnauthorized
 from aiohttp.web_request import Request
-from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from loguru import logger
+
+from iftttie.utils import hasher
 
 T = TypeVar('T')
 THandler = Callable[[Request], Awaitable[T]]
 
 
 def authenticate_user(handler: THandler[T]):
-    hasher = PasswordHasher()
     headers = [('WWW-Authenticate', 'Basic realm="IFTTTie"')]
 
     @wraps(handler)

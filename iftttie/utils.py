@@ -49,7 +49,7 @@ def hash_password(password: str):
     """
     Print password hash for the IFTTTie dashboard authentication.
     """
-    hash_ = PasswordHasher().hash(password)
+    hash_ = hasher.hash(password)
 
     echo()
     echo(style("Success! Use this option to run `iftttie`:", fg="green"))
@@ -60,6 +60,10 @@ def hash_password(password: str):
     echo(style('    environment:', fg='yellow'))
     echo(style(f"      IFTTTIE_USERS: '<login> {hash_.replace('$', '$$')}'", fg='yellow'))
     echo()
+
+
+# Parameters adjusted for Raspberry Pi Zero W.
+hasher = PasswordHasher(time_cost=1, memory_cost=8, parallelism=1)
 
 
 if __name__ == '__main__':
