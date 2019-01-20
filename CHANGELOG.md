@@ -1,3 +1,7 @@
+### `latest`
+
+- Fix: #3 fix `hash-password` output
+
 ### `0.6`
 
 - Feat: #3 user authentication with login

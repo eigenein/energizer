@@ -58,7 +58,7 @@ def hash_password(password: str):
     echo(f'Example {style("docker-compose.yml", fg="blue")} entry:')
     echo()
     echo(style('    environment:', fg='yellow'))
-    echo(style(f"      IFTTTIE_USERS: '<login> {hash_}'", fg='yellow'))
+    echo(style(f"      IFTTTIE_USERS: '<login> {hash_.replace('$', '$$')}'", fg='yellow'))
     echo()
 
 
