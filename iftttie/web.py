@@ -27,6 +27,7 @@ async def index(request: web.Request) -> dict:
 
 @routes.get('/view/{key}', name='view')
 @template('view.html')
+@authenticate_user
 async def view(request: web.Request) -> dict:
     # TODO: db: aiosqlite.Connection = request.app['db']
     # TODO: key: str = request.match_info['key']
@@ -54,5 +55,6 @@ async def manifest(_: web.Request) -> web.Response:
 
 
 @routes.get('/system/db.sqlite3')
+@authenticate_user
 async def download(_: web.Request) -> web.Response:
     return web.FileResponse('db.sqlite3')

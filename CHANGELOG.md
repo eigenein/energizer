@@ -3,6 +3,7 @@
 - Fix: #3 fix `hash-password` output
 - Fix: #3 adjust `PasswordHasher` parameters for Raspberry Pi Zero W
 - Fix: catch `TimeoutError` in `Nest`
+- Fix: #3 authenticate user for `/system/db.sqlite3` and `/view/{key}`
 
 ### `0.6`
 
