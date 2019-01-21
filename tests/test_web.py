@@ -9,5 +9,5 @@ async def test_index_without_auth(iftttie_client: TestClient):
 
 
 async def test_download_without_auth(iftttie_client: TestClient):
-    response = await iftttie_client.get('/system/db.sqlite3')
+    response = await iftttie_client.get('/db.sqlite3')
     assert response.status == 401

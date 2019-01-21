@@ -39,7 +39,7 @@ def authenticate_user(handler: THandler[T]):
             except VerifyMismatchError:
                 pass
             else:
-                logger.info('User: {}', login)
+                logger.info('Authenticated user: {}', login)
                 return await handler(request)
 
         raise HTTPUnauthorized(text='Invalid password. Please try again', headers=headers)
