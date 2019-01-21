@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-from asyncio import Queue, sleep
+from asyncio import sleep
 from datetime import datetime, timedelta
 from typing import Any
 
-from aiohttp import ClientSession
 from loguru import logger
 
-from iftttie.core import Update
+from iftttie.context import Context
 from iftttie.services.base import BaseService
-from iftttie.types import Unit
+from iftttie.types import Unit, Update
 
 url = 'https://api.buienradar.nl/data/public/2.0/jsonfeed'
 headers = [('Cache-Control', 'no-cache')]
@@ -32,12 +31,12 @@ class Buienradar(BaseService):
         self.station_id = station_id
         self.interval = interval.total_seconds()
 
-    async def run(self, client_session: ClientSession, event_queue: Queue[Update], **kwargs: Any):
+    async def run(self, context: Context, **kwargs: Any):
         while True:
-            async with client_session.get(url, headers=headers) as response:
+            async with context.session.get(url, headers=headers) as response:
                 feed = await response.json()
             sunrise = parse_datetime(feed['actual']['sunrise'])
-            await event_queue.put(Update(
+            await context.on_event(Update(
                 key='buienradar:sunrise',
                 value=sunrise,
                 unit=Unit.DATETIME,
@@ -45,14 +44,14 @@ class Buienradar(BaseService):
                 id_=feed['actual']['sunrise'],
             ))
             sunset = parse_datetime(feed['actual']['sunset'])
-            await event_queue.put(Update(
+            await context.on_event(Update(
                 key='buienradar:sunset',
                 value=sunset,
                 unit=Unit.DATETIME,
                 title='Sunset',
                 id_=feed['actual']['sunset'],
             ))
-            await event_queue.put(Update(
+            await context.on_event(Update(
                 key='buienradar:day_length',
                 value=(sunset - sunrise),
                 unit=Unit.TIMEDELTA,
@@ -65,7 +64,7 @@ class Buienradar(BaseService):
                 logger.error('Station ID {} is not found.', e)
             else:
                 for source_key, target_key, unit, title in keys:
-                    await event_queue.put(Update(
+                    await context.on_event(Update(
                         key=f'buienradar:{self.station_id}:{target_key}',
                         value=measurement[source_key],
                         unit=unit,

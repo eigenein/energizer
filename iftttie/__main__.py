@@ -9,7 +9,7 @@ from aiohttp import ClientSession
 from loguru import logger
 
 from iftttie import web
-from iftttie.core import run_queue
+from iftttie.core import run_services
 from iftttie.database import init_database
 from iftttie.logging_ import init_logging
 from iftttie.utils import import_from_string
@@ -83,8 +83,14 @@ async def on_startup(app: web.Application):
     """Import configuration, run services and return async tasks."""
     app.context.db = init_database('db.sqlite3')
     app.context.session = await ClientSession(raise_for_status=True).__aenter__()
-    app.context.configuration = await import_configuration(app)
-    app.context.run_queue_task = app.loop.create_task(run_queue(app))
+    configuration = await import_configuration(app)
+    app.context.services = getattr(configuration, 'services', [])
+    if not app.context.services:
+        logger.critical('No services to run.')
+    app.context.on_update = getattr(configuration, 'on_update', None)
+    if app.context.on_update is None:
+        logger.warning('`on_update` is not defined in the configuration.')
+    app.context.run_services_task = app.loop.create_task(run_services(app))
 
 
 async def import_configuration(app: web.Application) -> Optional[ModuleType]:
@@ -99,9 +105,9 @@ async def import_configuration(app: web.Application) -> Optional[ModuleType]:
 
 async def on_cleanup(app: web.Application):
     """Cancel and close everything."""
-    logger.info('Stopping event queue…')
-    app.context.run_queue_task.cancel()
-    await app.context.run_queue_task
+    logger.info('Stopping services…')
+    app.context.run_services_task.cancel()
+    await app.context.run_services_task
     await app.context.session.close()
     app.context.db.close()
     logger.info('Event queue stopped.')

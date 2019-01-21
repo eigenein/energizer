@@ -1,18 +1,16 @@
 from __future__ import annotations
 
 from asyncio import sleep
-from asyncio.queues import Queue
 from datetime import timedelta
 from pathlib import Path
 from time import time
 from typing import Any, Optional
 
-from aiohttp import ClientSession
 from loguru import logger
 
-from iftttie.core import Update
+from iftttie.context import Context
 from iftttie.services.base import BaseService
-from iftttie.types import Unit
+from iftttie.types import Unit, Update
 
 
 class File(BaseService):
@@ -23,10 +21,10 @@ class File(BaseService):
         self.unit = unit
         self.title = title
 
-    async def run(self, client_session: ClientSession, event_queue: Queue[Update], **kwargs: Any):
+    async def run(self, context: Context, **kwargs: Any):
         while True:
             try:
-                await event_queue.put(Update(
+                await context.on_event(Update(
                     key=f'file:{self.key}',
                     value=self.preprocess_value(self.path.read_text()),
                     unit=self.unit,

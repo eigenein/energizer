@@ -1,20 +1,16 @@
 from __future__ import annotations
 
 import ssl
-from asyncio import Queue, Task
-from dataclasses import dataclass, field
-from sqlite3 import Connection
-from types import ModuleType
-from typing import Awaitable, Callable, Optional, Sequence, Tuple
+from typing import Any, Awaitable, Callable, Optional
 
 import pkg_resources
-from aiohttp import ClientSession, web
+from aiohttp import web
 from aiohttp_jinja2 import template
 
 from iftttie import templates
+from iftttie.context import Context
 from iftttie.database import select_latest
 from iftttie.decorators import authenticate_user
-from iftttie.types import Update
 
 routes = web.RouteTableDef()
 favicon_body = pkg_resources.resource_string('iftttie', 'static/favicon.png')
@@ -26,22 +22,11 @@ class Application(web.Application):
         self.context = context
 
 
-@dataclass
-class Context:
-    configuration_url: str
-    users: Sequence[Tuple[str, str]]
-    db: Optional[Connection] = None
-    session: Optional[ClientSession] = None
-    configuration: Optional[ModuleType] = None
-    run_queue_task: Optional[Task] = None
-    event_queue: Queue[Update] = field(default_factory=lambda: Queue(maxsize=1000))
-
-
 def start(
     ssl_context: Optional[ssl.SSLContext],
     context: Context,
-    on_startup: Callable[[Application], Awaitable[None]],
-    on_cleanup: Callable[[Application], Awaitable[None]],
+    on_startup: Callable[[Application], Awaitable[Any]],
+    on_cleanup: Callable[[Application], Awaitable[Any]],
 ):
     """Start the web app."""
     app = Application(context)

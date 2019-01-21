@@ -5,6 +5,8 @@
 - Fix: catch `TimeoutError` in `Nest`
 - Fix: #3 authenticate user for `/system/db.sqlite3` and `/view/{key}`
 - Chore: change `/system/db.sqlite3` to `/db.sqlite3`
+- Chore: subclass `web.Application` and provide `Context` class
+- Chore: get rid of the event queue, call `on_update` directly
 
 ### `0.6`
 

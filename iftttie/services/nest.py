@@ -1,19 +1,17 @@
 from __future__ import annotations
 
 import asyncio
-from asyncio import Queue
 from datetime import datetime
 from typing import Any, Iterable, List, Tuple
 
-from aiohttp import ClientSession
 from aiohttp_sse_client.client import EventSource, MessageEvent
 from loguru import logger
 from multidict import MultiDict
 from ujson import loads
 
-from iftttie.core import Update
+from iftttie.context import Context
 from iftttie.services.base import BaseService
-from iftttie.types import Unit
+from iftttie.types import Unit, Update
 
 url = 'https://developer-api.nest.com'
 headers = MultiDict([('Accept', 'text/event-stream')])
@@ -24,15 +22,15 @@ class Nest(BaseService):
     def __init__(self, token: str):
         self.token = token
 
-    async def run(self, client_session: ClientSession, event_queue: Queue[Update], **kwargs: Any):
+    async def run(self, context: Context, **kwargs: Any):
         while True:
             logger.debug('Listening to the stream…')
-            async with EventSource(url, params={'auth': self.token}, headers=headers, session=client_session) as source:
+            async with EventSource(url, params={'auth': self.token}, headers=headers, session=context.session) as source:
                 try:
                     async for event in source:
                         if event.type == 'put':
                             for update in yield_updates(event):
-                                await event_queue.put(update)
+                                await context.on_event(update)
                 except (ConnectionError, asyncio.TimeoutError) as e:
                     logger.error('Connection error: {}', e)
 
