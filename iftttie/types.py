@@ -23,12 +23,12 @@ class Unit(str, Enum):
 
 
 @dataclass
-class Update:
+class Event:
     # Key is similar to "channel" in other automation assistants.
     # It's a unique identifier of some observed value.
     key: str
 
-    # ID is used to de-duplicate updates for the same `key`.
+    # ID is used to de-duplicate events for the same `key`.
     # If the same key-ID pairs occur twice, they're treated as the same.
     # This has a huge impact on the database size.
     id_: str = field(default_factory=lambda: str(int(time())))

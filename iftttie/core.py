@@ -8,29 +8,29 @@ from aiohttp import ClientConnectorError
 from loguru import logger
 
 from iftttie import web
-from iftttie.services.base import BaseService
+from iftttie.channels.base import BaseChannel
 
 
-async def run_services(app: web.Application):
-    """Run services from the configuration."""
+async def run_channels(app: web.Application):
+    """Run channels from the configuration."""
 
-    logger.info('Running services…')
+    logger.info('Running channels…')
     with suppress(CancelledError):
-        await gather(*(run_service(app, service) for service in app.context.services))
+        await gather(*(run_channel(app, channel) for channel in app.context.channels))
 
 
-async def run_service(app: web.Application, service: BaseService):
+async def run_channel(app: web.Application, channel: BaseChannel):
     while True:
-        logger.info('Running {service}…', service=service)
+        logger.info('Running {channel}…', channel=channel)
         try:
-            await service.run(app.context)
+            await channel.run(app.context)
         except CancelledError:
-            logger.debug('Stopped service {service}.', service=service)
+            logger.debug('Stopped channel {channel}.', channel=channel)
             break
         except ClientConnectorError as e:
-            logger.error('{service} has raised a connection error:', service=service)
+            logger.error('{channel} has raised a connection error:', channel=channel)
             logger.error('{e}', e=e)
         except Exception as e:
-            logger.opt(exception=e).error('{service} has failed.', service=service)
+            logger.opt(exception=e).error('{channel} has failed.', channel=channel)
         logger.error('Restarting in a minute.')
         await sleep(60.0)

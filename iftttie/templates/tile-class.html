@@ -1,49 +1,49 @@
-{%- if update.unit == Unit.BOOLEAN -%}
-  {%- if update.value -%}
+{%- if event.unit == Unit.BOOLEAN -%}
+  {%- if event.value -%}
     is-success
   {%- else -%}
     is-danger
   {%- endif -%}
-{%- elif update.unit == Unit.CELSIUS -%}
-  {%- if update.value < 0.0 -%}
+{%- elif event.unit == Unit.CELSIUS -%}
+  {%- if event.value < 0.0 -%}
     is-link
-  {%- elif update.value < 10.0 -%}
+  {%- elif event.value < 10.0 -%}
     is-info
-  {%- elif update.value < 20.0 -%}
+  {%- elif event.value < 20.0 -%}
     is-primary
-  {%- elif update.value < 25.0 -%}
+  {%- elif event.value < 25.0 -%}
     is-success
-  {%- elif update.value < 30.0 -%}
+  {%- elif event.value < 30.0 -%}
     is-warning
   {%- else -%}
     is-danger
   {%- endif -%}
-{%- elif update.unit == Unit.RH -%}
-  {%- if update.value < 17.0 -%}
+{%- elif event.unit == Unit.RH -%}
+  {%- if event.value < 17.0 -%}
     is-link
-  {%- elif update.value < 34.0 -%}
+  {%- elif event.value < 34.0 -%}
     is-info
-  {%- elif update.value < 51.0 -%}
+  {%- elif event.value < 51.0 -%}
     is-primary
-  {%- elif update.value < 68.0 -%}
+  {%- elif event.value < 68.0 -%}
     is-success
-  {%- elif update.value < 85.0 -%}
+  {%- elif event.value < 85.0 -%}
     is-warning
   {%- else -%}
     is-danger
   {%- endif -%}
-{%- elif update.unit == Unit.BEAUFORT -%}
-  {%- if update.value == 0 -%}
+{%- elif event.unit == Unit.BEAUFORT -%}
+  {%- if event.value == 0 -%}
     is-light
-  {%- elif update.value == 1 -%}
+  {%- elif event.value == 1 -%}
     is-link
-  {%- elif update.value == 2 -%}
+  {%- elif event.value == 2 -%}
     is-info
-  {%- elif update.value == 3 -%}
+  {%- elif event.value == 3 -%}
     is-primary
-  {%- elif update.value == 4 -%}
+  {%- elif event.value == 4 -%}
     is-success
-  {%- elif update.value == 5 -%}
+  {%- elif event.value == 5 -%}
     is-warning
   {%- else -%}
     is-danger

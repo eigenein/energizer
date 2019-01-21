@@ -6,10 +6,10 @@ from typing import Any
 from iftttie import web
 
 
-class BaseService(metaclass=ABCMeta):
+class BaseChannel(metaclass=ABCMeta):
     @abstractmethod
     async def run(self, context: web.Context, **kwargs: Any):
         """
-        Runs the service. May raise unhandled exceptions.
+        Runs the channel. May raise unhandled exceptions.
         """
         raise NotImplementedError()

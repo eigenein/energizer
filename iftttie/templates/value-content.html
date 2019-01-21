@@ -1,29 +1,29 @@
-{% if update.unit == Unit.BOOLEAN %}
-  {% if update.value %}
+{% if event.unit == Unit.BOOLEAN %}
+  {% if event.value %}
     <i class="fas fa-toggle-on"></i> <span>yes</span>
   {% else %}
     <i class="fas fa-toggle-off"></i> <span>no</span>
   {% endif %}
-{% elif update.unit == Unit.CELSIUS %}
-  <i class="fas fa-thermometer-half"></i> {{ update.value|round(1) }}&nbsp;°C
-{% elif update.unit == Unit.RH %}
-  <i class="fas fa-water"></i> {{ update.value|round(1) }}%
-{% elif update.unit == Unit.IMAGE_URL %}
-  <figure class="image"><img src="{{ update.value }}" alt="Update image"></figure>
-{% elif update.unit == Unit.HPA %}
-  {{ update.value|round(1) }} hPa
-{% elif update.unit == Unit.BEAUFORT %}
-  <i class="fas fa-wind"></i> {{ update.value }} BFT
-{% elif update.unit == Unit.MPS %}
-  <i class="fas fa-tachometer-alt"></i> {{ update.value }} m/s
-{% elif update.unit == Unit.WATT %}
-  <i class="fas fa-plug"></i> {{ update.value }} W
-{% elif update.unit == Unit.ENUM %}
-  <i class="fas fa-list-ul"></i> {{ update.value }}
-{% elif update.unit == Unit.TIMEDELTA %}
-  <i class="fas fa-stopwatch"></i> {{ update.value }}
-{% elif update.unit == Unit.DATETIME %}
-  <i class="fas fa-clock"></i> {{ update.value|datetime }}
+{% elif event.unit == Unit.CELSIUS %}
+  <i class="fas fa-thermometer-half"></i> {{ event.value|round(1) }}&nbsp;°C
+{% elif event.unit == Unit.RH %}
+  <i class="fas fa-water"></i> {{ event.value|round(1) }}%
+{% elif event.unit == Unit.IMAGE_URL %}
+  <figure class="image"><img src="{{ event.value }}" alt="Update image"></figure>
+{% elif event.unit == Unit.HPA %}
+  {{ event.value|round(1) }} hPa
+{% elif event.unit == Unit.BEAUFORT %}
+  <i class="fas fa-wind"></i> {{ event.value }} BFT
+{% elif event.unit == Unit.MPS %}
+  <i class="fas fa-tachometer-alt"></i> {{ event.value }} m/s
+{% elif event.unit == Unit.WATT %}
+  <i class="fas fa-plug"></i> {{ event.value }} W
+{% elif event.unit == Unit.ENUM %}
+  <i class="fas fa-list-ul"></i> {{ event.value }}
+{% elif event.unit == Unit.TIMEDELTA %}
+  <i class="fas fa-stopwatch"></i> {{ event.value }}
+{% elif event.unit == Unit.DATETIME %}
+  <i class="fas fa-clock"></i> {{ event.value|datetime }}
 {% else %}
-  <i class="far fa-question-circle"></i> {{ update.value }}
+  <i class="far fa-question-circle"></i> {{ event.value }}
 {% endif %}

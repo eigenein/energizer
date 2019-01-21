@@ -8,7 +8,7 @@ from typing import List
 
 from loguru import logger
 
-from iftttie.types import Unit, Update
+from iftttie.types import Event, Unit
 
 
 def get_version(db: Connection) -> int:
@@ -38,31 +38,33 @@ def init_database(path: str) -> Connection:
     return db
 
 
-def insert_update(db: Connection, update: Update):
-    timestamp = update.timestamp.timestamp()
+def insert_event(db: Connection, event: Event):
+    timestamp = event.timestamp.timestamp()
+    value = dumps(event.value)
     with db, closing(db.cursor()) as cursor:
+        cursor.execute('''
+            INSERT OR REPLACE INTO `latest` (`key`, `id`, `value`, `timestamp`, `unit`, `title`)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', [event.key, event.id_, value, timestamp, event.unit.value, event.title])
         cursor.execute(
-            'INSERT OR REPLACE INTO `latest` (`key`, `value`, `timestamp`, `unit`, `title`) VALUES (?, ?, ?, ?, ?)',
-            [update.key, dumps(update.value), timestamp, update.unit.value, update.title],
-        )
-        cursor.execute(
-            'INSERT OR REPLACE INTO `log` (`key`, `update_id`, `timestamp`) VALUES (?, ?, ?)',
-            [update.key, str(update.id_), timestamp],
+            'INSERT OR REPLACE INTO `log` (`key`, `id`, `value`, `timestamp`) VALUES (?, ?, ?, ?)',
+            [event.key, str(event.id_), value, timestamp],
         )
 
 
-def select_latest(db: Connection) -> List[Update]:
+def select_latest(db: Connection) -> List[Event]:
     with closing(db.cursor()) as cursor:
         cursor.execute('''
-            SELECT `key`, `value`, `timestamp`, `unit`, `title` FROM `latest`
+            SELECT `key`, `id`, `value`, `timestamp`, `unit`, `title` FROM `latest`
             ORDER BY `unit`, `key`
         ''')
-        return [update_from_row(row) for row in cursor.fetchall()]
+        return [make_event(row) for row in cursor.fetchall()]
 
 
-def update_from_row(row: Row) -> Update:
-    return Update(
+def make_event(row: Row) -> Event:
+    return Event(
         key=row['key'],
+        id_=row['id'],
         value=loads(row['value']),
         timestamp=datetime.fromtimestamp(row['timestamp']).astimezone(),
         unit=Unit(row['unit']),
@@ -71,9 +73,8 @@ def update_from_row(row: Row) -> Update:
 
 
 migrations = [
+    # Initial schema.
     '''
-        -- Initial schema.
-
         CREATE TABLE IF NOT EXISTS `latest` (
             `key` TEXT PRIMARY KEY NOT NULL,
             `value` BLOB NOT NULL,
@@ -81,7 +82,6 @@ migrations = [
             `unit` TEXT NOT NULL,
             `title` TEXT NULL
         );
-
         CREATE TABLE IF NOT EXISTS `log` (
             `key` TEXT NOT NULL,
             `update_id` TEXT NOT NULL,
@@ -89,7 +89,27 @@ migrations = [
             PRIMARY KEY (`key`, `update_id`)
         );
         CREATE INDEX IF NOT EXISTS `log_timestamp` ON `log` (`timestamp`);
-
         PRAGMA user_version = 1;
+    ''',
+
+    # I forgot to add the `value` column. And also I need to rename `update_id`.
+    # This is early alpha, so just drop and re-create the table.
+    '''
+        DROP TABLE `log`;
+        CREATE TABLE IF NOT EXISTS `log` (
+            `key` TEXT NOT NULL,
+            `id` TEXT NOT NULL,
+            `value` BLOB NOT NULL,
+            `timestamp` REAL NOT NULL,
+            PRIMARY KEY (`key`, `id`)
+        );
+        CREATE INDEX IF NOT EXISTS `log_timestamp` ON `log` (`timestamp`);
+        PRAGMA user_version = 2;
+    ''',
+
+    # For consistency, let's add the `id` column to the `latest` table too.
+    '''
+        ALTER TABLE `latest` ADD COLUMN `id` TEXT NOT NULL DEFAULT '';
+        PRAGMA user_version = 3;
     ''',
 ]

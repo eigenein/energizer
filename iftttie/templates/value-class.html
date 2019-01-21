@@ -1,5 +1,5 @@
-{%- if update.unit == Unit.BOOLEAN -%}
+{%- if event.unit == Unit.BOOLEAN -%}
   is-uppercase
-{%- elif update.unit == Unit.ENUM -%}
+{%- elif event.unit == Unit.ENUM -%}
   is-uppercase
 {%- endif -%}

@@ -6,9 +6,9 @@ from typing import Any
 
 from loguru import logger
 
+from iftttie.channels.base import BaseChannel
 from iftttie.context import Context
-from iftttie.services.base import BaseService
-from iftttie.types import Unit, Update
+from iftttie.types import Event, Unit
 
 url = 'https://api.buienradar.nl/data/public/2.0/jsonfeed'
 headers = [('Cache-Control', 'no-cache')]
@@ -26,7 +26,7 @@ keys = (
 timestamp_format = '%Y-%m-%dT%H:%M:%S'
 
 
-class Buienradar(BaseService):
+class Buienradar(BaseChannel):
     def __init__(self, station_id: int, interval=timedelta(seconds=300.0)):
         self.station_id = station_id
         self.interval = interval.total_seconds()
@@ -36,7 +36,7 @@ class Buienradar(BaseService):
             async with context.session.get(url, headers=headers) as response:
                 feed = await response.json()
             sunrise = parse_datetime(feed['actual']['sunrise'])
-            await context.on_event(Update(
+            await context.trigger_event(Event(
                 key='buienradar:sunrise',
                 value=sunrise,
                 unit=Unit.DATETIME,
@@ -44,14 +44,14 @@ class Buienradar(BaseService):
                 id_=feed['actual']['sunrise'],
             ))
             sunset = parse_datetime(feed['actual']['sunset'])
-            await context.on_event(Update(
+            await context.trigger_event(Event(
                 key='buienradar:sunset',
                 value=sunset,
                 unit=Unit.DATETIME,
                 title='Sunset',
                 id_=feed['actual']['sunset'],
             ))
-            await context.on_event(Update(
+            await context.trigger_event(Event(
                 key='buienradar:day_length',
                 value=(sunset - sunrise),
                 unit=Unit.TIMEDELTA,
@@ -64,7 +64,7 @@ class Buienradar(BaseService):
                 logger.error('Station ID {} is not found.', e)
             else:
                 for source_key, target_key, unit, title in keys:
-                    await context.on_event(Update(
+                    await context.trigger_event(Event(
                         key=f'buienradar:{self.station_id}:{target_key}',
                         value=measurement[source_key],
                         unit=unit,

@@ -9,7 +9,7 @@ from aiohttp import ClientSession
 from loguru import logger
 
 from iftttie import web
-from iftttie.core import run_services
+from iftttie.core import run_channels
 from iftttie.database import init_database
 from iftttie.logging_ import init_logging
 from iftttie.utils import import_from_string
@@ -80,24 +80,25 @@ def main(
 
 
 async def on_startup(app: web.Application):
-    """Import configuration, run services and return async tasks."""
+    """Import configuration, run channels and return async tasks."""
     app.context.db = init_database('db.sqlite3')
     app.context.session = await ClientSession(raise_for_status=True).__aenter__()
     configuration = await import_configuration(app)
-    app.context.services = getattr(configuration, 'services', [])
-    if not app.context.services:
-        logger.critical('No services to run.')
-    app.context.on_update = getattr(configuration, 'on_update', None)
-    if app.context.on_update is None:
-        logger.warning('`on_update` is not defined in the configuration.')
-    app.context.run_services_task = app.loop.create_task(run_services(app))
+    app.context.channels = getattr(configuration, 'channels', [])
+    if not app.context.channels:
+        logger.error('No channels to run.')
+    app.context.on_event = getattr(configuration, 'on_event', None)
+    if app.context.on_event is None:
+        logger.error('`on_event` is not defined in the configuration.')
+    app.context.run_channels_task = app.loop.create_task(run_channels(app))
 
 
 async def import_configuration(app: web.Application) -> Optional[ModuleType]:
     """Download and import configuration."""
-    logger.info('Importing configuration from {}...', app.context.configuration_url)
+    context = app.context
+    logger.info('Importing configuration from {}...', context.configuration_url)
     try:
-        async with app.context.session.get(app.context.configuration_url, headers=[('Cache-Control', 'no-cache')]) as response:
+        async with context.session.get(context.configuration_url, headers=[('Cache-Control', 'no-cache')]) as response:
             return import_from_string('configuration', await response.text())
     except Exception as e:
         logger.error('Failed to import configuration: "{e}".', e=e)
@@ -105,9 +106,9 @@ async def import_configuration(app: web.Application) -> Optional[ModuleType]:
 
 async def on_cleanup(app: web.Application):
     """Cancel and close everything."""
-    logger.info('Stopping services…')
-    app.context.run_services_task.cancel()
-    await app.context.run_services_task
+    logger.info('Stopping channels…')
+    app.context.run_channels_task.cancel()
+    await app.context.run_channels_task
     await app.context.session.close()
     app.context.db.close()
     logger.info('Event queue stopped.')

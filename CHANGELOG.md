@@ -7,6 +7,7 @@
 - Chore: change `/system/db.sqlite3` to `/db.sqlite3`
 - Chore: subclass `web.Application` and provide `Context` class
 - Chore: get rid of the event queue, call `on_update` directly
+- Chore: #15 rename to channels and events
 
 ### `0.6`
 

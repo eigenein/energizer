@@ -9,16 +9,16 @@ from loguru import logger
 from multidict import MultiDict
 from ujson import loads
 
+from iftttie.channels.base import BaseChannel
 from iftttie.context import Context
-from iftttie.services.base import BaseService
-from iftttie.types import Unit, Update
+from iftttie.types import Event, Unit
 
 url = 'https://developer-api.nest.com'
 headers = MultiDict([('Accept', 'text/event-stream')])
 timestamp_format = '%Y-%m-%dT%H:%M:%S.%f%z'
 
 
-class Nest(BaseService):
+class Nest(BaseChannel):
     def __init__(self, token: str):
         self.token = token
 
@@ -27,10 +27,10 @@ class Nest(BaseService):
             logger.debug('Listening to the stream…')
             async with EventSource(url, params={'auth': self.token}, headers=headers, session=context.session) as source:
                 try:
-                    async for event in source:
-                        if event.type == 'put':
-                            for update in yield_updates(event):
-                                await context.on_event(update)
+                    async for server_event in source:
+                        if server_event.type == 'put':
+                            for event in yield_events(server_event):
+                                await context.trigger_event(event)
                 except (ConnectionError, asyncio.TimeoutError) as e:
                     logger.error('Connection error: {}', e)
 
@@ -38,34 +38,34 @@ class Nest(BaseService):
         return f'{Nest.__name__}(token="{self.token[:4]}…{self.token[-4:]}")'
 
 
-def yield_updates(event: MessageEvent) -> Iterable[Update]:
+def yield_events(event: MessageEvent) -> Iterable[Event]:
     data: dict = loads(event.data)['data']
     devices: dict = data['devices']
 
-    yield from yield_devices_updates(data['structures'], 'nest:structure', [
+    yield from yield_devices_events(data['structures'], 'nest:structure', [
         ('away', Unit.ENUM, 'Away'),
         ('wwn_security_state', Unit.ENUM, 'Security State'),
     ])
-    yield from yield_devices_updates(devices['cameras'], 'nest:camera', [
+    yield from yield_devices_events(devices['cameras'], 'nest:camera', [
         ('is_streaming', Unit.BOOLEAN, 'Streaming'),
         ('is_online', Unit.BOOLEAN, 'Online'),
         ('snapshot_url', Unit.IMAGE_URL, 'Snapshot'),
     ])
-    yield from yield_devices_updates(devices['thermostats'], 'nest:thermostat', [
+    yield from yield_devices_events(devices['thermostats'], 'nest:thermostat', [
         ('ambient_temperature_c', Unit.CELSIUS, 'Ambient Temperature'),
         ('humidity', Unit.RH, 'Humidity'),
         ('is_online', Unit.BOOLEAN, 'Online'),
         ('hvac_state', Unit.ENUM, 'HVAC'),
         ('target_temperature_c', Unit.CELSIUS, 'Target Temperature'),
     ])
-    yield from yield_devices_updates(devices['smoke_co_alarms'], 'nest:smoke_co_alarm', [
+    yield from yield_devices_events(devices['smoke_co_alarms'], 'nest:smoke_co_alarm', [
         ('is_online', Unit.BOOLEAN, 'Online'),
     ])
 
     for camera_id, camera in devices['cameras'].items():
         last_event = camera.get('last_event')
         if last_event:
-            yield Update(
+            yield Event(
                 key=f'nest:camera:{camera_id}:last_animated_image_url',
                 value=last_event['animated_image_url'],
                 unit=Unit.IMAGE_URL,
@@ -75,10 +75,10 @@ def yield_updates(event: MessageEvent) -> Iterable[Update]:
             )
 
 
-def yield_devices_updates(devices: dict, prefix: str, keys: List[Tuple[str, Unit, str]]) -> Iterable[Update]:
+def yield_devices_events(devices: dict, prefix: str, keys: List[Tuple[str, Unit, str]]) -> Iterable[Event]:
     for id_, device in devices.items():
         for key, unit, title in keys:
-            yield Update(
+            yield Event(
                 key=f'{prefix}:{id_}:{key}',
                 value=device[key],
                 unit=unit,

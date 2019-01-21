@@ -8,12 +8,12 @@ from typing import Any, Optional
 
 from loguru import logger
 
+from iftttie.channels.base import BaseChannel
 from iftttie.context import Context
-from iftttie.services.base import BaseService
-from iftttie.types import Update
+from iftttie.types import Event
 
 
-class Clock(BaseService):
+class Clock(BaseChannel):
     def __init__(self, key: str, interval: timedelta, title: Optional[str] = None):
         self.key = key
         self.interval = interval.total_seconds()
@@ -23,7 +23,7 @@ class Clock(BaseService):
         for i in count(start=1):
             logger.trace('Sleeping for {interval} seconds…', interval=self.interval)
             await sleep(self.interval)
-            await context.on_event(Update(key=f'clock:{self.key}', value=i, title=self.title, id_=str(time())))
+            await context.trigger_event(Event(key=f'clock:{self.key}', value=i, title=self.title, id_=str(time())))
 
     def __str__(self) -> str:
         return f'Clock(key={self.key!r}, interval={self.interval!r}, title={self.title!r})'

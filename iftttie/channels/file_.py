@@ -8,12 +8,12 @@ from typing import Any, Optional
 
 from loguru import logger
 
+from iftttie.channels.base import BaseChannel
 from iftttie.context import Context
-from iftttie.services.base import BaseService
-from iftttie.types import Unit, Update
+from iftttie.types import Event, Unit
 
 
-class File(BaseService):
+class File(BaseChannel):
     def __init__(self, path: Path, key: str, interval: timedelta, unit: Unit, title: Optional[str] = None):
         self.path = path
         self.key = key
@@ -24,7 +24,7 @@ class File(BaseService):
     async def run(self, context: Context, **kwargs: Any):
         while True:
             try:
-                await context.on_event(Update(
+                await context.trigger_event(Event(
                     key=f'file:{self.key}',
                     value=self.preprocess_value(self.path.read_text()),
                     unit=self.unit,
@@ -32,7 +32,7 @@ class File(BaseService):
                     id_=str(time()),
                 ))
             except IOError as e:
-                logger.error('I/O error in {service}:', service=self)
+                logger.error('I/O error in {channel}:', channel=self)
                 logger.error('{e}', e=e)
             logger.debug('Next reading in {interval} seconds.', interval=self.interval)
             await sleep(self.interval)
@@ -51,6 +51,3 @@ class FloatValueFile(File):
 
     def preprocess_value(self, value: str):
         return float(value.strip()) * self.scale
-
-
-FloatFile = FloatValueFile  # FIXME: deprecated name.
