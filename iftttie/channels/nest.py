@@ -21,11 +21,12 @@ timestamp_format = '%Y-%m-%dT%H:%M:%S.%f%z'
 class Nest(BaseChannel):
     def __init__(self, token: str):
         self.token = token
+        self.params = {'auth': self.token}
 
     async def run(self, context: Context, **kwargs: Any):
         while True:
             logger.debug('Listening to the stream…')
-            async with EventSource(url, params={'auth': self.token}, headers=headers, session=context.session) as source:
+            async with EventSource(url, params=self.params, headers=headers, session=context.session) as source:
                 try:
                     async for server_event in source:
                         if server_event.type == 'put':

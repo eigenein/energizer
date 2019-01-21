@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='iftttie',
-    version='0.6',
+    version='0.7',
     author='Pavel Perestoronin',
     author_email='eigenein@gmail.com',
     description='Yet another home assistant',
@@ -34,7 +34,7 @@ setuptools.setup(
         ],
     },
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'Environment :: Console',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
