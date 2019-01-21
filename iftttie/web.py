@@ -1,25 +1,64 @@
 from __future__ import annotations
 
+import ssl
+from asyncio import Queue, Task
+from dataclasses import dataclass, field
 from sqlite3 import Connection
+from types import ModuleType
+from typing import Awaitable, Callable, Optional, Sequence, Tuple
 
 import pkg_resources
-from aiohttp import web
+from aiohttp import ClientSession, web
 from aiohttp_jinja2 import template
 
+from iftttie import templates
 from iftttie.database import select_latest
 from iftttie.decorators import authenticate_user
+from iftttie.types import Update
 
 routes = web.RouteTableDef()
 favicon_body = pkg_resources.resource_string('iftttie', 'static/favicon.png')
+
+
+class Application(web.Application):
+    def __init__(self, context: Context):
+        super().__init__()
+        self.context = context
+
+
+@dataclass
+class Context:
+    configuration_url: str
+    users: Sequence[Tuple[str, str]]
+    db: Optional[Connection] = None
+    session: Optional[ClientSession] = None
+    configuration: Optional[ModuleType] = None
+    run_queue_task: Optional[Task] = None
+    event_queue: Queue[Update] = field(default_factory=lambda: Queue(maxsize=1000))
+
+
+def start(
+    ssl_context: Optional[ssl.SSLContext],
+    context: Context,
+    on_startup: Callable[[Application], Awaitable[None]],
+    on_cleanup: Callable[[Application], Awaitable[None]],
+):
+    """Start the web app."""
+    app = Application(context)
+    app.on_startup.append(on_startup)
+    app.on_cleanup.append(on_cleanup)
+    app.add_routes(routes)
+
+    templates.setup(app)
+
+    web.run_app(app, port=8443, ssl_context=ssl_context, print=None)
 
 
 @routes.get('/', name='index')
 @template('index.html')
 @authenticate_user
 async def index(request: web.Request) -> dict:
-    db: Connection = request.app['db']
-
-    updates = select_latest(db)
+    updates = select_latest(request.app.context.db)
     return {
         'updates': updates,
     }
@@ -29,7 +68,6 @@ async def index(request: web.Request) -> dict:
 @template('view.html')
 @authenticate_user
 async def view(request: web.Request) -> dict:
-    # TODO: db: aiosqlite.Connection = request.app['db']
     # TODO: key: str = request.match_info['key']
 
     raise NotImplementedError()
@@ -56,5 +94,5 @@ async def manifest(_: web.Request) -> web.Response:
 
 @routes.get('/db.sqlite3')
 @authenticate_user
-async def download(_: web.Request) -> web.Response:
+async def download_db(_: web.Request) -> web.Response:
     return web.FileResponse('db.sqlite3')

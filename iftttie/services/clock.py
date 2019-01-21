@@ -9,7 +9,7 @@ from typing import Any, Optional
 from aiohttp import ClientSession
 from loguru import logger
 
-from iftttie.dataclasses_ import Update
+from iftttie.core import Update
 from iftttie.services.base import BaseService
 
 

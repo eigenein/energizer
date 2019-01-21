@@ -4,7 +4,7 @@ import aiohttp_jinja2
 from aiohttp.web_app import Application
 from jinja2 import PackageLoader, select_autoescape
 
-from iftttie.enums import Unit
+from iftttie.types import Unit
 
 
 def setup(app: Application):

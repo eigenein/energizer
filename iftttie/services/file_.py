@@ -10,9 +10,9 @@ from typing import Any, Optional
 from aiohttp import ClientSession
 from loguru import logger
 
-from iftttie.dataclasses_ import Update
-from iftttie.enums import Unit
+from iftttie.core import Update
 from iftttie.services.base import BaseService
+from iftttie.types import Unit
 
 
 class File(BaseService):

@@ -7,9 +7,9 @@ from typing import Any
 from aiohttp import ClientSession
 from loguru import logger
 
-from iftttie.dataclasses_ import Update
-from iftttie.enums import Unit
+from iftttie.core import Update
 from iftttie.services.base import BaseService
+from iftttie.types import Unit
 
 url = 'https://api.buienradar.nl/data/public/2.0/jsonfeed'
 headers = [('Cache-Control', 'no-cache')]

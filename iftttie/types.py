@@ -2,10 +2,24 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
+from enum import Enum
 from time import time
 from typing import Any, Optional
 
-from iftttie.enums import Unit
+
+class Unit(str, Enum):
+    BEAUFORT = 'BEAUFORT'
+    BOOLEAN = 'BOOLEAN'
+    CELSIUS = 'CELSIUS'
+    DATETIME = 'DATETIME'
+    ENUM = 'ENUM'
+    HPA = 'HPA'  # hPa
+    RH = 'RH'  # relative humidity
+    IMAGE_URL = 'IMAGE_URL'
+    MPS = 'MPS'  # m/s
+    OTHER = 'OTHER'
+    TIMEDELTA = 'TIMEDELTA'
+    WATT = 'WATT'
 
 
 @dataclass

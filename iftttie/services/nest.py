@@ -11,9 +11,9 @@ from loguru import logger
 from multidict import MultiDict
 from ujson import loads
 
-from iftttie.dataclasses_ import Update
-from iftttie.enums import Unit
+from iftttie.core import Update
 from iftttie.services.base import BaseService
+from iftttie.types import Unit
 
 url = 'https://developer-api.nest.com'
 headers = MultiDict([('Accept', 'text/event-stream')])

@@ -8,8 +8,7 @@ from typing import List
 
 from loguru import logger
 
-from iftttie.dataclasses_ import Update
-from iftttie.enums import Unit
+from iftttie.types import Unit, Update
 
 
 def get_version(db: Connection) -> int:

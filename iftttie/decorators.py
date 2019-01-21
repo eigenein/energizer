@@ -31,7 +31,7 @@ def authenticate_user(handler: THandler[T]):
         except ValueError:
             raise HTTPUnauthorized(text='Invalid authorization header', headers=headers)
 
-        for login, hash_ in request.app['users']:
+        for login, hash_ in request.app.context.users:
             if login != auth.login:
                 continue
             try:

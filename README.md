@@ -132,7 +132,7 @@ At its (re-)start, IFTTTie imports the configuration module. Then, it starts all
 The following function from the imported module will be run for every update:
 
 ```python
-from iftttie.dataclasses_ import Update
+from iftttie.types import Update
 
 
 # Name must be `on_update`.
@@ -149,10 +149,10 @@ LIVING_ROOM_CAMERA_ID = ...
 
 from datetime import timedelta
 
-from iftttie.dataclasses_ import Update
 from iftttie.services.buienradar import Buienradar
 from iftttie.services.clock import Clock
 from iftttie.services.nest import Nest
+from iftttie.types import Update
 
 nest = Nest(NEST_TOKEN)
 clock = Clock('hello', timedelta(seconds=1.0))
@@ -185,7 +185,7 @@ display_name = {
 
 ## Python API
 
-### `iftttie.dataclasses_.Update`
+### `iftttie.core_.Update`
 
 #### `key: str`
 
@@ -284,7 +284,7 @@ Periodically yields contents of the specified file.
 from datetime import timedelta
 from pathlib import Path
 
-from iftttie.enums import Unit
+from iftttie.types import Unit
 
 
 def __init__(self, path: Path, key: str, interval: timedelta, unit: Unit):
@@ -299,7 +299,7 @@ Periodically yields floating-point value from the specified file.
 from datetime import timedelta
 from pathlib import Path
 
-from iftttie.enums import Unit
+from iftttie.types import Unit
 
 
 def __init__(self, path: Path, key: str, interval: timedelta, unit: Unit, scale=1.0):
@@ -312,8 +312,8 @@ def __init__(self, path: Path, key: str, interval: timedelta, unit: Unit, scale=
 from datetime import timedelta
 from pathlib import Path
 
-from iftttie.enums import Unit
 from iftttie.services.file_ import FloatValueFile
+from iftttie.types import Unit
 
 cpu_temperature = FloatValueFile(
     Path('/sys/class/thermal/thermal_zone0/temp'), 

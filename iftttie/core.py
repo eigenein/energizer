@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-from asyncio.queues import Queue
 from asyncio.tasks import gather, sleep
 from concurrent.futures import CancelledError
 from contextlib import suppress
 from typing import Awaitable, Callable, Iterable, NoReturn, Optional
 
-from aiohttp import ClientConnectorError, ClientSession, web
+from aiohttp import ClientConnectorError
 from loguru import logger
 
+from iftttie import web
 from iftttie.database import insert_update
-from iftttie.dataclasses_ import Update
 from iftttie.services.base import BaseService
+from iftttie.types import Update
 from iftttie.utils import iterate_queue
 
 
@@ -19,7 +19,7 @@ async def run_services(app: web.Application):
     """Run services from the configuration."""
 
     logger.info('Running services…')
-    services: Iterable[BaseService] = getattr(app['configuration'], 'services', [])
+    services: Iterable[BaseService] = getattr(app.context.configuration, 'services', [])
     if services:
         await gather(*(run_service(app, service) for service in services))
     else:
@@ -27,13 +27,10 @@ async def run_services(app: web.Application):
 
 
 async def run_service(app: web.Application, service: BaseService):
-    client_session: ClientSession = app['client_session']
-    event_queue: Queue[Update] = app['event_queue']
-
     while True:
         logger.info('Running {service}…', service=service)
         try:
-            await service.run(client_session, event_queue, app=app)
+            await service.run(app.context.session, app.context.event_queue, app=app)
         except CancelledError:
             logger.debug('Stopped service {service}.', service=service)
             break
@@ -55,15 +52,14 @@ async def run_queue(app: web.Application) -> NoReturn:
 
 async def handle_updates(app: web.Application):
     """Handle updates from the queue."""
-    queue: Queue[Update] = app['event_queue']
-    on_update: Optional[Callable[[Update], Awaitable]] = getattr(app['configuration'], 'on_update', None)
+    on_update: Optional[Callable[[Update], Awaitable]] = getattr(app.context.configuration, 'on_update', None)
 
     if on_update is None:
         logger.warning('`on_update` is not defined in the configuration.')
 
-    async for update in iterate_queue(queue):
+    async for update in iterate_queue(app.context.event_queue):
         logger.success('{key} = {value!r}', key=update.key, value=update.value)
-        insert_update(app['db'], update)
+        insert_update(app.context.db, update)
         if on_update is None:
             continue
         try:

@@ -6,7 +6,7 @@ from typing import Any
 
 from aiohttp import ClientSession
 
-from iftttie.dataclasses_ import Update
+from iftttie.types import Update
 
 
 class BaseService(metaclass=ABCMeta):
