@@ -8,6 +8,7 @@
     <Python>
       <option name="ALIGN_COLLECTIONS_AND_COMPREHENSIONS" value="false" />
       <option name="ALIGN_MULTILINE_IMPORTS" value="false" />
+      <option name="OPTIMIZE_IMPORTS_SORT_NAMES_IN_FROM_IMPORTS" value="true" />
     </Python>
     <codeStyleSettings language="HTML">
       <indentOptions>

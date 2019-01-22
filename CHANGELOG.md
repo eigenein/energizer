@@ -1,3 +1,7 @@
+### `latest`
+
+- Feat: #13 pass old value and all the current values to `on_event`
+
 ### `0.7`
 
 - Fix: #3 fix `hash-password` output

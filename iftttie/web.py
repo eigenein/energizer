@@ -43,9 +43,8 @@ def start(
 @template('index.html')
 @authenticate_user
 async def index(request: web.Request) -> dict:
-    events = select_latest(request.app.context.db)
     return {
-        'events': events,
+        'events': request.app.context.latest_events.values(),
     }
 
 

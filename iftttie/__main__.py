@@ -82,21 +82,25 @@ def main(
 async def on_startup(app: web.Application):
     """Import configuration, run channels and return async tasks."""
     app.context.db = init_database('db.sqlite3')
+    app.context.preload_latest_events()
     app.context.session = await ClientSession(raise_for_status=True).__aenter__()
     configuration = await import_configuration(app)
+
     app.context.channels = getattr(configuration, 'channels', [])
     if not app.context.channels:
         logger.error('No channels to run.')
+
     app.context.on_event = getattr(configuration, 'on_event', None)
     if app.context.on_event is None:
         logger.error('`on_event` is not defined in the configuration.')
+
     app.context.run_channels_task = app.loop.create_task(run_channels(app))
 
 
 async def import_configuration(app: web.Application) -> Optional[ModuleType]:
     """Download and import configuration."""
     context = app.context
-    logger.info('Importing configuration from {}...', context.configuration_url)
+    logger.info('Importing configuration from {}', context.configuration_url)
     try:
         async with context.session.get(context.configuration_url, headers=[('Cache-Control', 'no-cache')]) as response:
             return import_from_string('configuration', await response.text())
@@ -109,9 +113,10 @@ async def on_cleanup(app: web.Application):
     logger.info('Stopping channels…')
     app.context.run_channels_task.cancel()
     await app.context.run_channels_task
+    logger.info('Channels stopped.')
     await app.context.session.close()
     app.context.db.close()
-    logger.info('Event queue stopped.')
+    logger.info('Cleaned up.')
 
 
 if __name__ == '__main__':

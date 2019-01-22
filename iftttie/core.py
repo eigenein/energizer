@@ -14,7 +14,7 @@ from iftttie.channels.base import BaseChannel
 async def run_channels(app: web.Application):
     """Run channels from the configuration."""
 
-    logger.info('Running channels…')
+    logger.success('Running channels…')
     with suppress(CancelledError):
         await gather(*(run_channel(app, channel) for channel in app.context.channels))
 
@@ -25,7 +25,7 @@ async def run_channel(app: web.Application, channel: BaseChannel):
         try:
             await channel.run(app.context)
         except CancelledError:
-            logger.debug('Stopped channel {channel}.', channel=channel)
+            logger.info('Stopped channel {channel}.', channel=channel)
             break
         except ClientConnectorError as e:
             logger.error('{channel} has raised a connection error:', channel=channel)
@@ -33,4 +33,4 @@ async def run_channel(app: web.Application, channel: BaseChannel):
         except Exception as e:
             logger.opt(exception=e).error('{channel} has failed.', channel=channel)
         logger.error('Restarting in a minute.')
-        await sleep(60.0)
+        await sleep(60.0)  # TODO: something smarter.
