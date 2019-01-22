@@ -9,7 +9,6 @@ from aiohttp_jinja2 import template
 
 from iftttie import templates
 from iftttie.context import Context
-from iftttie.database import select_latest
 from iftttie.decorators import authenticate_user
 
 routes = web.RouteTableDef()
