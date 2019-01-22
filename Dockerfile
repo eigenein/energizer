@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir --no-deps /tmp/iftttie && rm -r /tmp/iftttie
 RUN mkdir /app && touch /app/db.sqlite3 && chown -R nobody:nogroup /app
 WORKDIR /app
 
-USER root
+USER nobody:nogroup
 EXPOSE 8443
 STOPSIGNAL SIGINT
 ENTRYPOINT ["iftttie"]
