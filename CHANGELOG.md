@@ -1,3 +1,7 @@
+### `latest`
+
+- Chore: #19 run unit tests in Docker, preparation work
+
 ### `0.7`
 
 - Fix: #3 fix `hash-password` output
