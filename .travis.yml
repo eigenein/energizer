@@ -4,10 +4,9 @@ dist: xenial
 python: '3.7'
 services:
   - docker
-before_install:
+script:
   - docker pull python:3.7
   - docker pull eigenein/iftttie:latest
-script:
   - docker build -t eigenein/iftttie .
   - docker run --rm --entrypoint pytest eigenein/iftttie:latest -p no:cacheprovider --pyargs tests
   - flake8 iftttie
