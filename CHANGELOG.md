@@ -1,3 +1,7 @@
+### `latest`
+
+- Chore: #16 use `USER root` in order to be able to run `hcitool`
+
 ### `0.7`
 
 - Fix: #3 fix `hash-password` output
