@@ -26,10 +26,10 @@ There're multiple reasons why I didn't like them:
 
 ## Configuration
 
-IFTTTie reads its configuration from a single file. And there're two important things:
+IFTTTie reads its configuration from a single Python file. And there're two important things to know about it:
 
-- It's **non-local**. You pass a **URL** via command line parameter or environment variable. IFTTTie loads the file when (re-)started. Think here of a secret [Gist](https://gist.github.com/) URL, for example. **Never share your configuration publicly as soon as it contains any credentials.**
-- It's a **Python module**. You can write any valid Python code in there. IFTTTie Python API is described further. **Don't blindly trust others' code.**
+- It's **non-local**. You pass an **URL** via the command line option or the environment variable. IFTTTie loads the file when (re-)started. Think here of a secret [Gist](https://gist.github.com/) URL, for example. **Never share your configuration publicly as soon as it contains any credentials.**
+- You can write any valid Python code in there. **Don't blindly trust others' code.**
 
 ## Running
 
@@ -56,11 +56,7 @@ Options:
 
 ### Docker
 
-```bash
-docker run -it --rm eigenein/iftttie iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw
-```
-
-The image supports running on Raspberry Pi out-of-the-box. With useful flags:
+The image supports running on Raspberry Pi out-of-the-box:
 
 ```bash
 docker volume create iftttie
@@ -96,4 +92,39 @@ services:
       IFTTTIE_CERT_PATH: 'cert.pem'
       IFTTTIE_KEY_PATH: 'privkey.pem'
       IFTTTIE_USERS: '<login> <password-hash>'
+```
+
+## Recipes
+
+### If new Nest Cam event occurred, then send an animation to Telegram
+
+```python
+TELEGRAM_TOKEN = ...
+TELEGRAM_CHAT_ID = ...
+
+from typing import Any, Dict, Optional
+
+from aiohttp import ClientSession
+
+from iftttie.actions.telegram import send_animation
+from iftttie.types import Event
+
+
+async def on_event(
+    event: Event, 
+    old_event: Optional[Event], 
+    latest_events: Dict[str, Event],
+    session: ClientSession,
+    *args: Any, 
+    **kwargs: Any,
+):
+    if event.key.endswith(':last_animated_image_url') and (old_event is None or event.timestamp != old_event.timestamp):
+        await send_animation(
+            session=session, 
+            token=TELEGRAM_TOKEN, 
+            chat_id=TELEGRAM_CHAT_ID, 
+            animation=event.value,
+            disable_notification=True,
+            caption=event.title,
+        )
 ```

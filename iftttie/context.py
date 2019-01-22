@@ -34,7 +34,7 @@ class Context:
     channels: Iterable[BaseChannel] = ()
 
     # User's event handler.
-    on_event: Callable[[Event, Optional[Event], Dict[str, Event], ...], Awaitable[Any]] = None
+    on_event: Callable[..., Awaitable[Any]] = None
 
     # Latest events cache.
     latest_events: Dict[str, Event] = field(default_factory=dict)
@@ -54,6 +54,11 @@ class Context:
         if self.on_event is None:
             return
         try:
-            await self.on_event(event=event, old_event=old_event, latest_events=self.latest_events)
+            await self.on_event(
+                event=event,
+                old_event=old_event,
+                latest_events=self.latest_events,
+                session=self.session,
+            )
         except Exception as e:
             logger.opt(exception=e).error('Error while handling the event.')
