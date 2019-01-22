@@ -7,6 +7,8 @@ Yet another home automation service.
 ![Version](https://img.shields.io/pypi/v/iftttie.svg)
 ![Docker Pulls](https://img.shields.io/docker/pulls/eigenein/iftttie.svg)
 ![License](https://img.shields.io/github/license/eigenein/iftttie.svg)
+![Open issues](https://img.shields.io/github/issues-raw/eigenein/iftttie.svg)
+![Closed issues](https://img.shields.io/github/issues-closed-raw/eigenein/iftttie.svg)
 
 ## Web interface
 
