@@ -33,8 +33,6 @@ IFTTTie reads its configuration from a single Python file. And there're two impo
 
 ## Running
 
-Web server listens to the port `8443`.
-
 ### Locally
 
 ```text
