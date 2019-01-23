@@ -64,7 +64,7 @@ docker run \
     --detach \
     --restart always \
     --name iftttie \
-    -p 8443:8443 \
+    --net host \
     -v iftttie:/app \
     -v /etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro \
     -v /etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro \
@@ -80,8 +80,7 @@ services:
   iftttie:
     image: eigenein/iftttie:latest
     restart: always
-    ports:
-    - '443:8443'
+    network_mode: 'host'
     volumes:
     - '/home/pi/iftttie.sqlite3:/app/db.sqlite3'
     - '/etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro'
@@ -92,6 +91,7 @@ services:
       IFTTTIE_CONFIGURATION_URL: 'https://gist.githubusercontent.com/user/repo/raw'
       IFTTTIE_CERT_PATH: 'cert.pem'
       IFTTTIE_KEY_PATH: 'privkey.pem'
+      IFTTTIE_PORT: 443
 ```
 
 ## Recipes

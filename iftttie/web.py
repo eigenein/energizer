@@ -6,6 +6,7 @@ from typing import Any, Awaitable, Callable, Optional
 import pkg_resources
 from aiohttp import web
 from aiohttp_jinja2 import template
+from loguru import logger
 
 from iftttie import templates
 from iftttie.context import Context
@@ -23,6 +24,7 @@ class Application(web.Application):
 
 def start(
     ssl_context: Optional[ssl.SSLContext],
+    port: int,
     context: Context,
     on_startup: Callable[[Application], Awaitable[Any]],
     on_cleanup: Callable[[Application], Awaitable[Any]],
@@ -35,7 +37,8 @@ def start(
 
     templates.setup(app)
 
-    web.run_app(app, port=8443, ssl_context=ssl_context, print=None)
+    logger.success('Using port {}.', port)
+    web.run_app(app, port=port, ssl_context=ssl_context, print=None)
 
 
 @routes.get('/', name='index')

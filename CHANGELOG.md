@@ -6,6 +6,7 @@
 - Chore: upgrade `loguru`
 - Feat: set network capabilities for Python binary
 - Change: move users to the configuration module
+- Feat: specify port via command-line option or environment variable
 
 ### `0.7`
 

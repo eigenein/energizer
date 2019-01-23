@@ -45,11 +45,21 @@ from iftttie.web import Context
     show_envvar=True,
     help='Logging verbosity.',
 )
+@click.option(
+    'port', '-p', '--port',
+    type=int,
+    envvar='IFTTTIE_PORT',
+    show_envvar=True,
+    default=8443,
+    show_default=True,
+    help='Web interface and webhook API port.',
+)
 def main(
     configuration_url: str,
     cert_path: Optional[str],
     key_path: Optional[str],
     verbosity: int,
+    port: int,
 ):
     """
     Yet another home automation service.
@@ -65,7 +75,7 @@ def main(
         logger.warning('Server certificate is not specified.')
         ssl_context = None
 
-    web.start(ssl_context, Context(configuration_url=configuration_url), on_startup, on_cleanup)
+    web.start(ssl_context, port, Context(configuration_url=configuration_url), on_startup, on_cleanup)
     logger.success('IFTTTie stopped.')
 
 
