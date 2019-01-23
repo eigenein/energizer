@@ -52,13 +52,9 @@ def hash_password(password: str):
     hash_ = hasher.hash(password)
 
     echo()
-    echo(style("Success! Use this option to run `iftttie`:", fg="green"))
-    echo(style(f"-u <login> '{hash_}'", fg="yellow"))
+    echo(style('Success! Put the following to your configuration module:', fg='green'))
     echo()
-    echo(f'Example {style("docker-compose.yml", fg="blue")} entry:')
-    echo()
-    echo(style('    environment:', fg='yellow'))
-    echo(style(f"      IFTTTIE_USERS: '<login> {hash_.replace('$', '$$')}'", fg='yellow'))
+    echo(style(f"USERS = [\n    ('username', '{hash_}'),\n]", fg="yellow"))
     echo()
 
 

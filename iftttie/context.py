@@ -18,8 +18,9 @@ class Context:
     # Configuration URL passed via the command line option.
     configuration_url: str
 
-    # Users credentials passed via the command line options.
-    users: Sequence[Tuple[str, str]]
+    # Users credentials, each item is a `(username, password_hash)` pair.
+    # See also `iftttie.utils password-hash`.
+    users: Sequence[Tuple[str, str]] = field(default_factory=list)
 
     # Database connection.
     db: Optional[Connection] = None

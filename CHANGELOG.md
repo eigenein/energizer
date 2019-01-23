@@ -5,6 +5,7 @@
 - Chore: add `ipython` to the Docker image
 - Chore: upgrade `loguru`
 - Feat: set network capabilities for Python binary
+- Change: move users to the configuration module
 
 ### `0.7`
 

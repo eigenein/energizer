@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import ssl
 from types import ModuleType
-from typing import Optional, Sequence, Tuple
+from typing import Optional
 
 import click
 from aiohttp import ClientSession
@@ -39,15 +39,6 @@ from iftttie.web import Context
     help='Server private key path.',
 )
 @click.option(
-    'users', '-u', '--user',
-    type=click.Tuple([str, str]),
-    multiple=True,
-    required=True,
-    envvar='IFTTTIE_USERS',
-    show_envvar=True,
-    help='User password hash. Use `iftttie.utils password-hash` to obtain it.',
-)
-@click.option(
     'verbosity', '-v', '--verbose',
     count=True,
     envvar='IFTTTIE_VERBOSITY',
@@ -58,7 +49,6 @@ def main(
     configuration_url: str,
     cert_path: Optional[str],
     key_path: Optional[str],
-    users: Sequence[Tuple[str, str]],
     verbosity: int,
 ):
     """
@@ -75,7 +65,7 @@ def main(
         logger.warning('Server certificate is not specified.')
         ssl_context = None
 
-    web.start(ssl_context, Context(configuration_url=configuration_url, users=users), on_startup, on_cleanup)
+    web.start(ssl_context, Context(configuration_url=configuration_url), on_startup, on_cleanup)
     logger.success('IFTTTie stopped.')
 
 
@@ -87,12 +77,22 @@ async def on_startup(app: web.Application):
     configuration = await import_configuration(app)
 
     app.context.channels = getattr(configuration, 'channels', [])
-    if not app.context.channels:
+    if app.context.channels:
+        logger.success('{} channels are defined', len(app.context.channels))
+    else:
         logger.error('No channels to run.')
 
     app.context.on_event = getattr(configuration, 'on_event', None)
-    if app.context.on_event is None:
+    if app.context.on_event:
+        logger.success('`on_event` is defined.')
+    else:
         logger.error('`on_event` is not defined in the configuration.')
+
+    app.context.users = getattr(configuration, 'USERS', [])
+    if app.context.users:
+        logger.success('{} web users are defined.', len(app.context.users))
+    else:
+        logger.warning('No users are defined in the configuration. You will not be able to access the web interface.')
 
     app.context.run_channels_task = app.loop.create_task(run_channels(app))
 

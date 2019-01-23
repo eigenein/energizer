@@ -92,7 +92,6 @@ services:
       IFTTTIE_CONFIGURATION_URL: 'https://gist.githubusercontent.com/user/repo/raw'
       IFTTTIE_CERT_PATH: 'cert.pem'
       IFTTTIE_KEY_PATH: 'privkey.pem'
-      IFTTTIE_USERS: '<login> <password-hash>'
 ```
 
 ## Recipes

@@ -21,6 +21,6 @@ class InterceptHandler(logging.Handler):
 
 def init_logging(verbosity: int):
     logger.stop()
-    logger.add(sys.stderr, format=LOGURU_FORMAT, level=VERBOSITY_LEVELS.get(verbosity, 'TRACE'))
+    logger.add(sys.stderr, format=LOGURU_FORMAT, level=VERBOSITY_LEVELS.get(verbosity, 'TRACE'), backtrace=False)
     logging.basicConfig(level=logging.NOTSET, handlers=[InterceptHandler()])
     logger.disable('aiosqlite.core')
