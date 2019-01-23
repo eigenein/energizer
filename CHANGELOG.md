@@ -4,6 +4,7 @@
 - Feat: #14 `send_animation` method for Telegram bots
 - Chore: add `ipython` to the Docker image
 - Chore: upgrade `loguru`
+- Feat: set network capabilities for Python binary
 
 ### `0.7`
 
