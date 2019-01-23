@@ -2,6 +2,7 @@
 
 - Feat: #13 pass old value and all the current values to `on_event`
 - Feat: #14 `send_animation` method for Telegram bots
+- Chore: add `ipython` to the Docker image
 
 ### `0.7`
 
