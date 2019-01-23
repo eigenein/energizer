@@ -65,6 +65,7 @@ docker run \
     --restart always \
     --name iftttie \
     --net host \
+    --sysctl net.ipv4.ip_unprivileged_port_start=0 \
     -v iftttie:/app \
     -v /etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro \
     -v /etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro \
@@ -81,6 +82,8 @@ services:
     image: eigenein/iftttie:latest
     restart: always
     network_mode: 'host'
+    sysctls:
+    - net.ipv4.ip_unprivileged_port_start=0
     volumes:
     - '/home/pi/iftttie.sqlite3:/app/db.sqlite3'
     - '/etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro'
