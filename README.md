@@ -79,6 +79,7 @@ version: '3.7'
 services:
   iftttie:
     image: eigenein/iftttie:latest
+    restart: always
     ports:
     - '443:8443'
     volumes:
