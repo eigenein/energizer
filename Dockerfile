@@ -4,11 +4,6 @@ MAINTAINER Pavel Perestoronin <eigenein@gmail.com>
 
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 PYTHONIOENCODING=utf-8 PYTHONOPTIMIZE=1
 
-RUN apt-get update && apt-get install -y libcap2-bin && rm -rf /var/lib/apt/lists/*
-
-# https://stackoverflow.com/questions/36215201/python-scapy-sniff-without-root
-RUN setcap cap_net_raw=eip /usr/local/bin/python3.7
-
 # This is quite useful for debugging in place.
 RUN pip install --no-cache-dir ipython
 
