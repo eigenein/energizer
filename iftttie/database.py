@@ -20,7 +20,12 @@ def init_database(path: str) -> Connection:
     logger.success('Setting up the database…')
     db = connect(path)
     db.row_factory = Row
+    migrate(db)
+    logger.success('Database is ready.')
+    return db
 
+
+def migrate(db: Connection):
     version = get_version(db)
     logger.info('Database version: {}.', version)
 
@@ -33,9 +38,6 @@ def init_database(path: str) -> Connection:
             logger.success('Applied migration #{}.', i)
         else:
             logger.debug('Migration #{} is already applied.', i)
-
-    logger.success('Database is ready.')
-    return db
 
 
 def insert_event(db: Connection, event: Event):

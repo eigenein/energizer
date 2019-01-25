@@ -5,6 +5,7 @@ from typing import Any, Awaitable, Callable, Optional
 
 import pkg_resources
 from aiohttp import web
+from aiohttp.web_exceptions import HTTPNotFound
 from aiohttp_jinja2 import template
 from loguru import logger
 
@@ -50,13 +51,15 @@ async def index(request: web.Request) -> dict:
     }
 
 
-@routes.get('/view/{key}', name='view')
-@template('view.html')
+@routes.get('/channel/{key}', name='view')
+@template('channel.html')
 @authenticate_user
-async def view(request: web.Request) -> dict:
-    # TODO: key: str = request.match_info['key']
-
-    raise NotImplementedError()
+async def channel(request: web.Request) -> dict:
+    try:
+        event = request.app.context.latest_events[request.match_info['key']]
+    except KeyError:
+        raise HTTPNotFound(text='Channel is not found.')
+    return {'event': event}
 
 
 @routes.get('/favicon.png')

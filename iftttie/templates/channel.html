@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.title or event.key }} – IFTTTie{% endblock %}
+
+{% block body %}
+  <section class="hero {% with %}{% include "class-background.html" %}{% endwith %}">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title is-4">{{ event.title or event.key }}</h1>
+        <h2 class="subtitle is-5 {% with %}{% include "class-foreground.html" %}{% endwith %}">
+          {% if event.unit != Unit.IMAGE_URL %}
+            {% with %}{% include "value.html" %}{% endwith %}
+          {% endif %}
+          <span><i class="far fa-clock"></i></span> {% with %}{% include "timestamp.html" %}{% endwith %}
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  {% if event.unit == Unit.IMAGE_URL %}
+    <section class="section">
+      <div class="container">
+        <figure class="image"><img src="{{ event.value }}" alt="Event image"></figure>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

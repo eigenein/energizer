@@ -8,6 +8,7 @@
 - Change: move users to the configuration module
 - Feat: specify port via command-line option or environment variable
 - Feat: #31 asynchronous `on_event`
+- Feat: #7 channel page
 
 ### `0.7`
 

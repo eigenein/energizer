@@ -9,9 +9,9 @@
 {% elif event.unit == Unit.RH %}
   <i class="fas fa-water"></i> {{ event.value|round(1) }}%
 {% elif event.unit == Unit.IMAGE_URL %}
-  <figure class="image"><img src="{{ event.value }}" alt="Update image"></figure>
+  <figure class="image"><img src="{{ event.value }}" alt="Event image"></figure>
 {% elif event.unit == Unit.HPA %}
-  {{ event.value|round(1) }} hPa
+  <i class="fas fa-weight-hanging"></i> {{ event.value|round(1) }} hPa
 {% elif event.unit == Unit.BEAUFORT %}
   <i class="fas fa-wind"></i> {{ event.value }} BFT
 {% elif event.unit == Unit.MPS %}

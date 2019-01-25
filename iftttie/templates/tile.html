@@ -1,14 +1,14 @@
 <div class="tile is-parent is-3">
   <a
-    class="tile is-child notification {% with %}{% include "tile-class.html" %}{% endwith %}"
-    href="/view/{{ event.key }}"
+    class="tile is-child notification {% with %}{% include "class-background.html" %}{% endwith %}"
+    href="/channel/{{ event.key }}"
   >
     <p class="title is-6">{{ event.title or event.key }}</p>
     <p class="subtitle is-7" title="{{ event.timestamp }}">
-      {{ event.timestamp.strftime('%b %-d, %H:%M:%S') }}
+      {% with %}{% include "timestamp.html" %}{% endwith %}
     </p>
     <p
-      class="has-text-centered has-text-weight-bold {% with %}{% include "value-class.html" %}{% endwith %}"
-    >{% with %}{% include "value-content.html" %}{% endwith %}</p>
+      class="has-text-centered has-text-weight-bold {% with %}{% include "class-foreground.html" %}{% endwith %}"
+    >{% with %}{% include "value.html" %}{% endwith %}</p>
   </a>
 </div>
