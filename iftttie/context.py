@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from asyncio import Task
+from asyncio import Task, create_task
 from dataclasses import dataclass, field
 from sqlite3 import Connection
-from typing import Any, Awaitable, Callable, Iterable, Optional, Sequence, Tuple, Dict
+from typing import Any, Awaitable, Callable, Dict, Iterable, Optional, Sequence, Tuple
 
 from aiohttp import ClientSession
 from loguru import logger
@@ -52,8 +52,10 @@ class Context:
         old_event = self.latest_events.get(event.key)  # for the faster access to the previous value
         insert_event(self.db, event)
         self.latest_events[event.key] = event  # for the faster access by key in the user code
-        if self.on_event is None:
-            return
+        if self.on_event is not None:
+            await create_task(self._trigger_event(event, old_event))
+
+    async def _trigger_event(self, event: Event, old_event: Event):
         try:
             await self.on_event(
                 event=event,

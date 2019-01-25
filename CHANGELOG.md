@@ -7,6 +7,7 @@
 - Feat: set network capabilities for Python binary
 - Change: move users to the configuration module
 - Feat: specify port via command-line option or environment variable
+- Feat: #31 asynchronous `on_event`
 
 ### `0.7`
 
