@@ -33,7 +33,7 @@ class Nest(BaseChannel):
                             for event in yield_events(server_event):
                                 await context.trigger_event(event)
                 except (ConnectionError, asyncio.TimeoutError) as e:
-                    logger.error('Connection error: {}', e)
+                    logger.opt(exception=e).error('Connection error.')
 
     def __str__(self) -> str:
         return f'{Nest.__name__}(token="{self.token[:4]}…{self.token[-4:]}")'

@@ -1,3 +1,7 @@
+### `latest`
+
+- #35 Fix error logging in the `Nest` channel
+
 ### `0.8`
 
 - Feat: #13 pass old value and all the current values to `on_event`
