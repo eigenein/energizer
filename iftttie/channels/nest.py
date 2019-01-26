@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, Iterable, List, Tuple
 
+from aiohttp import ClientTimeout
 from aiohttp_sse_client.client import EventSource, MessageEvent
 from loguru import logger
 from multidict import MultiDict
@@ -15,6 +16,7 @@ from iftttie.types import Event, Unit
 
 url = 'https://developer-api.nest.com'
 headers = MultiDict([('Accept', 'text/event-stream')])
+timeout = ClientTimeout(total=timedelta(minutes=10).total_seconds())
 timestamp_format = '%Y-%m-%dT%H:%M:%S.%f%z'
 
 
@@ -26,15 +28,16 @@ class Nest(BaseChannel):
     async def run(self, context: Context, **kwargs: Any):
         while True:
             logger.info('Connecting to the streaming API…')
-            # Not using `context.session`, because of a possible link to the issue #35.
-            async with EventSource(url, params=self.params, headers=headers) as source:
+            async with EventSource(url, params=self.params, headers=headers, timeout=timeout) as source:
                 logger.info('Connected.')
                 try:
                     async for server_event in source:
                         if server_event.type == 'put':
                             for event in yield_events(server_event):
                                 await context.trigger_event(event)
-                except (ConnectionError, asyncio.TimeoutError) as e:
+                except asyncio.TimeoutError:
+                    logger.warning('Connection timeout.')
+                except ConnectionError as e:
                     logger.opt(exception=e).error('Connection error.')
 
     def __str__(self) -> str:

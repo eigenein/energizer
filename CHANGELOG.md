@@ -5,6 +5,7 @@
 - #34 Add Buienradar weather description
 - #28 Prepare `Dockerfile` and `setup.py` for the `Ping` channel
 - #35 Continue troubleshooting the `Nest` channel
+- #35 Set connection timeout to 10 minutes
 
 ### `0.8`
 
