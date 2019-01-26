@@ -97,6 +97,27 @@ services:
 
 ## Recipes
 
+### Monitor your Raspberry Pi CPU temperature
+
+```python
+from datetime import timedelta
+from pathlib import Path
+
+from iftttie.channels.file_ import FloatValueFile
+from iftttie.types import Unit
+
+channels = [
+    FloatValueFile(
+        Path('/sys/class/thermal/thermal_zone0/temp'), 
+        'cpu_temperature', 
+        timedelta(seconds=10.0),
+        Unit.CELSIUS,
+        0.001,
+        'CPU Temperature',
+    ),
+]
+```
+
 ### If new Nest Cam event occurred, then send an animation to Telegram
 
 ```python
