@@ -19,6 +19,51 @@
   <script type="text/javascript" src="https://kozea.github.io/pygal.js/latest/pygal-tooltips.min.js"></script>
 </head>
 <body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+      data-target="navbar-menu"
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbar-menu" class="navbar-menu">
+    <div class="navbar-start">
+      <div class="navbar-item">
+        <p class="buttons has-addons is-centered">
+          <a class="button" href="/">
+            <span class="icon"><i class="fas fa-home"></i></span>
+            <span>Home</span>
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <p class="buttons has-addons is-centered">
+          <a class="button" href="{{ app.context.configuration_url }}">
+              <span class="icon">
+                <i class="fas fa-external-link-alt"></i>
+              </span>
+            <span>Configuration</span>
+          </a>
+
+          <a class="button" href="/db.sqlite3">
+              <span class="icon">
+                <i class="fas fa-file-download"></i>
+              </span>
+            <span>Database</span>
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</nav>
+
 {% block body %}{% endblock %}
 
 <footer class="footer">
@@ -28,25 +73,42 @@
       <i class="fas fa-certificate has-text-primary"></i>
       Made with <a href="https://bulma.io/"><strong>Bulma</strong></a>.
       <i class="fab fa-fort-awesome has-text-success"></i>
-      Icons by <a href="https://fontawesome.com/"><strong>Font
-      Awesome</strong></a>.
-    </p>
-    <p class="buttons has-addons is-centered">
-      <a class="button is-success" href="{{ app.context.configuration_url }}">
-          <span class="icon">
-            <i class="fas fa-external-link-alt"></i>
-          </span>
-        <span>Configuration</span>
-      </a>
-
-      <a class="button is-info" href="/db.sqlite3">
-          <span class="icon">
-            <i class="fas fa-file-download"></i>
-          </span>
-        <span>Download db.sqlite3</span>
-      </a>
+      Icons by <a href="https://fontawesome.com/"><strong>Font Awesome</strong></a>.
     </p>
   </div>
 </footer>
+
+<script>
+  /*
+   * Used the implementation example from:
+   * https://bulma.io/documentation/components/navbar/
+   */
+
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // Get all "navbar-burger" elements
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+    // Check if there are any navbar burgers
+    if ($navbarBurgers.length > 0) {
+
+      // Add a click event on each of them
+      $navbarBurgers.forEach(el => {
+        el.addEventListener('click', () => {
+
+          // Get the target from the "data-target" attribute
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+
+        });
+      });
+    }
+
+  });
+</script>
 </body>
 </html>

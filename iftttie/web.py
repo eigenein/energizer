@@ -74,7 +74,7 @@ async def manifest(_: web.Request) -> web.Response:
         'name': 'IFTTTie',
         'icons': [{'src': '/favicon.png', 'type': 'image/png', 'sizes': '32x32'}],
         'start_url': '/',
-        'background_color': '#000000',
+        'background_color': '#FFFFFF',
         'display': 'standalone',
         'scope': '/',
         'theme_color': '#209cee',
