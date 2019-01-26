@@ -44,3 +44,5 @@ class Event:
 
     # Title in the web interface.
     title: Optional[str] = None
+
+    # TODO: helper methods.
