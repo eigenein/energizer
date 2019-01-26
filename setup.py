@@ -23,6 +23,7 @@ setuptools.setup(
         'ujson',
         'aiohttp-sse-client',
         'argon2_cffi',
+        'aioping',
     ],
     extras_require={
         'dev': ['pip-tools', 'isort', 'ipython', 'twine', 'flake8'],
