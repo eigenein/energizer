@@ -14,10 +14,10 @@ class Unit(str, Enum):
     DATETIME = 'DATETIME'
     ENUM = 'ENUM'
     HPA = 'HPA'  # hPa
-    RH = 'RH'  # relative humidity
     IMAGE_URL = 'IMAGE_URL'
     MPS = 'MPS'  # m/s
-    OTHER = 'OTHER'
+    RH = 'RH'  # relative humidity
+    TEXT = 'TEXT'
     TIMEDELTA = 'TIMEDELTA'
     WATT = 'WATT'
 
@@ -40,7 +40,7 @@ class Event:
     timestamp: datetime = field(default_factory=lambda: datetime.now().astimezone())
 
     # Unit of the value.
-    unit: Unit = Unit.OTHER
+    unit: Unit = Unit.TEXT
 
     # Title in the web interface.
     title: Optional[str] = None

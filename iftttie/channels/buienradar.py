@@ -22,6 +22,7 @@ keys = (
     ('windspeed', 'wind_speed', Unit.MPS, 'Wind Speed'),
     ('windspeedBft', 'wind_speed_bft', Unit.BEAUFORT, 'Wind BFT'),
     ('sunpower', 'sun_power', Unit.WATT, 'Sun Power'),
+    ('weatherdescription', 'weather_description', Unit.TEXT, 'Description'),
 )
 timestamp_format = '%Y-%m-%dT%H:%M:%S'
 

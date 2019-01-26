@@ -114,4 +114,10 @@ migrations = [
         ALTER TABLE `latest` ADD COLUMN `id` TEXT NOT NULL DEFAULT '';
         PRAGMA user_version = 3;
     ''',
+
+    # Rename `OTHER` to `TEXT`.
+    '''
+        UPDATE `latest` SET `unit` = 'TEXT' WHERE `unit` = 'OTHER';
+        PRAGMA user_version = 4;
+    ''',
 ]
