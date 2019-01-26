@@ -1,6 +1,7 @@
 ### `latest`
 
 - #35 Fix error logging in the `Nest` channel
+- Add `publish/docker/latest` and `publish/docker/tag` make targets
 
 ### `0.8`
 

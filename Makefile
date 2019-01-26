@@ -8,6 +8,8 @@ TWINE := venv/bin/twine
 	tag \
 	publish/tag \
 	docker \
+	publish/docker/latest \
+	publish/docker/tag \
 	publish/docker \
 	dist \
 	publish/dist
@@ -31,11 +33,15 @@ publish/tag : tag
 docker :
 	@docker build -t eigenein/iftttie .
 
-publish/docker : docker
+publish/docker/latest : docker
+	@docker push 'eigenein/iftttie:latest'
+
+publish/docker/tag : docker
 	@$(eval VERSION = $(shell $(PYTHON) setup.py --version))
 	@docker tag 'eigenein/iftttie:latest' 'eigenein/iftttie:$(VERSION)'
-	@docker push 'eigenein/iftttie:latest'
 	@docker push 'eigenein/iftttie:$(VERSION)'
+
+publish/docker : publish/docker/latest publish/docker/tag
 
 dist :
 	@rm -rf dist
