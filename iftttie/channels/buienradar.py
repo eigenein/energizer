@@ -4,6 +4,7 @@ from asyncio import sleep
 from datetime import datetime, timedelta
 from typing import Any
 
+from aiohttp import ClientSession
 from loguru import logger
 
 from iftttie.channels.base import BaseChannel
@@ -24,7 +25,6 @@ keys = (
     ('sunpower', 'sun_power', Unit.WATT, 'Sun Power'),
     ('weatherdescription', 'weather_description', Unit.TEXT, 'Description'),
 )
-timestamp_format = '%Y-%m-%dT%H:%M:%S'
 
 
 class Buienradar(BaseChannel):
@@ -33,9 +33,16 @@ class Buienradar(BaseChannel):
         self.interval = interval.total_seconds()
 
     async def run(self, context: Context, **kwargs: Any):
-        while True:
-            async with context.session.get(url, headers=headers) as response:
-                feed = await response.json()
+        async with ClientSession(headers=headers) as session:
+            while True:
+                async with session.get(url, headers=headers) as response:
+                    feed = await response.json()
+                await self.trigger_events(context, feed)
+                logger.debug('Next reading in {interval} seconds.', interval=self.interval)
+                await sleep(self.interval)
+
+    async def trigger_events(self, context: Context, feed: Any):
+        if feed['actual']['sunrise']:
             sunrise = parse_datetime(feed['actual']['sunrise'])
             await context.trigger_event(Event(
                 key='buienradar:sunrise',
@@ -44,6 +51,10 @@ class Buienradar(BaseChannel):
                 title='Sunrise',
                 id_=feed['actual']['sunrise'],
             ))
+        else:
+            logger.warning('Sunrise time is missing.')
+            sunrise = None
+        if feed['actual']['sunset']:
             sunset = parse_datetime(feed['actual']['sunset'])
             await context.trigger_event(Event(
                 key='buienradar:sunset',
@@ -52,6 +63,10 @@ class Buienradar(BaseChannel):
                 title='Sunset',
                 id_=feed['actual']['sunset'],
             ))
+        else:
+            logger.warning('Sunset time is missing.')
+            sunset = None
+        if sunset and sunrise:
             await context.trigger_event(Event(
                 key='buienradar:day_length',
                 value=(sunset - sunrise),
@@ -59,22 +74,20 @@ class Buienradar(BaseChannel):
                 title='Day Length',
                 id_=feed['actual']['sunrise'],
             ))
-            try:
-                measurement = self.find_measurement(feed)
-            except KeyError as e:
-                logger.error('Station ID {} is not found.', e)
-            else:
-                for source_key, target_key, unit, title in keys:
-                    await context.trigger_event(Event(
-                        key=f'buienradar:{self.station_id}:{target_key}',
-                        value=measurement[source_key],
-                        unit=unit,
-                        timestamp=parse_datetime(measurement['timestamp']),
-                        id_=measurement['timestamp'],
-                        title=f'{measurement["stationname"]} {title}',
-                    ))
-            logger.debug('Next reading in {interval} seconds.', interval=self.interval)
-            await sleep(self.interval)
+        try:
+            measurement = self.find_measurement(feed)
+        except KeyError as e:
+            logger.error('Station ID {} is not found.', e)
+            return
+        for source_key, target_key, unit, title in keys:
+            await context.trigger_event(Event(
+                key=f'buienradar:{self.station_id}:{target_key}',
+                value=measurement[source_key],
+                unit=unit,
+                timestamp=parse_datetime(measurement['timestamp']),
+                id_=measurement['timestamp'],
+                title=f'{measurement["stationname"]} {title}',
+            ))
 
     def find_measurement(self, feed: Any) -> Any:
         for measurement in feed['actual']['stationmeasurements']:
@@ -87,4 +100,4 @@ class Buienradar(BaseChannel):
 
 
 def parse_datetime(value: str) -> datetime:
-    return datetime.strptime(value, timestamp_format).astimezone()
+    return datetime.strptime(value, '%Y-%m-%dT%H:%M:%S').astimezone()

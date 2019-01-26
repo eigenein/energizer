@@ -6,6 +6,7 @@
 - #28 Prepare `Dockerfile` and `setup.py` for the `Ping` channel
 - #35 Continue troubleshooting the `Nest` channel
 - #35 Set connection timeout to 10 minutes
+- #37 Use a separate session for `Buienradar`
 
 ### `0.8`
 

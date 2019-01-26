@@ -18,7 +18,6 @@ venv :
 	@virtualenv -p python3.7 venv
 	@$(PIP) install -r requirements.txt
 	@$(PIP) install -e .[dev]
-	@echo 'Hint: remove the 3rd-party `typing` package'
 
 requirements.txt :
 	@$(PIP-COMPILE) --no-index --no-emit-trusted-host --generate-hashes --output-file requirements.txt setup.py
