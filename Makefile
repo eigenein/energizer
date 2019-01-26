@@ -14,7 +14,7 @@ TWINE := venv/bin/twine
 	dist \
 	publish/dist
 
-venv : requirements.txt
+venv :
 	@virtualenv -p python3.7 venv
 	@$(PIP) install -r requirements.txt
 	@$(PIP) install -e .[dev]

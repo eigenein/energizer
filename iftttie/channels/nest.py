@@ -25,7 +25,7 @@ class Nest(BaseChannel):
 
     async def run(self, context: Context, **kwargs: Any):
         while True:
-            logger.debug('Listening to the stream…')
+            logger.info('Connecting to the streaming API…')
             async with EventSource(url, params=self.params, headers=headers, session=context.session) as source:
                 try:
                     async for server_event in source:

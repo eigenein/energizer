@@ -14,7 +14,7 @@ from iftttie.channels.base import BaseChannel
 async def run_channels(app: web.Application):
     """Run channels from the configuration."""
 
-    logger.success('Running channels…')
+    logger.info('Running channels…')
     with suppress(CancelledError):
         await gather(*(run_channel(app, channel) for channel in app.context.channels))
 

@@ -48,7 +48,7 @@ class Context:
         """
         Handle a single event in the application context.
         """
-        logger.success('{key} = {value!r}', key=event.key, value=event.value)
+        logger.info('{key} = {value!r}', key=event.key, value=event.value)
         old_event = self.latest_events.get(event.key)  # for the faster access to the previous value
         insert_event(self.db, event)
         self.latest_events[event.key] = event  # for the faster access by key in the user code

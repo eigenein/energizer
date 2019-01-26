@@ -65,10 +65,10 @@ def main(
     Yet another home automation service.
     """
     init_logging(verbosity)
-    logger.success('Starting IFTTTie…')
+    logger.info('Starting IFTTTie…')
 
     if cert_path and key_path:
-        logger.success('Using SSL.')
+        logger.info('Using SSL.')
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
         ssl_context.load_cert_chain(cert_path, key_path)
     else:
@@ -76,7 +76,7 @@ def main(
         ssl_context = None
 
     web.start(ssl_context, port, Context(configuration_url=configuration_url), on_startup, on_cleanup)
-    logger.success('IFTTTie stopped.')
+    logger.info('IFTTTie stopped.')
 
 
 async def on_startup(app: web.Application):
@@ -88,19 +88,19 @@ async def on_startup(app: web.Application):
 
     app.context.channels = getattr(configuration, 'channels', [])
     if app.context.channels:
-        logger.success('{} channels are defined', len(app.context.channels))
+        logger.info('{} channels are defined', len(app.context.channels))
     else:
         logger.error('No channels to run.')
 
     app.context.on_event = getattr(configuration, 'on_event', None)
     if app.context.on_event:
-        logger.success('`on_event` is defined.')
+        logger.info('`on_event` is defined.')
     else:
         logger.error('`on_event` is not defined in the configuration.')
 
     app.context.users = getattr(configuration, 'USERS', [])
     if app.context.users:
-        logger.success('{} web users are defined.', len(app.context.users))
+        logger.info('{} web users are defined.', len(app.context.users))
     else:
         logger.warning('No users are defined in the configuration. You will not be able to access the web interface.')
 

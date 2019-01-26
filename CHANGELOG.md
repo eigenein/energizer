@@ -4,6 +4,7 @@
 - Add `publish/docker/latest` and `publish/docker/tag` make targets
 - #34 Add Buienradar weather description
 - #28 Prepare `Dockerfile` and `setup.py` for the `Ping` channel
+- #35 Continue troubleshooting the `Nest` channel
 
 ### `0.8`
 

@@ -17,11 +17,11 @@ def get_version(db: Connection) -> int:
 
 
 def init_database(path: str) -> Connection:
-    logger.success('Setting up the database…')
+    logger.info('Setting up the database…')
     db = connect(path)
     db.row_factory = Row
     migrate(db)
-    logger.success('Database is ready.')
+    logger.info('Database is ready.')
     return db
 
 
@@ -35,7 +35,7 @@ def migrate(db: Connection):
             logger.info('Applying migration #{}…', i)
             with db:
                 db.executescript(script)
-            logger.success('Applied migration #{}.', i)
+            logger.info('Applied migration #{}.', i)
         else:
             logger.debug('Migration #{} is already applied.', i)
 

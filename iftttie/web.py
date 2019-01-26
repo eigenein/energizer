@@ -43,7 +43,7 @@ def start(
 
     templates.setup(app)
 
-    logger.success('Using port {}.', port)
+    logger.info('Using port {}.', port)
     web.run_app(app, port=port, ssl_context=ssl_context, print=None)
 
 
