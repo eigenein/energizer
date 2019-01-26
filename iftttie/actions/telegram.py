@@ -14,6 +14,27 @@ class ParseMode(str, Enum):
     HTML = 'HTML'
 
 
+async def send_message(
+    session: ClientSession,
+    token: str,
+    chat_id: str,
+    text: str,
+    parse_mode: Optional[ParseMode] = None,
+    disable_web_page_preview: bool = False,
+    disable_notification: bool = False,
+):
+    data = {
+        'chat_id': chat_id,
+        'text': text,
+        'disable_web_page_preview': disable_web_page_preview,
+        'disable_notification': disable_notification,
+    }
+    if parse_mode:
+        data['parse_mode'] = parse_mode.value
+    logger.debug('send_message(text={!r})', text)
+    return await session.post(url.format(token=token, method='sendMessage'), data=data)
+
+
 async def send_animation(
     session: ClientSession,
     token: str,
@@ -32,5 +53,5 @@ async def send_animation(
         data['caption'] = caption
     if parse_mode:
         data['parse_mode'] = parse_mode.value
-    logger.trace('send_animation(animation={!r})', animation)
+    logger.debug('send_animation(animation={!r})', animation)
     return await session.post(url.format(token=token, method='sendAnimation'), data=data)

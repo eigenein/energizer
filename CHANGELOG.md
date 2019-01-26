@@ -8,6 +8,7 @@
 - #35 Set connection timeout to 10 minutes
 - #37 Use a separate session for `Buienradar`
 - #37 Get rid of the global `ClientSession` instance
+- #23 Add Telegram `send_message` method
 
 ### `0.8`
 

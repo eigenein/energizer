@@ -114,7 +114,7 @@ session = ClientSession()
 
 
 async def on_event(*, event: Event, old_event: Optional[Event], latest_events: Dict[str, Event], **kwargs: Any):
-    if event.key.endswith(':last_animated_image_url') and (old_event is None or event.timestamp != old_event.timestamp):
+    if event.key.endswith(':last_animated_image_url') and (old_event is None or event.timestamp > old_event.timestamp):
         await send_animation(
             session=session, 
             token=TELEGRAM_TOKEN, 
