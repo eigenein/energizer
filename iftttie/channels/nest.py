@@ -26,7 +26,9 @@ class Nest(BaseChannel):
     async def run(self, context: Context, **kwargs: Any):
         while True:
             logger.info('Connecting to the streaming API…')
-            async with EventSource(url, params=self.params, headers=headers, session=context.session) as source:
+            # Not using `context.session`, because of a possible link to the issue #35.
+            async with EventSource(url, params=self.params, headers=headers) as source:
+                logger.info('Connected.')
                 try:
                     async for server_event in source:
                         if server_event.type == 'put':
