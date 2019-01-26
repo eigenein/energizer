@@ -5,7 +5,6 @@ from dataclasses import dataclass, field
 from sqlite3 import Connection
 from typing import Any, Awaitable, Callable, Dict, Iterable, Optional, Sequence, Tuple
 
-from aiohttp import ClientSession
 from loguru import logger
 
 from iftttie.channels.base import BaseChannel
@@ -25,17 +24,17 @@ class Context:
     # Database connection.
     db: Optional[Connection] = None
 
-    # Client session used in channels.
-    session: Optional[ClientSession] = None
-
     # `asyncio` task for the channels.
-    run_channels_task: Optional[Task] = None
+    background_task: Optional[Task] = None
 
     # Channel instances.
     channels: Iterable[BaseChannel] = ()
 
     # User's event handler.
     on_event: Callable[..., Awaitable[Any]] = None
+
+    # User's clean up handler.
+    on_close: Callable[[], Awaitable[Any]] = None
 
     # Latest events cache.
     latest_events: Dict[str, Event] = field(default_factory=dict)
@@ -57,11 +56,6 @@ class Context:
 
     async def _trigger_event(self, event: Event, old_event: Event):
         try:
-            await self.on_event(
-                event=event,
-                old_event=old_event,
-                latest_events=self.latest_events,
-                session=self.session,
-            )
+            await self.on_event(event=event, old_event=old_event, latest_events=self.latest_events)
         except Exception as e:
             logger.opt(exception=e).error('Error while handling the event.')

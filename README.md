@@ -110,15 +110,10 @@ from aiohttp import ClientSession
 from iftttie.actions.telegram import send_animation
 from iftttie.types import Event
 
+session = ClientSession()
 
-async def on_event(
-    event: Event, 
-    old_event: Optional[Event], 
-    latest_events: Dict[str, Event],
-    session: ClientSession,
-    *args: Any, 
-    **kwargs: Any,
-):
+
+async def on_event(*, event: Event, old_event: Optional[Event], latest_events: Dict[str, Event], **kwargs: Any):
     if event.key.endswith(':last_animated_image_url') and (old_event is None or event.timestamp != old_event.timestamp):
         await send_animation(
             session=session, 
@@ -128,4 +123,8 @@ async def on_event(
             disable_notification=True,
             caption=event.title,
         )
+
+
+async def on_close():
+    await session.close()
 ```

@@ -83,7 +83,6 @@ async def on_startup(app: web.Application):
     """Import configuration, run channels and return async tasks."""
     app.context.db = init_database('db.sqlite3')
     app.context.preload_latest_events()
-    app.context.session = await ClientSession(raise_for_status=True).__aenter__()
     configuration = await import_configuration(app)
 
     app.context.channels = getattr(configuration, 'channels', [])
@@ -96,7 +95,13 @@ async def on_startup(app: web.Application):
     if app.context.on_event:
         logger.info('`on_event` is defined.')
     else:
-        logger.error('`on_event` is not defined in the configuration.')
+        logger.warning('`on_event` is not defined in the configuration.')
+
+    app.context.on_close = getattr(configuration, 'on_close', None)
+    if app.context.on_close:
+        logger.info('`on_close` is defined.')
+    else:
+        logger.warning('`on_close` is not defined in the configuration.')
 
     app.context.users = getattr(configuration, 'USERS', [])
     if app.context.users:
@@ -104,7 +109,7 @@ async def on_startup(app: web.Application):
     else:
         logger.warning('No users are defined in the configuration. You will not be able to access the web interface.')
 
-    app.context.run_channels_task = app.loop.create_task(run_channels(app))
+    app.context.background_task = app.loop.create_task(run_channels(app))
 
 
 async def import_configuration(app: web.Application) -> Optional[ModuleType]:
@@ -112,8 +117,9 @@ async def import_configuration(app: web.Application) -> Optional[ModuleType]:
     context = app.context
     logger.info('Importing configuration from {}', context.configuration_url)
     try:
-        async with context.session.get(context.configuration_url, headers=[('Cache-Control', 'no-cache')]) as response:
-            return import_from_string('configuration', await response.text())
+        async with ClientSession(headers=[('Cache-Control', 'no-cache')]) as session:
+            async with session.get(context.configuration_url) as response:
+                return import_from_string('configuration', await response.text())
     except Exception as e:
         logger.error('Failed to import configuration: "{e}".', e=e)
 
@@ -121,12 +127,18 @@ async def import_configuration(app: web.Application) -> Optional[ModuleType]:
 async def on_cleanup(app: web.Application):
     """Cancel and close everything."""
     logger.info('Stopping channels…')
-    app.context.run_channels_task.cancel()
-    await app.context.run_channels_task
+    app.context.background_task.cancel()
+    await app.context.background_task
     logger.info('Channels stopped.')
-    await app.context.session.close()
+    if app.context.on_close:
+        try:
+            await app.context.on_close()
+        except Exception as e:
+            logger.opt(exception=e).error('The error occurred in `on_close` handler.')
+        else:
+            logger.info('Cleaned up the configuration.')
     app.context.db.close()
-    logger.info('Cleaned up.')
+    logger.info('Database is closed.')
 
 
 if __name__ == '__main__':
