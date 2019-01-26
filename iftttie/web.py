@@ -1,20 +1,23 @@
 from __future__ import annotations
 
 import ssl
-from typing import Any, Awaitable, Callable, Optional
 
 import pkg_resources
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPNotFound
 from aiohttp_jinja2 import template
 from loguru import logger
+from typing import Any, Awaitable, Callable, Optional
 
 from iftttie import templates
 from iftttie.context import Context
 from iftttie.decorators import authenticate_user
 
 routes = web.RouteTableDef()
-favicon_body = pkg_resources.resource_string('iftttie', 'static/favicon.png')
+favicons = {
+    name: pkg_resources.resource_string('iftttie', f'static/{name}')
+    for name in ['favicon.ico', 'favicon-16x16.png', 'favicon-32x32.png', 'favicon-144x144.png']
+}
 
 
 class Application(web.Application):
@@ -32,7 +35,9 @@ def start(
 ):
     """Start the web app."""
     app = Application(context)
+    # noinspection PyUnresolvedReferences
     app.on_startup.append(on_startup)
+    # noinspection PyUnresolvedReferences
     app.on_cleanup.append(on_cleanup)
     app.add_routes(routes)
 
@@ -62,9 +67,9 @@ async def channel(request: web.Request) -> dict:
     return {'event': event}
 
 
-@routes.get('/favicon.png')
-async def favicon(_: web.Request) -> web.Response:
-    return web.Response(body=favicon_body, content_type='image/png')
+@routes.get('/{name:favicon.+}')
+async def favicon(request: web.Request) -> web.Response:
+    return web.Response(body=favicons[request.match_info['name']])
 
 
 @routes.get('/manifest.json')
@@ -72,12 +77,12 @@ async def manifest(_: web.Request) -> web.Response:
     return web.json_response({
         'short_name': 'IFTTTie',
         'name': 'IFTTTie',
-        'icons': [{'src': '/favicon.png', 'type': 'image/png', 'sizes': '32x32'}],
+        'icons': [{'src': '/favicon-144x144.png', 'type': 'image/png', 'sizes': '144x144'}],
         'start_url': '/',
         'background_color': '#FFFFFF',
         'display': 'standalone',
         'scope': '/',
-        'theme_color': '#209cee',
+        'theme_color': '#00d1b2',
     })
 
 
