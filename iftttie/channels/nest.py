@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any, Iterable, List, Tuple
 
-from aiohttp import ClientTimeout
 from aiohttp_sse_client.client import EventSource, MessageEvent
 from loguru import logger
 from multidict import MultiDict
@@ -16,7 +15,6 @@ from iftttie.types import Event, Unit
 
 url = 'https://developer-api.nest.com'
 headers = MultiDict([('Accept', 'text/event-stream')])
-timeout = ClientTimeout(total=timedelta(minutes=10).total_seconds())
 timestamp_format = '%Y-%m-%dT%H:%M:%S.%f%z'
 
 
@@ -29,7 +27,7 @@ class Nest(BaseChannel):
         while True:
             try:
                 logger.info('Connecting to the streaming API…')
-                async with EventSource(url, params=self.params, headers=headers, timeout=timeout) as source:
+                async with EventSource(url, params=self.params, headers=headers, timeout=None) as source:
                     logger.info('Connected.')
                     async for server_event in source:
                         if server_event.type == 'put':
