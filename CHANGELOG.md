@@ -9,6 +9,7 @@
 - #37 Use a separate session for `Buienradar`
 - #37 Get rid of the global `ClientSession` instance
 - #23 Add Telegram `send_message` method
+- #35 Continue troubleshooting the `Nest` channel
 
 ### `0.8`
 

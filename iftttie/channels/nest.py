@@ -27,18 +27,18 @@ class Nest(BaseChannel):
 
     async def run(self, context: Context, **kwargs: Any):
         while True:
-            logger.info('Connecting to the streaming API…')
-            async with EventSource(url, params=self.params, headers=headers, timeout=timeout) as source:
-                logger.info('Connected.')
-                try:
+            try:
+                logger.info('Connecting to the streaming API…')
+                async with EventSource(url, params=self.params, headers=headers, timeout=timeout) as source:
+                    logger.info('Connected.')
                     async for server_event in source:
                         if server_event.type == 'put':
                             for event in yield_events(server_event):
                                 await context.trigger_event(event)
-                except asyncio.TimeoutError:
-                    logger.warning('Connection timeout.')
-                except ConnectionError as e:
-                    logger.opt(exception=e).error('Connection error.')
+            except asyncio.TimeoutError:
+                logger.warning('Connection timeout.')
+            except ConnectionError as e:
+                logger.opt(exception=e).error('Connection error.')
 
     def __str__(self) -> str:
         return f'{Nest.__name__}(token="{self.token[:4]}…{self.token[-4:]}")'
