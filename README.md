@@ -97,6 +97,8 @@ services:
 
 ## Recipes
 
+Since the projects lacks a good documentation, here're some specific examples of automation.
+
 ### Monitor your Raspberry Pi CPU temperature
 
 ```python
@@ -143,6 +145,36 @@ async def on_event(*, event: Event, old_event: Optional[Event], latest_events: D
             animation=event.value,
             disable_notification=True,
             caption=event.title,
+        )
+
+
+async def on_close():
+    await session.close()
+```
+
+### If Nest detects an intrusion, then send a message to Telegram
+
+```python
+TELEGRAM_TOKEN = ...
+TELEGRAM_CHAT_ID = ...
+
+from typing import Any, Dict, Optional
+
+from aiohttp import ClientSession
+
+from iftttie.actions.telegram import send_message
+from iftttie.types import Event
+
+session = ClientSession()
+
+
+async def on_event(*, event: Event, old_event: Optional[Event], latest_events: Dict[str, Event], **kwargs: Any):
+    if event.key.endswith(':wwn_security_state') and (old_event is None or event.value != old_event.value):
+        await send_message(
+            session=session,
+            token=TELEGRAM_TOKEN,
+            chat_id=TELEGRAM_CHAT_ID,
+            text=('🚨 Intrusion detected' if event.value != 'ok' else '✅ Security state is okay'),
         )
 
 
