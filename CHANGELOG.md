@@ -4,11 +4,12 @@
 - Add `publish/docker/latest` and `publish/docker/tag` make targets
 - #34 Add Buienradar weather description
 - #28 Prepare `Dockerfile` and `setup.py` for the `Ping` channel
-- #35 Continue troubleshooting the `Nest` channel
-- #35 Set connection timeout to 10 minutes
+- #35 Remove timeout for the `Nest` channel
 - #37 Use a separate session for `Buienradar`
 - #37 Get rid of the global `ClientSession` instance
 - #23 Add Telegram `send_message` method
+- Upgrade `aiodns`
+- Use `passlib` instead of `argon2-cffi`
 
 ### `0.8`
 

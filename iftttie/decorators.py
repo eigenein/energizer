@@ -8,8 +8,7 @@ from aiohttp.web_exceptions import HTTPUnauthorized
 from aiohttp.web_request import Request
 from argon2.exceptions import VerifyMismatchError
 from loguru import logger
-
-from iftttie.utils import hasher
+from passlib.handlers.pbkdf2 import pbkdf2_sha256
 
 T = TypeVar('T')
 THandler = Callable[[Request], Awaitable[T]]
@@ -35,7 +34,7 @@ def authenticate_user(handler: THandler[T]):
             if login != auth.login:
                 continue
             try:
-                hasher.verify(hash_, auth.password)
+                pbkdf2_sha256.verify(auth.password, hash_)
             except VerifyMismatchError:
                 pass
             else:

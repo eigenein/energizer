@@ -80,7 +80,9 @@ def main(
 
 
 async def on_startup(app: web.Application):
-    """Import configuration, run channels and return async tasks."""
+    """
+    Import configuration, run channels and return async tasks.
+    """
     app.context.db = init_database('db.sqlite3')
     app.context.preload_latest_events()
     configuration = await import_configuration(app)
@@ -113,7 +115,9 @@ async def on_startup(app: web.Application):
 
 
 async def import_configuration(app: web.Application) -> Optional[ModuleType]:
-    """Download and import configuration."""
+    """
+    Download and import configuration.
+    """
     context = app.context
     logger.info('Importing configuration from {}', context.configuration_url)
     try:
@@ -125,7 +129,9 @@ async def import_configuration(app: web.Application) -> Optional[ModuleType]:
 
 
 async def on_cleanup(app: web.Application):
-    """Cancel and close everything."""
+    """
+    Cancel and close everything.
+    """
     logger.info('Stopping channels…')
     app.context.background_task.cancel()
     await app.context.background_task

@@ -22,7 +22,7 @@ setuptools.setup(
         'pygal',
         'ujson',
         'aiohttp-sse-client',
-        'argon2_cffi',
+        'passlib',
         'aioping',
     ],
     extras_require={
