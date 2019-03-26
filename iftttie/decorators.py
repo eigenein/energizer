@@ -6,7 +6,6 @@ from typing import Awaitable, Callable, TypeVar
 from aiohttp import BasicAuth, hdrs
 from aiohttp.web_exceptions import HTTPUnauthorized
 from aiohttp.web_request import Request
-from argon2.exceptions import VerifyMismatchError
 from loguru import logger
 from passlib.handlers.pbkdf2 import pbkdf2_sha256
 
@@ -33,11 +32,7 @@ def authenticate_user(handler: THandler[T]):
         for login, hash_ in request.app.context.users:
             if login != auth.login:
                 continue
-            try:
-                pbkdf2_sha256.verify(auth.password, hash_)
-            except VerifyMismatchError:
-                pass
-            else:
+            if pbkdf2_sha256.verify(auth.password, hash_):
                 logger.info('Authenticated user: {}', login)
                 return await handler(request)
 
