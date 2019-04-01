@@ -5,7 +5,7 @@ setuptools.setup(
     version='0.8',
     author='Pavel Perestoronin',
     author_email='eigenein@gmail.com',
-    description='Yet another home assistant',
+    description='Yet another home automation service',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/eigenein/iftttie',
