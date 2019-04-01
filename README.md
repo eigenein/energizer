@@ -1,4 +1,4 @@
-# IFFTTie
+# IFTTTie
 
 Yet another home automation service.
 
