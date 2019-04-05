@@ -26,7 +26,7 @@ setuptools.setup(
         'aioping',
     ],
     extras_require={
-        'dev': ['pip-tools', 'isort', 'ipython', 'twine', 'flake8'],
+        'dev': ['pip-tools', 'isort', 'ipython', 'twine', 'flake8', 'pytest'],
     },
     entry_points={
         'console_scripts': [

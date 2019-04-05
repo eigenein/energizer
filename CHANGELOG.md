@@ -1,6 +1,8 @@
 ## `master`
 
 - Chore: brush up `Makefile`
+- Fix: not having `pytest` in `dev` extras
+- Opt: upgrade `pip` in `Dockerfile`
 
 ## `0.9.0`
 
