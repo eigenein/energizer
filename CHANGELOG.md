@@ -4,6 +4,7 @@
 - Fix: not having `pytest` in `dev` extras
 - Opt: upgrade `pip` in `Dockerfile`
 - Opt: upgrade `aiohttp`
+- Opt: switch to `orjson`
 
 ## `0.9.0`
 
