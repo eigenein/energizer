@@ -1,15 +1,15 @@
 ### `latest`
 
-- #35 Fix error logging in the `Nest` channel
-- Add `publish/docker/latest` and `publish/docker/tag` make targets
-- #34 Add Buienradar weather description
-- #28 Prepare `Dockerfile` and `setup.py` for the `Ping` channel
-- #35 Remove timeout for the `Nest` channel
-- #37 Use a separate session for `Buienradar`
-- #37 Get rid of the global `ClientSession` instance
-- #23 Add Telegram `send_message` method
-- Upgrade `aiodns`
-- Use `passlib` instead of `argon2-cffi`
+- Fix: #35 error logging in the `Nest` channel
+- Chore: Add `publish/docker/latest` and `publish/docker/tag` make targets
+- New: #34 Add Buienradar weather description
+- New: #28 Prepare `Dockerfile` and `setup.py` for the `Ping` channel
+- Fix: #35 Remove timeout for the `Nest` channel
+- Opt: #37 Use a separate session for `Buienradar`
+- Opt: #37 Get rid of the global `ClientSession` instance
+- New: #23 Add Telegram `send_message` method
+- Opt: upgrade `aiodns`
+- Change: use `passlib` instead of `argon2-cffi`
 
 ### `0.8`
 
@@ -46,31 +46,31 @@
 
 ### `0.4`
 
-- Fix `id_` for `File` and `Clock`
-- feat: set `PYTHONOPTIMIZE=2` for the Python interpreter
-- feat: #10 set up unit testing and get rid of `aiosqlite` for now
-- feat: #9 database schema migrations
+- Fix: `id_` for `File` and `Clock`
+- Opt: set `PYTHONOPTIMIZE=2` for the Python interpreter
+- New: #10 set up unit testing and get rid of `aiosqlite` for now
+- New: #9 database schema migrations
 
 ### `0.3`
 
-- Charts in the detail views
-- Fix passing options via environment variables
-- Always start on port `8443`
-- Use [`aiohttp-sse-client`](https://pypi.org/project/aiohttp-sse-client/)
-- #2 #4 #6 Change database schema, rename `ValueKind` and add titles
-- Close #4: refine `Unit` class
-- Close #5 #6: denormalise database and add update IDs
+- New: charts in the detail views
+- Fix: passing options via environment variables
+- Change: always start on port `8443`
+- Opt: use [`aiohttp-sse-client`](https://pypi.org/project/aiohttp-sse-client/)
+- Change: #2 #4 #6 Change database schema, rename `ValueKind` and add titles
+- Chore: #4 refine `Unit` class
+- Chore: #5 #6 denormalise database and add update IDs
 
 ### `0.2`
 
-- Improve `Dockerfile` and `Makefile`
-- Improve `Nest` and `Buienradar`
-- Move text constants to templates
-- Introduce new value kinds
-- Add SSL support
-- Detail view page
-- Use `pickle` instead of JSON to store values in the database
+- Opt: improve `Dockerfile` and `Makefile`
+- Opt: improve `Nest` and `Buienradar`
+- Chore: move text constants to templates
+- New: introduce new value kinds
+- New: add SSL support
+- New: detail view page
+- Change: use `pickle` instead of JSON to store values in the database
 
 ### `0.1`
 
-Initial release.
+- New: initial release
