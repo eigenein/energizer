@@ -1,9 +1,10 @@
 *.crt
 *.key
 *.sqlite3
-.travis.yml
 .git/
 .idea/
+.travis.yml
+Makefile
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Windows template

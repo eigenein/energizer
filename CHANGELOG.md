@@ -1,4 +1,8 @@
-### `0.9.0`
+## `master`
+
+- Chore: brush up `Makefile`
+
+## `0.9.0`
 
 - Fix: #35 error logging in the `Nest` channel
 - Chore: Add `publish/docker/latest` and `publish/docker/tag` make targets
@@ -11,7 +15,7 @@
 - Opt: upgrade `aiodns`
 - Change: use `passlib` instead of `argon2-cffi`
 
-### `0.8`
+## `0.8`
 
 - Feat: #13 pass old value and all the current values to `on_event`
 - Feat: #14 `send_animation` method for Telegram bots
@@ -23,7 +27,7 @@
 - Feat: #31 asynchronous `on_event`
 - Feat: #7 channel page
 
-### `0.7`
+## `0.7`
 
 - Fix: #3 fix `hash-password` output
 - Fix: #3 adjust `PasswordHasher` parameters for Raspberry Pi Zero W
@@ -34,24 +38,24 @@
 - Chore: get rid of the event queue, call `on_update` directly
 - Chore: #15 rename to channels and events
 
-### `0.6`
+## `0.6`
 
 - Feat: #3 user authentication with login
 
-### `0.5`
+## `0.5`
 
 - Feat: user authentication
 - Chore: add `dev` install extra
 - Chore: enable `pytest` in Travis
 
-### `0.4`
+## `0.4`
 
 - Fix: `id_` for `File` and `Clock`
 - Opt: set `PYTHONOPTIMIZE=2` for the Python interpreter
 - New: #10 set up unit testing and get rid of `aiosqlite` for now
 - New: #9 database schema migrations
 
-### `0.3`
+## `0.3`
 
 - New: charts in the detail views
 - Fix: passing options via environment variables
@@ -61,7 +65,7 @@
 - Chore: #4 refine `Unit` class
 - Chore: #5 #6 denormalise database and add update IDs
 
-### `0.2`
+## `0.2`
 
 - Opt: improve `Dockerfile` and `Makefile`
 - Opt: improve `Nest` and `Buienradar`
@@ -71,6 +75,6 @@
 - New: detail view page
 - Change: use `pickle` instead of JSON to store values in the database
 
-### `0.1`
+## `0.1`
 
 - New: initial release

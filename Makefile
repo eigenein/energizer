@@ -1,51 +1,49 @@
-PIP := venv/bin/pip
-PIP-COMPILE := venv/bin/pip-compile
-PYTHON := venv/bin/python
-TWINE := venv/bin/twine
-
-.PHONY : \
-	requirements.txt \
-	tag \
-	publish/tag \
-	docker \
-	publish/docker/latest \
-	publish/docker/tag \
-	publish/docker \
-	dist \
-	publish/dist
-
-venv :
+.PHONY: venv
+venv:
 	@virtualenv -p python3.7 venv
-	@$(PIP) install -r requirements.txt
-	@$(PIP) install -e .[dev]
+	@venv/bin/pip install -e .[dev]
 
+.PHONY: requirements.txt
 requirements.txt :
-	@$(PIP-COMPILE) --no-index --no-emit-trusted-host --generate-hashes --output-file requirements.txt setup.py
+	@pip-compile --no-index --no-emit-trusted-host --generate-hashes --output-file requirements.txt setup.py
 
-tag :
-	@$(eval VERSION = $(shell $(PYTHON) setup.py --version))
+.PHONY: test
+test:
+	pytest
+	flake8 iftttie
+
+.PHONY: tag
+tag:
+	@$(eval VERSION = $(shell python setup.py --version))
 	@git tag -a '$(VERSION)' -m '$(VERSION)'
 
-publish/tag : tag
-	@$(eval VERSION = $(shell $(PYTHON) setup.py --version))
+.PHONY: publish/tag
+publish/tag: tag
+	@$(eval VERSION = $(shell python setup.py --version))
 	@git push origin '$(VERSION)'
 
-docker :
+.PHONY: docker
+docker:
 	@docker build -t eigenein/iftttie .
 
-publish/docker/latest : docker
+.PHONY:
+publish/docker/latest: docker
 	@docker push 'eigenein/iftttie:latest'
 
-publish/docker/tag : docker
-	@$(eval VERSION = $(shell $(PYTHON) setup.py --version))
+.PHONY: publish/docker/tag
+publish/docker/tag: docker
+	@$(eval VERSION = $(shell python setup.py --version))
 	@docker tag 'eigenein/iftttie:latest' 'eigenein/iftttie:$(VERSION)'
 	@docker push 'eigenein/iftttie:$(VERSION)'
 
+.PHONY: publish/docker
 publish/docker : publish/docker/latest publish/docker/tag
 
-dist :
+.PHONY: dist
+dist:
 	@rm -rf dist
-	@$(PYTHON) setup.py sdist bdist_wheel
+	@python setup.py sdist bdist_wheel
 
-publish/dist : dist
-	@$(TWINE) upload --verbose dist/*
+.PHONY: publish/dist
+publish/dist: dist
+	@twine upload --verbose dist/*
