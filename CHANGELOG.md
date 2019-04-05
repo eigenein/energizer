@@ -3,6 +3,7 @@
 - Chore: brush up `Makefile`
 - Fix: not having `pytest` in `dev` extras
 - Opt: upgrade `pip` in `Dockerfile`
+- Opt: upgrade `aiohttp`
 
 ## `0.9.0`
 
