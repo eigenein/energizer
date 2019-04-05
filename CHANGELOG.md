@@ -1,4 +1,4 @@
-### `latest`
+### `0.9.0`
 
 - Fix: #35 error logging in the `Nest` channel
 - Chore: Add `publish/docker/latest` and `publish/docker/tag` make targets
