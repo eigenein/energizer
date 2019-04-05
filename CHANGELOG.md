@@ -5,6 +5,7 @@
 - Opt: upgrade `pip` in `Dockerfile`
 - Opt: upgrade `aiohttp`
 - Opt: switch to `orjson`
+- Chore: #11 split up `README.md` into sections
 
 ## `0.9.0`
 
