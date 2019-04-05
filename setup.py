@@ -20,7 +20,7 @@ setuptools.setup(
         'click',
         'loguru',
         'pygal',
-        'orjson',
+        'ujson',
         'aiohttp-sse-client',
         'passlib',
         'aioping',

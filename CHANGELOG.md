@@ -4,7 +4,6 @@
 - Fix: not having `pytest` in `dev` extras
 - Opt: upgrade `pip` in `Dockerfile`
 - Opt: upgrade `aiohttp`
-- Opt: switch to `orjson`
 - Chore: #11 split up `README.md` into sections
 - Fix: display timestamp timezone
 

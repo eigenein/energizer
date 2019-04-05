@@ -7,7 +7,7 @@ from typing import Any, Iterable, List, Tuple
 from aiohttp_sse_client.client import EventSource, MessageEvent
 from loguru import logger
 from multidict import MultiDict
-from orjson import loads
+from ujson import loads
 
 from iftttie.channels.base import BaseChannel
 from iftttie.context import Context
