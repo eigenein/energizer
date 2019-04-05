@@ -6,6 +6,7 @@
 - Opt: upgrade `aiohttp`
 - Opt: switch to `orjson`
 - Chore: #11 split up `README.md` into sections
+- Fix: display timestamp timezone
 
 ## `0.9.0`
 
