@@ -1,5 +1,6 @@
 # Summary
 
 - [Introduction](introduction.md)
-- [Running](running.md)
+- [Quickstart](quickstart.md)
+- [Installation](installation.md)
 - [Recipes](recipes.md)

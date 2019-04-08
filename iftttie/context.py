@@ -37,6 +37,7 @@ class Context:
     on_close: Callable[[], Awaitable[Any]] = None
 
     # Latest events cache.
+    # TODO: to be removed.
     latest_events: Dict[str, Event] = field(default_factory=dict)
 
     def preload_latest_events(self):

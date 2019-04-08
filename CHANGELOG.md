@@ -6,6 +6,7 @@
 - Opt: upgrade `aiohttp`
 - Chore: #11 split up `README.md` into sections
 - Fix: display timestamp timezone
+- Chore: simplify code and prepare for future changes
 
 ## `0.9.0`
 
