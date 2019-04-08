@@ -8,7 +8,7 @@ from typing import List
 
 from loguru import logger
 
-from iftttie.types import Event, Unit
+from iftttie.types_ import Event, Unit
 
 
 def get_version(db: Connection) -> int:

@@ -11,7 +11,7 @@ from ujson import loads
 
 from iftttie.channels.base import BaseChannel
 from iftttie.context import Context
-from iftttie.types import Event, Unit
+from iftttie.types_ import Event, Unit
 
 url = 'https://developer-api.nest.com'
 headers = MultiDict([('Accept', 'text/event-stream')])

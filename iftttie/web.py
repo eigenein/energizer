@@ -88,5 +88,5 @@ async def manifest(_: web.Request) -> web.Response:
 
 @routes.get('/db.sqlite3')
 @authenticate_user
-async def download_db(_: web.Request) -> web.Response:
+async def download_db(_: web.Request) -> web.FileResponse:
     return web.FileResponse('db.sqlite3')

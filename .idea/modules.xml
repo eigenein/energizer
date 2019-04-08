@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/iftttie.iml" filepath="$PROJECT_DIR$/.idea/iftttie.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../iftttie-setup/.idea/iftttie-setup.iml" filepath="$PROJECT_DIR$/../iftttie-setup/.idea/iftttie-setup.iml" />
     </modules>
   </component>
 </project>

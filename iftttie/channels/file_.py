@@ -10,7 +10,7 @@ from loguru import logger
 
 from iftttie.channels.base import BaseChannel
 from iftttie.context import Context
-from iftttie.types import Event, Unit
+from iftttie.types_ import Event, Unit
 
 
 class File(BaseChannel):

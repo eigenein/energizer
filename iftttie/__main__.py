@@ -1,19 +1,18 @@
 from __future__ import annotations
 
 import ssl
+import sys
 from asyncio import create_task
 from types import ModuleType
 from typing import Optional
 
 import click
-from aiohttp import ClientSession
 from loguru import logger
 
 from iftttie import web
 from iftttie.core import run_channels
 from iftttie.database import init_database
-from iftttie.logging_ import init_logging
-from iftttie.utils import import_from_string
+from iftttie.logging_ import init_logging, logged
 from iftttie.web import Context
 
 
@@ -22,23 +21,22 @@ def option(*args, **kwargs):
 
 
 @click.command(context_settings={'max_content_width': 120})
-@option(
-    'configuration_url', '-c', '--config',
-    envvar='IFTTTIE_CONFIGURATION_URL',
-    required=True,
-    help='Configuration URL.',
+@click.argument(
+    'setup_path',
+    envvar='IFTTTIE_SETUP_PATH',
+    type=click.Path(exists=True, dir_okay=True, file_okay=False),
 )
 @option(
     'cert_path', '--cert',
-    type=click.Path(exists=True, dir_okay=False),
     envvar='IFTTTIE_CERT_PATH',
     help='Server certificate path.',
+    type=click.Path(exists=True, dir_okay=False),
 )
 @option(
     'key_path', '--key',
-    type=click.Path(exists=True, dir_okay=False),
     envvar='IFTTTIE_KEY_PATH',
     help='Server private key path.',
+    type=click.Path(exists=True, dir_okay=False),
 )
 @option(
     'verbosity', '-v', '--verbose',
@@ -48,14 +46,14 @@ def option(*args, **kwargs):
 )
 @option(
     'port', '-p', '--port',
-    type=int,
-    envvar='IFTTTIE_PORT',
     default=8443,
-    show_default=True,
+    envvar='IFTTTIE_PORT',
     help='Web interface and webhook API port.',
+    show_default=True,
+    type=int,
 )
 def main(
-    configuration_url: str,
+    setup_path: str,
     cert_path: Optional[str],
     key_path: Optional[str],
     verbosity: int,
@@ -67,43 +65,45 @@ def main(
     init_logging(verbosity)
     logger.info('Starting IFTTTie…')
 
+    # noinspection PyBroadException
+    try:
+        setup = import_setup(setup_path)
+    except Exception:
+        setup = None
+
     if cert_path and key_path:
-        logger.info('Using SSL.')
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
         ssl_context.load_cert_chain(cert_path, key_path)
     else:
-        logger.warning('Server certificate is not specified.')
         ssl_context = None
 
-    web.start(ssl_context, port, Context(configuration_url=configuration_url), on_startup, on_cleanup)
+    web.start(ssl_context, port, Context(setup=setup), on_startup, on_cleanup)
     logger.info('IFTTTie stopped.')
 
 
 async def on_startup(app: web.Application):
     """
-    Import configuration, run channels and return async tasks.
+    Set up the web application.
     """
     app.context.db = init_database('db.sqlite3')
     app.context.preload_latest_events()
-    configuration = await import_configuration(app)
-    app.context.channels = getattr(configuration, 'channels', [])
-    app.context.on_event = getattr(configuration, 'on_event', None)
-    app.context.on_close = getattr(configuration, 'on_close', None)
-    app.context.users = getattr(configuration, 'USERS', [])
+    app.context.channels = getattr(app.context.setup, 'channels', [])
+    app.context.on_event = getattr(app.context.setup, 'on_event', None)
+    app.context.on_close = getattr(app.context.setup, 'on_close', None)
+    app.context.users = getattr(app.context.setup, 'USERS', [])
     app.context.background_task = create_task(run_channels(app))
 
 
-async def import_configuration(app: web.Application) -> Optional[ModuleType]:
-    """
-    Download and import configuration.
-    """
-    logger.info('Importing configuration from {}', app.context.configuration_url)
-    try:
-        async with ClientSession(headers=[('Cache-Control', 'no-cache')]) as session:
-            async with session.get(app.context.configuration_url) as response:
-                return import_from_string('configuration', await response.text())
-    except Exception as e:
-        logger.error('Failed to import configuration: "{e}".', e=e)
+@logged(
+    enter_message='Importing setup from {}…',
+    success_message='Successfully imported the setup.',
+    error_message='Error occurred while importing the setup',
+)
+def import_setup(path: str) -> ModuleType:
+    sys.path.append(path)
+    # noinspection PyUnresolvedReferences
+    import iftttie_setup
+    return iftttie_setup
 
 
 async def on_cleanup(app: web.Application):

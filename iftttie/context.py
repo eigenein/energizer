@@ -3,19 +3,19 @@ from __future__ import annotations
 from asyncio import Task, create_task
 from dataclasses import dataclass, field
 from sqlite3 import Connection
-from typing import Any, Awaitable, Callable, Dict, Iterable, Optional, Sequence, Tuple
+from types import ModuleType
+from typing import Any, Awaitable, Callable, Dict, Optional, Sequence, Tuple
 
 from loguru import logger
 
-from iftttie.channels.base import BaseChannel
 from iftttie.database import insert_event, select_latest
-from iftttie.types import Event
+from iftttie.types_ import Event
 
 
 @dataclass
 class Context:
-    # Configuration URL passed via the command line option.
-    configuration_url: str
+    # Setup module.
+    setup: Optional[ModuleType] = None
 
     # Users credentials, each item is a `(username, password_hash)` pair.
     # See also `iftttie.utils password-hash`.
@@ -27,13 +27,11 @@ class Context:
     # `asyncio` task for the channels.
     background_task: Optional[Task] = None
 
-    # Channel instances.
-    channels: Iterable[BaseChannel] = ()
-
     # User's event handler.
     on_event: Callable[..., Awaitable[Any]] = None
 
     # User's clean up handler.
+    # TODO: rename.
     on_close: Callable[[], Awaitable[Any]] = None
 
     # Latest events cache.

@@ -16,7 +16,7 @@ async def run_channels(app: web.Application):
 
     logger.info('Running channels…')
     with suppress(CancelledError):
-        await gather(*(run_channel(app, channel) for channel in app.context.channels))
+        await gather(*[run_channel(app, channel) for channel in app.context.channels])
 
 
 async def run_channel(app: web.Application, channel: BaseChannel):

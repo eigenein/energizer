@@ -7,6 +7,7 @@
 - Chore: #11 split up `README.md` into sections
 - Fix: display timestamp timezone
 - Chore: simplify code and prepare for future changes
+- **Change: #55 switch to a local setup instead of a configuration URL**
 
 ## `0.9.0`
 
