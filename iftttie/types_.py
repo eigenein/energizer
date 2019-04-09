@@ -13,14 +13,14 @@ class Unit(str, Enum):
     BEAUFORT = 'BEAUFORT'
     BOOLEAN = 'BOOLEAN'
     CELSIUS = 'CELSIUS'
-    DATETIME = 'DATETIME'
+    DATETIME = 'DATETIME'  # timestamp
     ENUM = 'ENUM'
     HPA = 'HPA'  # hPa
     IMAGE_URL = 'IMAGE_URL'
     MPS = 'MPS'  # m/s
     RH = 'RH'  # relative humidity
     TEXT = 'TEXT'
-    TIMEDELTA = 'TIMEDELTA'
+    TIMEDELTA = 'TIMEDELTA'  # seconds
     WATT = 'WATT'
 
 

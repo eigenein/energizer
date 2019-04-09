@@ -21,7 +21,7 @@ keys = (
     ('groundtemperature', 'ground_temperature', Unit.CELSIUS, 'Ground Temperature'),
     ('humidity', 'humidity', Unit.RH, 'Humidity'),
     ('temperature', 'temperature', Unit.CELSIUS, 'Air Temperature'),
-    ('winddirection', 'wind_direction', Unit.ENUM, 'Wind Direction'),
+    ('winddirection', 'wind_direction', Unit.ENUM, 'Wind Direction'),  # FIXME: translate to English.
     ('windspeed', 'wind_speed', Unit.MPS, 'Wind Speed'),
     ('windspeedBft', 'wind_speed_bft', Unit.BEAUFORT, 'Wind BFT'),
     ('sunpower', 'sun_power', Unit.WATT, 'Sun Power'),
@@ -29,6 +29,7 @@ keys = (
 )
 
 
+# FIXME: use `pydantic` for the feed.
 class Buienradar(BaseChannel):
     def __init__(self, station_id: int, interval=timedelta(seconds=300.0)):
         self.station_id = station_id
@@ -83,7 +84,7 @@ class Buienradar(BaseChannel):
                 key=f'buienradar:{self.station_id}:{target_key}',
                 value=measurement[source_key],
                 unit=unit,
-                timestamp=parse_datetime(measurement['timestamp']),
+                timestamp=parse_datetime(measurement['timestamp']),  # FIXME: optimise conversion.
                 title=f'{measurement["stationname"]} {title}',
             ))
 
