@@ -7,6 +7,7 @@
 - Fix: not having `pytest` in `dev` extras
 - Fix: display timestamp timezone
 - Fix: add comma to the datetime format
+- Fix: add datetime hint to the channel page
 - Opt: upgrade `pip` in `Dockerfile`
 - Opt: upgrade `aiohttp`
 - Chore: brush up `Makefile`
