@@ -4,7 +4,7 @@ venv:
 	@venv/bin/pip install -e .[dev]
 
 .PHONY: requirements.txt
-requirements.txt :
+requirements.txt:
 	@pip-compile --no-index --no-emit-trusted-host --generate-hashes --output-file requirements.txt setup.py
 
 .PHONY: test
@@ -37,7 +37,7 @@ publish/docker/tag: docker
 	@docker push 'eigenein/iftttie:$(VERSION)'
 
 .PHONY: publish/docker
-publish/docker : publish/docker/latest publish/docker/tag
+publish/docker: publish/docker/latest publish/docker/tag
 
 .PHONY: dist
 dist:
@@ -47,3 +47,7 @@ dist:
 .PHONY: publish/dist
 publish/dist: dist
 	@twine upload --verbose dist/*
+
+# Publish everything, use with caution.
+.PHONY: publish
+publish: publish/tag publish/dist publish/docker
