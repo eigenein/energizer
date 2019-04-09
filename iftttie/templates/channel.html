@@ -4,6 +4,9 @@
 
 {% block body %}
   <section class="hero {% with %}{% include "class-background.html" %}{% endwith %}">
+    <div class="hero-head">
+      {% include "navbar.html" %}
+    </div>
     <div class="hero-body">
       <div class="container">
         <h1 class="title is-4">{{ event.title or event.key }}</h1>
