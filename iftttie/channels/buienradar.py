@@ -6,13 +6,15 @@ from typing import Any
 
 from aiohttp import ClientSession
 from loguru import logger
+from pytz import timezone
 
 from iftttie.channels.base import BaseChannel
 from iftttie.context import Context
 from iftttie.types_ import Event, Unit
 
+tz = timezone('Europe/Amsterdam')
 url = 'https://api.buienradar.nl/data/public/2.0/jsonfeed'
-headers = [('Cache-Control', 'no-cache')]
+headers = {'Cache-Control': 'no-cache'}
 keys = (
     ('airpressure', 'air_pressure', Unit.HPA, 'Pressure'),
     ('feeltemperature', 'feel_temperature', Unit.CELSIUS, 'Feels Like'),
@@ -49,7 +51,6 @@ class Buienradar(BaseChannel):
                 value=sunrise,
                 unit=Unit.DATETIME,
                 title='Sunrise',
-                id_=feed['actual']['sunrise'],
             ))
         else:
             logger.warning('Sunrise time is missing.')
@@ -61,7 +62,6 @@ class Buienradar(BaseChannel):
                 value=sunset,
                 unit=Unit.DATETIME,
                 title='Sunset',
-                id_=feed['actual']['sunset'],
             ))
         else:
             logger.warning('Sunset time is missing.')
@@ -72,7 +72,6 @@ class Buienradar(BaseChannel):
                 value=(sunset - sunrise),
                 unit=Unit.TIMEDELTA,
                 title='Day Length',
-                id_=feed['actual']['sunrise'],
             ))
         try:
             measurement = self.find_measurement(feed)
@@ -85,7 +84,6 @@ class Buienradar(BaseChannel):
                 value=measurement[source_key],
                 unit=unit,
                 timestamp=parse_datetime(measurement['timestamp']),
-                id_=measurement['timestamp'],
                 title=f'{measurement["stationname"]} {title}',
             ))
 
@@ -99,5 +97,5 @@ class Buienradar(BaseChannel):
         return f'{Buienradar.__name__}(station_id={self.station_id!r})'
 
 
-def parse_datetime(value: str) -> datetime:
-    return datetime.strptime(value, '%Y-%m-%dT%H:%M:%S').astimezone()
+def parse_datetime(value: str) -> float:
+    return datetime.strptime(value, '%Y-%m-%dT%H:%M:%S').astimezone(tz).timestamp()

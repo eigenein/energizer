@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
-from time import time
 from typing import Any, Optional
+
+from pydantic import BaseModel, validator
+
+utc = timezone.utc
 
 
 class Unit(str, Enum):
@@ -22,27 +24,26 @@ class Unit(str, Enum):
     WATT = 'WATT'
 
 
-@dataclass
-class Event:
-    # Key is similar to "channel" in other automation assistants.
-    # It's a unique identifier of some observed value.
+class Event(BaseModel):
     key: str
-
-    # ID is used to de-duplicate events for the same `key`.
-    # If the same key-ID pairs occur twice, they're treated as the same.
-    # This has a huge impact on the database size.
-    id_: str = field(default_factory=lambda: str(int(time())))
-
-    # The value itself. Usually, some primitive.
     value: Any = None
-
-    # Time and date when the value was registered.
-    timestamp: datetime = field(default_factory=lambda: datetime.now().astimezone())
-
-    # Unit of the value.
+    timestamp: datetime = None
     unit: Unit = Unit.TEXT
-
-    # Title in the web interface.
     title: Optional[str] = None
 
-    # TODO: helper methods.
+    # TODO: rename it, perhaps to just `key` when the latter becomes `channel` or so.
+    @property
+    def db_key(self) -> str:
+        """
+        Get the key under which the event is stored in a collection.
+        Supposed to be monotonic (non-decreasing).
+        """
+        return self.timestamp.astimezone(utc).strftime('%Y%m%d%H%M%S%f')
+
+    # noinspection PyMethodParameters
+    @validator('timestamp', pre=True, always=True)
+    def set_timestamp(cls, value: Optional[datetime]):
+        """
+        Sets the current timestamp by default.
+        """
+        return value or datetime.now(utc)

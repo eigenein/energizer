@@ -52,7 +52,7 @@ def start(
 @authenticate_user
 async def index(request: web.Request) -> dict:
     return {
-        'events': request.app.context.latest_events.values(),
+        'actual': request.app.context.actual.values(),
     }
 
 
@@ -61,7 +61,7 @@ async def index(request: web.Request) -> dict:
 @authenticate_user
 async def channel(request: web.Request) -> dict:
     try:
-        event = request.app.context.latest_events[request.match_info['key']]
+        event = request.app.context.actual[request.match_info['key']]
     except KeyError:
         raise HTTPNotFound(text='Channel is not found.')
     return {'event': event}

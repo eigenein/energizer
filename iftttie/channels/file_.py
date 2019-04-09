@@ -3,7 +3,6 @@ from __future__ import annotations
 from asyncio import sleep
 from datetime import timedelta
 from pathlib import Path
-from time import time
 from typing import Any, Optional
 
 from loguru import logger
@@ -29,7 +28,6 @@ class File(BaseChannel):
                     value=self.preprocess_value(self.path.read_text()),
                     unit=self.unit,
                     title=self.title,
-                    id_=str(time()),
                 ))
             except IOError as e:
                 logger.error('I/O error in {channel}:', channel=self)

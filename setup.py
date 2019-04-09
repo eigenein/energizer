@@ -24,6 +24,10 @@ setuptools.setup(
         'aiohttp-sse-client',
         'passlib',
         'aioping',
+        'sqlitemap',
+        'pydantic[ujson]',
+        'u-msgpack-python',
+        'pytz',
     ],
     extras_require={
         'dev': ['pip-tools', 'isort', 'ipython', 'twine', 'flake8', 'pytest'],

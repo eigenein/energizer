@@ -1,14 +1,16 @@
 ## `master`
 
-- Chore: brush up `Makefile`
+- **Change: #55 switch to a local setup instead of a configuration URL**
+- **Change: #53 migrate to `sqlitemap`. This will invalidate all the existing data in the database**
+- **Change: #51 use MessagePack for the database serialization**
+- Change: brush up the navigation bar
 - Fix: not having `pytest` in `dev` extras
+- Fix: display timestamp timezone
 - Opt: upgrade `pip` in `Dockerfile`
 - Opt: upgrade `aiohttp`
+- Chore: brush up `Makefile`
 - Chore: #11 split up `README.md` into sections
-- Fix: display timestamp timezone
 - Chore: simplify code and prepare for future changes
-- **Change: #55 switch to a local setup instead of a configuration URL**
-- Change: brush up the navigation bar
 
 ## `0.9.0`
 

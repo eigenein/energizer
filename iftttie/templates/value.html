@@ -21,9 +21,9 @@
 {% elif event.unit == Unit.ENUM %}
   <i class="fas fa-list-ul"></i> {{ event.value }}
 {% elif event.unit == Unit.TIMEDELTA %}
-  <i class="fas fa-stopwatch"></i> {{ event.value }}
+  <i class="fas fa-stopwatch"></i> {{ event.value|fromseconds }}
 {% elif event.unit == Unit.DATETIME %}
-  <i class="fas fa-clock"></i> {{ event.value|datetime }}
+  <i class="fas fa-clock"></i> {{ event.value|fromtimestamp }}
 {% else %}
   <i class="fas fa-font"></i> {{ event.value }}
 {% endif %}

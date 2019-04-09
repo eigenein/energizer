@@ -75,7 +75,6 @@ def yield_events(event: MessageEvent) -> Iterable[Event]:
                 unit=Unit.IMAGE_URL,
                 timestamp=datetime.strptime(last_event['start_time'], timestamp_format),
                 title=f'{camera["name"]} Last Event',
-                id_=last_event['start_time'],
             )
 
 

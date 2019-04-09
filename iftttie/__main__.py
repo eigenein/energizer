@@ -7,11 +7,12 @@ from types import ModuleType
 from typing import Optional
 
 import click
+import umsgpack
 from loguru import logger
+from sqlitemap import Connection
 
 from iftttie import web
 from iftttie.core import run_channels
-from iftttie.database import init_database
 from iftttie.logging_ import init_logging, logged
 from iftttie.web import Context
 
@@ -85,8 +86,8 @@ async def on_startup(app: web.Application):
     """
     Set up the web application.
     """
-    app.context.db = init_database('db.sqlite3')
-    app.context.preload_latest_events()
+    # TODO: move context initialisation to the `Context` class.
+    app.context.db = Connection('db.sqlite3', dumps_=umsgpack.packb, loads_=umsgpack.unpackb)
     app.context.channels = getattr(app.context.setup, 'channels', [])
     app.context.on_event = getattr(app.context.setup, 'on_event', None)
     app.context.on_close = getattr(app.context.setup, 'on_close', None)
