@@ -6,6 +6,7 @@
 - Change: brush up the navigation bar
 - Fix: not having `pytest` in `dev` extras
 - Fix: display timestamp timezone
+- Fix: add comma to the datetime format
 - Opt: upgrade `pip` in `Dockerfile`
 - Opt: upgrade `aiohttp`
 - Chore: brush up `Makefile`
