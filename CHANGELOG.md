@@ -1,5 +1,9 @@
 ## `master`
 
+- New: #17 automatically refresh page every minute
+
+## `0.10.0`
+
 - **Change: #55 switch to a local setup instead of a configuration URL**
 - **Change: #53 migrate to `sqlitemap`. This will invalidate all the existing data in the database**
 - **Change: #51 use MessagePack for the database serialization**
