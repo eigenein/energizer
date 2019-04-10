@@ -14,7 +14,7 @@ THandler = Callable[[Request], Awaitable[T]]
 
 
 def authenticate_user(handler: THandler[T]):
-    headers = [('WWW-Authenticate', 'Basic realm="IFTTTie"')]
+    headers = {'WWW-Authenticate': 'Basic realm="IFTTTie"'}
 
     @wraps(handler)
     async def wrapper(request: Request) -> T:
@@ -29,7 +29,7 @@ def authenticate_user(handler: THandler[T]):
         except ValueError:
             raise HTTPUnauthorized(text='Invalid authorization header', headers=headers)
 
-        for login, hash_ in request.app.context.users:
+        for login, hash_ in request.app['context'].users:
             if login != auth.login:
                 continue
             if pbkdf2_sha256.verify(auth.password, hash_):

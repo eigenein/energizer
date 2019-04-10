@@ -8,6 +8,7 @@ from typing import Optional
 
 import click
 import umsgpack
+from aiohttp.web import Application
 from loguru import logger
 from sqlitemap import Connection
 
@@ -83,11 +84,11 @@ def main(
     logger.info('IFTTTie stopped.')
 
 
-async def on_startup(app: web.Application):
+async def on_startup(app: Application):
     """
     Set up the web application.
     """
-    app.context.background_task = create_task(run_channels(app))
+    app['context'].background_task = create_task(run_channels(app))
 
 
 @logged(
@@ -102,22 +103,22 @@ def import_setup(path: str) -> ModuleType:
     return iftttie_setup
 
 
-async def on_cleanup(app: web.Application):
+async def on_cleanup(app: Application):
     """
     Cancel and close everything.
     """
     logger.info('Stopping channels…')
-    app.context.background_task.cancel()
-    await app.context.background_task
+    app['context'].background_task.cancel()
+    await app['context'].background_task
     logger.info('Channels stopped.')
-    if app.context.on_close:
+    if app['context'].on_close:
         try:
-            await app.context.on_close()
+            await app['context'].on_close()
         except Exception as e:
             logger.opt(exception=e).error('The error occurred in `on_close` handler.')
         else:
             logger.info('Cleaned up the configuration.')
-    app.context.db.close()
+    app['context'].db.close()
     logger.info('Database is closed.')
 
 

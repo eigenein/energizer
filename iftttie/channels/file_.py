@@ -43,7 +43,14 @@ class File(BaseChannel):
 
 
 class FloatValueFile(File):
-    def __init__(self, path: Path, channel_id: str, interval: timedelta, unit: Unit, scale=1.0, title: Optional[str] = None):
+    def __init__(
+        self,
+        path: Path,
+        channel_id: str,
+        interval: timedelta,
+        unit: Unit, scale=1.0,
+        title: Optional[str] = None,
+    ):
         super().__init__(path, channel_id, interval, unit, title)
         self.scale = scale
 

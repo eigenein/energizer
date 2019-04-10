@@ -29,21 +29,16 @@ statics = {
 }
 
 
-class Application(web.Application):
-    def __init__(self, context: Context):
-        super().__init__()
-        self.context = context
-
-
 def start(
     ssl_context: Optional[ssl.SSLContext],
     port: int,
     context: Context,
-    on_startup: Callable[[Application], Awaitable[Any]],
-    on_cleanup: Callable[[Application], Awaitable[Any]],
+    on_startup: Callable[[web.Application], Awaitable[Any]],
+    on_cleanup: Callable[[web.Application], Awaitable[Any]],
 ):
     """Start the web app."""
-    app = Application(context)
+    app = web.Application()
+    app['context'] = context
     # noinspection PyUnresolvedReferences
     app.on_startup.append(on_startup)
     # noinspection PyUnresolvedReferences
@@ -61,7 +56,7 @@ def start(
 @authenticate_user
 async def index(request: web.Request) -> dict:
     return {
-        'actual': request.app.context.get_actual().values(),
+        'actual': request.app['context'].get_actual().values(),
     }
 
 
@@ -70,7 +65,7 @@ async def index(request: web.Request) -> dict:
 @authenticate_user
 async def channel(request: web.Request) -> dict:
     try:
-        event = request.app.context.db[ACTUAL_KEY][request.match_info['key']]
+        event = request.app['context'].db[ACTUAL_KEY][request.match_info['key']]
     except KeyError:
         raise HTTPNotFound(text='Channel is not found.')
     return {'event': event}
