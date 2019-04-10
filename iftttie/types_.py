@@ -39,6 +39,9 @@ class Event(BaseModel):
     # Title is not saved in the logs.
     title: Optional[str] = None
 
+    # Tells if the event should be stored in the database logs.
+    is_logged: bool = True
+
     @property
     def key(self) -> str:
         """

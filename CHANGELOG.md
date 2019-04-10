@@ -2,6 +2,7 @@
 
 - **Change: #54 `Event.key` is changed to `Event.channel_id`** 
 - New: #17 automatically refresh page every minute
+- Fix: #64 Nest image URLs should not be logged
 
 ## `0.10.0`
 

@@ -55,9 +55,10 @@ class Context:
         logger.info('{key} = {value!r}', key=event.channel_id, value=event.value)
         previous = self.db[ACTUAL_KEY].get(event.channel_id)
         with self.db:
-            # Historical value uses optimised representation.
-            self.db[f'log:{event.channel_id}'][event.key] = event.dict(include={'timestamp', 'value'})
             self.db[ACTUAL_KEY][event.channel_id] = event.dict()
+            if event.is_logged:
+                # Historical value uses optimised representation.
+                self.db[f'log:{event.channel_id}'][event.key] = event.dict(include={'timestamp', 'value'})
         if self.on_event is not None:
             previous = Event(**previous) if previous is not None else None
             await create_task(self.call_event_handler(event, previous))
