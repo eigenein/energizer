@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ event.title or event.key }} – IFTTTie{% endblock %}
+{% block title %}{{ event.display_title }} – IFTTTie{% endblock %}
 
 {% block body %}
   <section class="hero {% with %}{% include "class-background.html" %}{% endwith %}">
@@ -9,7 +9,7 @@
     </div>
     <div class="hero-body">
       <div class="container">
-        <h1 class="title is-4">{{ event.title or event.key }}</h1>
+        <h1 class="title is-4">{{ event.display_title }}</h1>
         <h2 class="subtitle is-5">
           {% if event.unit != Unit.IMAGE_URL %}
             <span class="{% with %}{% include "class-foreground.html" %}{% endwith %}">

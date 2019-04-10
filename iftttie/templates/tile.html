@@ -1,9 +1,9 @@
 <div class="tile is-parent is-3">
   <a
     class="tile is-child notification {% with %}{% include "class-background.html" %}{% endwith %}"
-    href="/channel/{{ event.key }}"
+    href="/channel/{{ event.channel_id }}"
   >
-    <p class="title is-6">{{ event.title or event.key }}</p>
+    <p class="title is-6">{{ event.display_title }}</p>
     <p class="subtitle is-7">
       {% with %}{% include "timestamp.html" %}{% endwith %}
     </p>

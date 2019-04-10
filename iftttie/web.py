@@ -13,6 +13,7 @@ from iftttie import templates
 from iftttie.constants import ACTUAL_KEY
 from iftttie.context import Context
 from iftttie.decorators import authenticate_user
+from iftttie.types_ import Event
 
 routes = web.RouteTableDef()
 statics = {
@@ -60,15 +61,15 @@ async def index(request: web.Request) -> dict:
     }
 
 
-@routes.get(r'/channel/{key}', name='view')
+@routes.get(r'/channel/{channel_id}', name='view')
 @template('channel.html')
 @authenticate_user
 async def channel(request: web.Request) -> dict:
     try:
-        event = request.app['context'].db[ACTUAL_KEY][request.match_info['key']]
+        event = request.app['context'].db[ACTUAL_KEY][request.match_info['channel_id']]
     except KeyError:
         raise HTTPNotFound(text='Channel is not found.')
-    return {'event': event}
+    return {'event': Event(**event)}
 
 
 @routes.get(r'/{name:[^/]+}')

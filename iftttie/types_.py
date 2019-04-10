@@ -50,6 +50,10 @@ class Event(BaseModel):
         """
         return self.timestamp.astimezone(utc).strftime('%Y%m%d%H%M%S%f')
 
+    @property
+    def display_title(self) -> str:
+        return self.title or self.channel_id
+
     # noinspection PyMethodParameters
     @validator('timestamp', pre=True, always=True)
     def set_default_timestamp(cls, value: Optional[datetime]):
