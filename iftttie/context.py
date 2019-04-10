@@ -3,7 +3,6 @@ from __future__ import annotations
 from asyncio import Task, create_task
 from dataclasses import InitVar, dataclass, field
 from datetime import timezone
-from types import ModuleType
 from typing import Any, Awaitable, Callable, Mapping, Optional, Sequence, Tuple
 
 from loguru import logger
@@ -18,7 +17,7 @@ utc = timezone.utc
 @dataclass
 class Context:
     # Setup module.
-    setup: InitVar[ModuleType]
+    setup: InitVar[Any]
 
     # Database connection.
     db: Connection
@@ -37,7 +36,7 @@ class Context:
     # TODO: rename.
     on_close: Callable[[], Awaitable[Any]] = None
 
-    def __post_init__(self, setup: Optional[ModuleType]):
+    def __post_init__(self, setup: Any):
         self.channels = getattr(setup, 'channels', [])
         self.on_event = getattr(setup, 'on_event', None)
         self.on_close = getattr(setup, 'on_close', None)

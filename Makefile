@@ -9,8 +9,8 @@ requirements.txt:
 
 .PHONY: test
 test:
-	pytest
-	flake8 iftttie
+	@pytest
+	@flake8 iftttie
 
 .PHONY: tag
 tag:
