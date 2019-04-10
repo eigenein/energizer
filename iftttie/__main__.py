@@ -13,8 +13,8 @@ from loguru import logger
 from sqlitemap import Connection
 
 from iftttie import web
-from iftttie.core import run_channels
 from iftttie.logging_ import init_logging, logged
+from iftttie.runner import run_channels
 from iftttie.web import Context
 
 
@@ -88,7 +88,8 @@ async def on_startup(app: Application):
     """
     Set up the web application.
     """
-    app['context'].background_task = create_task(run_channels(app))
+    context: Context = app['context']
+    context.background_task = create_task(run_channels(context))
 
 
 @logged(

@@ -5,25 +5,30 @@ from concurrent.futures import CancelledError
 from contextlib import suppress
 
 from aiohttp import ClientConnectorError
-from aiohttp.web import Application
 from loguru import logger
 
 from iftttie.channels.base import BaseChannel
+from iftttie.context import Context
 
 
-async def run_channels(app: Application):
-    """Run channels from the configuration."""
+async def run_channels(context: Context):
+    """
+    Run channels from the configuration.
+    """
 
     logger.info('Running channels…')
     with suppress(CancelledError):
-        await gather(*[run_channel(app, channel) for channel in app['context'].channels])
+        await gather(*[run_channel(context, channel) for channel in context.channels])
 
 
-async def run_channel(app: Application, channel: BaseChannel):
+async def run_channel(context: Context, channel: BaseChannel):
+    """
+    Run the single channel.
+    """
     while True:
         logger.info('Running {channel}…', channel=channel)
         try:
-            await channel.run(app['context'])
+            await channel.run(context)
         except CancelledError:
             logger.info('Stopped channel {channel}.', channel=channel)
             break
