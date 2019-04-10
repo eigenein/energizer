@@ -15,7 +15,7 @@ from iftttie.types_ import Event, Unit
 tz = timezone('Europe/Amsterdam')
 url = 'https://api.buienradar.nl/data/public/2.0/jsonfeed'
 headers = {'Cache-Control': 'no-cache'}
-keys = (
+channels = (
     ('airpressure', 'air_pressure', Unit.HPA, 'Pressure'),
     ('feeltemperature', 'feel_temperature', Unit.CELSIUS, 'Feels Like'),
     ('groundtemperature', 'ground_temperature', Unit.CELSIUS, 'Ground Temperature'),
@@ -48,7 +48,7 @@ class Buienradar(BaseChannel):
         if feed['actual']['sunrise']:
             sunrise = parse_datetime(feed['actual']['sunrise'])
             await context.trigger_event(Event(
-                key='buienradar:sunrise',
+                channel_id='buienradar:sunrise',
                 value=sunrise,
                 unit=Unit.DATETIME,
                 title='Sunrise',
@@ -59,7 +59,7 @@ class Buienradar(BaseChannel):
         if feed['actual']['sunset']:
             sunset = parse_datetime(feed['actual']['sunset'])
             await context.trigger_event(Event(
-                key='buienradar:sunset',
+                channel_id='buienradar:sunset',
                 value=sunset,
                 unit=Unit.DATETIME,
                 title='Sunset',
@@ -69,7 +69,7 @@ class Buienradar(BaseChannel):
             sunset = None
         if sunset and sunrise:
             await context.trigger_event(Event(
-                key='buienradar:day_length',
+                channel_id='buienradar:day_length',
                 value=(sunset - sunrise),
                 unit=Unit.TIMEDELTA,
                 title='Day Length',
@@ -79,10 +79,10 @@ class Buienradar(BaseChannel):
         except KeyError as e:
             logger.error('Station ID {} is not found.', e)
             return
-        for source_key, target_key, unit, title in keys:
+        for key, channel_id, unit, title in channels:
             await context.trigger_event(Event(
-                key=f'buienradar:{self.station_id}:{target_key}',
-                value=measurement[source_key],
+                channel_id=f'buienradar:{self.station_id}:{channel_id}',
+                value=measurement[key],
                 unit=unit,
                 timestamp=parse_datetime(measurement['timestamp']),  # FIXME: optimise conversion.
                 title=f'{measurement["stationname"]} {title}',

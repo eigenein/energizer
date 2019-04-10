@@ -1,5 +1,6 @@
 ## `master`
 
+- **Change: #54 `Event.key` is changed to `Event.channel_id`** 
 - New: #17 automatically refresh page every minute
 
 ## `0.10.0`

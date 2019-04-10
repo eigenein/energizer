@@ -25,15 +25,22 @@ class Unit(str, Enum):
 
 
 class Event(BaseModel):
-    key: str
-    value: Any = None
+    value: Any
+
+    # Timestamp is set to now by default.
     timestamp: datetime = None
-    unit: Unit = Unit.TEXT
+
+    # Channel ID is not saved in the logs.
+    channel_id: Optional[str] = None
+
+    # Unit is not saved in the logs.
+    unit: Optional[Unit] = None
+
+    # Title is not saved in the logs.
     title: Optional[str] = None
 
-    # TODO: rename it, perhaps to just `key` when the latter becomes `channel` or so.
     @property
-    def db_key(self) -> str:
+    def key(self) -> str:
         """
         Get the key under which the event is stored in a collection.
         Supposed to be monotonic (non-decreasing).
@@ -42,7 +49,7 @@ class Event(BaseModel):
 
     # noinspection PyMethodParameters
     @validator('timestamp', pre=True, always=True)
-    def set_timestamp(cls, value: Optional[datetime]):
+    def set_default_timestamp(cls, value: Optional[datetime]):
         """
         Sets the current timestamp by default.
         """

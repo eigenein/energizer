@@ -13,9 +13,9 @@ from iftttie.types_ import Event, Unit
 
 
 class File(BaseChannel):
-    def __init__(self, path: Path, key: str, interval: timedelta, unit: Unit, title: Optional[str] = None):
+    def __init__(self, path: Path, channel_id: str, interval: timedelta, unit: Unit, title: Optional[str] = None):
         self.path = path
-        self.key = key
+        self.channel_id = channel_id
         self.interval = interval.total_seconds()
         self.unit = unit
         self.title = title
@@ -24,7 +24,7 @@ class File(BaseChannel):
         while True:
             try:
                 await context.trigger_event(Event(
-                    key=f'file:{self.key}',
+                    channel_id=f'file:{self.channel_id}',
                     value=self.preprocess_value(self.path.read_text()),
                     unit=self.unit,
                     title=self.title,
@@ -43,8 +43,8 @@ class File(BaseChannel):
 
 
 class FloatValueFile(File):
-    def __init__(self, path: Path, key: str, interval: timedelta, unit: Unit, scale=1.0, title: Optional[str] = None):
-        super().__init__(path, key, interval, unit, title)
+    def __init__(self, path: Path, channel_id: str, interval: timedelta, unit: Unit, scale=1.0, title: Optional[str] = None):
+        super().__init__(path, channel_id, interval, unit, title)
         self.scale = scale
 
     def preprocess_value(self, value: str):
