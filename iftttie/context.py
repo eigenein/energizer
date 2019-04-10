@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from asyncio import Task, create_task
-from dataclasses import dataclass, field
+from dataclasses import InitVar, dataclass, field
 from datetime import timezone
 from types import ModuleType
 from typing import Any, Awaitable, Callable, Mapping, Optional, Sequence, Tuple
@@ -18,15 +18,14 @@ utc = timezone.utc
 @dataclass
 class Context:
     # Setup module.
-    # TODO: this should be an init-only parameter.
-    setup: Optional[ModuleType] = None
+    setup: InitVar[ModuleType]
+
+    # Database connection.
+    db: Connection
 
     # Users credentials, each item is a `(username, password_hash)` pair.
     # See also `iftttie.utils password-hash`.
     users: Sequence[Tuple[str, str]] = field(default_factory=list)
-
-    # Database connection.
-    db: Connection = None
 
     # `asyncio` task for the channels.
     background_task: Optional[Task] = None
@@ -37,6 +36,12 @@ class Context:
     # User's clean up handler.
     # TODO: rename.
     on_close: Callable[[], Awaitable[Any]] = None
+
+    def __post_init__(self, setup: Optional[ModuleType]):
+        self.channels = getattr(setup, 'channels', [])
+        self.on_event = getattr(setup, 'on_event', None)
+        self.on_close = getattr(setup, 'on_close', None)
+        self.users = getattr(setup, 'USERS', [])
 
     def get_actual(self) -> Mapping[str, Event]:
         """

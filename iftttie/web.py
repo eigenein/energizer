@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import ssl
+from typing import Any, Awaitable, Callable, Optional
 
 import pkg_resources
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPNotFound
 from aiohttp_jinja2 import template
 from loguru import logger
-from typing import Any, Awaitable, Callable, Optional
 
 from iftttie import templates
+from iftttie.constants import ACTUAL_KEY
 from iftttie.context import Context
 from iftttie.decorators import authenticate_user
 
@@ -52,7 +53,7 @@ def start(
 @authenticate_user
 async def index(request: web.Request) -> dict:
     return {
-        'actual': request.app.context.actual.values(),
+        'actual': request.app.context.get_actual().values(),
     }
 
 
@@ -61,7 +62,7 @@ async def index(request: web.Request) -> dict:
 @authenticate_user
 async def channel(request: web.Request) -> dict:
     try:
-        event = request.app.context.actual[request.match_info['key']]
+        event = request.app.context.db[ACTUAL_KEY][request.match_info['key']]
     except KeyError:
         raise HTTPNotFound(text='Channel is not found.')
     return {'event': event}

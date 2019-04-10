@@ -78,7 +78,8 @@ def main(
     else:
         ssl_context = None
 
-    web.start(ssl_context, port, Context(setup=setup), on_startup, on_cleanup)
+    db = Connection('db.sqlite3', dumps_=umsgpack.packb, loads_=umsgpack.unpackb)
+    web.start(ssl_context, port, Context(setup=setup, db=db), on_startup, on_cleanup)
     logger.info('IFTTTie stopped.')
 
 
@@ -86,12 +87,6 @@ async def on_startup(app: web.Application):
     """
     Set up the web application.
     """
-    # TODO: move context initialisation to the `Context` class.
-    app.context.db = Connection('db.sqlite3', dumps_=umsgpack.packb, loads_=umsgpack.unpackb)
-    app.context.channels = getattr(app.context.setup, 'channels', [])
-    app.context.on_event = getattr(app.context.setup, 'on_event', None)
-    app.context.on_close = getattr(app.context.setup, 'on_close', None)
-    app.context.users = getattr(app.context.setup, 'USERS', [])
     app.context.background_task = create_task(run_channels(app))
 
 
