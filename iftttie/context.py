@@ -38,8 +38,7 @@ class Context:
     # TODO: rename.
     on_close: Callable[[], Awaitable[Any]] = None
 
-    @property
-    def actual(self) -> Mapping[str, Event]:
+    def get_actual(self) -> Mapping[str, Event]:
         """
         Get actual sensor values.
         """
@@ -50,16 +49,18 @@ class Context:
         Handle a single event in the application context.
         """
         logger.info('{key} = {value!r}', key=event.key, value=event.value)
+        previous = self.db[ACTUAL_KEY].get(event.key)
         with self.db:
             # Historical value uses optimised representation.
             self.db[f'log:{event.key}'][event.db_key] = event.dict(include={'timestamp', 'value'})
             self.db[ACTUAL_KEY][event.key] = event.dict()
         if self.on_event is not None:
-            await create_task(self.call_event_handler(event))
+            previous = Event(**previous) if previous is not None else None
+            await create_task(self.call_event_handler(event, previous))
 
-    async def call_event_handler(self, event: Event):
+    async def call_event_handler(self, event: Event, previous: Optional[Event]):
         # This has to stay in a separate function to be able to catch errors.
         try:
-            await self.on_event(event=event, actual=self.actual)
+            await self.on_event(event=event, previous=previous, actual=self.get_actual())
         except Exception as e:
             logger.opt(exception=e).error('Error while handling the event.')
