@@ -3,11 +3,11 @@ from __future__ import annotations
 import ssl
 from typing import Any, Awaitable, Callable, Optional
 
-import pkg_resources
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPNotFound
 from aiohttp_jinja2 import template
 from loguru import logger
+from pkg_resources import resource_listdir, resource_string
 
 from iftttie import templates
 from iftttie.constants import ACTUAL_KEY
@@ -15,10 +15,7 @@ from iftttie.context import Context
 from iftttie.decorators import authenticate_user
 
 routes = web.RouteTableDef()
-favicons = {
-    name: pkg_resources.resource_string('iftttie', f'static/{name}')
-    for name in ['favicon.ico', 'favicon-16x16.png', 'favicon-32x32.png', 'favicon-144x144.png']
-}
+statics = {name: resource_string('iftttie', f'static/{name}') for name in resource_listdir('iftttie', 'static')}
 
 
 class Application(web.Application):
@@ -68,23 +65,9 @@ async def channel(request: web.Request) -> dict:
     return {'event': event}
 
 
-@routes.get('/{name:favicon.+}')
-async def favicon(request: web.Request) -> web.Response:
-    return web.Response(body=favicons[request.match_info['name']])
-
-
-@routes.get('/manifest.json')
-async def manifest(_: web.Request) -> web.Response:
-    return web.json_response({
-        'short_name': 'IFTTTie',
-        'name': 'IFTTTie',
-        'icons': [{'src': '/favicon-144x144.png', 'type': 'image/png', 'sizes': '144x144'}],
-        'start_url': '/',
-        'background_color': '#FFFFFF',
-        'display': 'standalone',
-        'scope': '/',
-        'theme_color': '#00d1b2',
-    })
+@routes.get('/{name:.+(.png|.ico|.webmanifest)}')
+async def static(request: web.Request) -> web.Response:
+    return web.Response(body=statics[request.match_info['name']])
 
 
 @routes.get('/db.sqlite3')

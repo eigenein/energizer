@@ -4,6 +4,7 @@
 - **Change: #53 migrate to `sqlitemap`. This will invalidate all the existing data in the database**
 - **Change: #51 use MessagePack for the database serialization**
 - Change: brush up the navigation bar
+- Change: brush up favicon
 - Fix: not having `pytest` in `dev` extras
 - Fix: display timestamp timezone
 - Fix: add comma to the datetime format
