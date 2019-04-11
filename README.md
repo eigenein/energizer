@@ -1,6 +1,6 @@
 # IFTTTie
 
-Yet another home automation service.
+Yet another home automation.
 
 Documentation: https://eigenein.github.io/iftttie
 
