@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import ssl
-from typing import Any, Awaitable, Callable, Optional
+from typing import Any, Awaitable, Callable, Dict, Optional
 
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPNotFound
@@ -49,6 +49,7 @@ def start(
     templates.setup(app)
 
     logger.info('Using port {}.', port)
+    # noinspection PyTypeChecker
     web.run_app(app, port=port, ssl_context=ssl_context, print=None)
 
 
@@ -66,10 +67,10 @@ async def index(request: web.Request) -> dict:
 @authenticate_user
 async def channel(request: web.Request) -> dict:
     try:
-        event = request.app['context'].db[ACTUAL_KEY][request.match_info['channel_id']]
+        event: Dict[Any, Any] = request.app['context'].db[ACTUAL_KEY][request.match_info['channel_id']]
     except KeyError:
         raise HTTPNotFound(text='Channel is not found.')
-    return {'event': Event(**event)}
+    return {'event': Event(**event), 'raw_event': event}
 
 
 @routes.get(r'/{name:[^/]+}')

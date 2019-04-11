@@ -2,6 +2,7 @@
 
 - **Change: #54 `Event.key` is changed to `Event.channel_id`**
 - New: #17 automatically refresh page every minute
+- New: #66 print raw event data on the channel page
 - Fix: #64 Nest image URLs should not be logged
 - Chore: do not subclass `aiohttp.web.Application`
 - Chore: #54 refactor channel runner

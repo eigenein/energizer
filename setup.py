@@ -28,6 +28,7 @@ setuptools.setup(
         'pydantic[ujson]',
         'u-msgpack-python',
         'pytz',
+        'pprintpp',
     ],
     extras_require={
         'dev': ['pip-tools', 'isort', 'ipython', 'twine', 'flake8', 'pytest'],

@@ -10,7 +10,7 @@
     <div class="hero-body">
       <div class="container">
         <h1 class="title is-4">{{ event.display_title }}</h1>
-        <h2 class="subtitle is-5">
+        <h2 class="subtitle is-6">
           {% if event.unit != Unit.IMAGE_URL %}
             <span class="{% with %}{% include "class-foreground.html" %}{% endwith %}">
               {% with %}{% include "value.html" %}{% endwith %}
@@ -29,4 +29,13 @@
       </div>
     </section>
   {% endif %}
+
+  <section class="section">
+    <div class="container">
+      <h3 class="title is-5">Raw event</h3>
+      <div class="content">
+        <pre><code>{{ raw_event|pprint }}</code></pre>
+      </div>
+    </div>
+  </section>
 {% endblock %}
