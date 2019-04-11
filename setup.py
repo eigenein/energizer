@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='iftttie',
-    version='0.10.0',
+    version='0.11.0',
     author='Pavel Perestoronin',
     author_email='eigenein@gmail.com',
     description='Yet another home automation service',
