@@ -8,7 +8,6 @@ from typing import Any, Optional
 from loguru import logger
 
 from iftttie.channels.base import BaseChannel
-from iftttie.context import Context
 from iftttie.types_ import Event, Unit
 
 
@@ -20,15 +19,16 @@ class File(BaseChannel):
         self.unit = unit
         self.title = title
 
-    async def run(self, context: Context, **kwargs: Any):
+    @property
+    async def events(self):
         while True:
             try:
-                await context.trigger_event(Event(
+                yield Event(
                     channel_id=f'file:{self.channel_id}',
                     value=self.preprocess_value(self.path.read_text()),
                     unit=self.unit,
                     title=self.title,
-                ))
+                )
             except IOError as e:
                 logger.error('I/O error in {channel}:', channel=self)
                 logger.error('{e}', e=e)

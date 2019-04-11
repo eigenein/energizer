@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from datetime import datetime
-from typing import Any, Iterable, List, Tuple
+from typing import Iterable, List, Tuple
 
 from aiohttp_sse_client.client import EventSource, MessageEvent
 from loguru import logger
@@ -10,7 +10,6 @@ from multidict import MultiDict
 from ujson import loads
 
 from iftttie.channels.base import BaseChannel
-from iftttie.context import Context
 from iftttie.types_ import Event, Unit
 
 url = 'https://developer-api.nest.com'
@@ -23,7 +22,8 @@ class Nest(BaseChannel):
         self.token = token
         self.params = {'auth': self.token}
 
-    async def run(self, context: Context, **kwargs: Any):
+    @property
+    async def events(self):
         while True:
             try:
                 logger.info('Connecting to the streaming API…')
@@ -32,7 +32,7 @@ class Nest(BaseChannel):
                     async for server_event in source:
                         if server_event.type == 'put':
                             for event in yield_events(server_event):
-                                await context.trigger_event(event)
+                                yield event
             except asyncio.TimeoutError:
                 logger.warning('Connection timeout.')
             except ConnectionError as e:

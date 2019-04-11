@@ -2,14 +2,13 @@ from __future__ import annotations
 
 from asyncio import sleep
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Iterable
 
 from aiohttp import ClientSession
 from loguru import logger
 from pytz import timezone
 
 from iftttie.channels.base import BaseChannel
-from iftttie.context import Context
 from iftttie.types_ import Event, Unit
 
 tz = timezone('Europe/Amsterdam')
@@ -29,64 +28,67 @@ channels = (
 )
 
 
-# FIXME: use `pydantic` for the feed.
 class Buienradar(BaseChannel):
     def __init__(self, station_id: int, interval=timedelta(seconds=300.0)):
         self.station_id = station_id
         self.interval = interval.total_seconds()
 
-    async def run(self, context: Context, **kwargs: Any):
+    @property
+    async def events(self):
         async with ClientSession(headers=headers) as session:
             while True:
                 async with session.get(url, headers=headers) as response:
+                    # FIXME: use `pydantic` for the feed.
                     feed = await response.json()
-                await self.trigger_events(context, feed)
+                for event in self.yield_events(feed):
+                    yield event
                 logger.debug('Next reading in {interval} seconds.', interval=self.interval)
                 await sleep(self.interval)
 
-    async def trigger_events(self, context: Context, feed: Any):
+    def yield_events(self, feed: Any) -> Iterable[Event]:
         if feed['actual']['sunrise']:
             sunrise = parse_datetime(feed['actual']['sunrise'])
-            await context.trigger_event(Event(
+            yield Event(
                 channel_id='buienradar:sunrise',
                 value=sunrise,
                 unit=Unit.DATETIME,
                 title='Sunrise',
-            ))
+            )
         else:
             logger.warning('Sunrise time is missing.')
             sunrise = None
         if feed['actual']['sunset']:
             sunset = parse_datetime(feed['actual']['sunset'])
-            await context.trigger_event(Event(
+            yield Event(
                 channel_id='buienradar:sunset',
                 value=sunset,
                 unit=Unit.DATETIME,
                 title='Sunset',
-            ))
+            )
         else:
             logger.warning('Sunset time is missing.')
             sunset = None
         if sunset and sunrise:
-            await context.trigger_event(Event(
+            yield Event(
                 channel_id='buienradar:day_length',
                 value=(sunset - sunrise),
                 unit=Unit.TIMEDELTA,
                 title='Day Length',
-            ))
+            )
         try:
             measurement = self.find_measurement(feed)
         except KeyError as e:
             logger.error('Station ID {} is not found.', e)
             return
+        timestamp = parse_datetime(measurement['timestamp'])
         for key, channel_id, unit, title in channels:
-            await context.trigger_event(Event(
+            yield Event(
                 channel_id=f'buienradar:{self.station_id}:{channel_id}',
                 value=measurement[key],
                 unit=unit,
-                timestamp=parse_datetime(measurement['timestamp']),  # FIXME: optimise conversion.
+                timestamp=timestamp,
                 title=f'{measurement["stationname"]} {title}',
-            ))
+            )
 
     def find_measurement(self, feed: Any) -> Any:
         for measurement in feed['actual']['stationmeasurements']:

@@ -1,3 +1,7 @@
+## `master`
+
+- Opt: #54 refactor channel runner
+
 ## `0.11.0`
 
 - **Change: #54 `Event.key` is changed to `Event.channel_id`**
