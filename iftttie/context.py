@@ -61,6 +61,7 @@ class Context:
                 self.db[f'log:{event.channel_id}'][event.key] = event.dict(include={'timestamp', 'value'})
         if self.on_event is not None:
             previous = Event(**previous) if previous is not None else None
+            # TODO: call `get_actual()` here too, before scheduling the task.
             # noinspection PyAsyncCall
             create_task(self.call_event_handler(event, previous))
 
