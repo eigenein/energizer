@@ -1,5 +1,6 @@
 ## `master`
 
+- New: log Telegram errors
 - Opt: #54 refactor channel runner
 
 ## `0.11.0`
