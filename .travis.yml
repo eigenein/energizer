@@ -6,4 +6,5 @@ install:
   - pip install -r requirements.txt
   - pip install -e .[dev]
 script:
+  - touch db.sqlite3
   - make test
