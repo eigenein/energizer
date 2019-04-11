@@ -23,6 +23,13 @@ class Unit(str, Enum):
     TIMEDELTA = 'TIMEDELTA'  # seconds
     WATT = 'WATT'
 
+    @property
+    def is_inline(self) -> bool:
+        """
+        Get whether a value can be nicely inlined in the web interface.
+        """
+        return self != Unit.IMAGE_URL
+
 
 class Event(BaseModel):
     value: Any

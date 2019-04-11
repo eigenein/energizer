@@ -9,23 +9,30 @@
     </div>
     <div class="hero-body">
       <div class="container">
-        <h1 class="title is-4">{{ event.display_title }}</h1>
-        <h2 class="subtitle is-6">
-          {% if event.unit != Unit.IMAGE_URL %}
+        <h1 class="title is-4">
+          {% if event.unit.is_inline %}
             <span class="{% with %}{% include "class-foreground.html" %}{% endwith %}">
               {% with %}{% include "value.html" %}{% endwith %}
             </span>
+          {% else %}
+            {{ event.display_title }}
           {% endif %}
+        </h1>
+        <h2 class="subtitle is-6">
+          {% if event.unit.is_inline %}{{ event.display_title }}{% endif %}
           <span><i class="far fa-clock"></i></span> {% with %}{% include "timestamp.html" %}{% endwith %}
         </h2>
       </div>
     </div>
   </section>
 
-  {% if event.unit == Unit.IMAGE_URL %}
+  {% if not event.unit.is_inline %}
     <section class="section">
       <div class="container">
-        <figure class="image"><img src="{{ event.value }}" alt="Event image"></figure>
+        <h3 class="title is-5">Actual</h3>
+        <div class="notification">
+          {% with %}{% include "value.html" %}{% endwith %}
+        </div>
       </div>
     </section>
   {% endif %}
