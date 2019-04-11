@@ -1,6 +1,7 @@
 ## `master`
 
 - New: log Telegram errors
+- Fix: fire-and-forget user `on_event` handler
 - Opt: #54 refactor channel runner
 
 ## `0.11.0`
