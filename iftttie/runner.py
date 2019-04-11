@@ -27,6 +27,7 @@ async def run_channel(context: Context, channel: BaseChannel):
         logger.info('Running {channel}…', channel=channel)
         try:
             async for event in channel.events:
+                # TODO: reset error counter.
                 await context.trigger_event(event)
         except CancelledError:
             logger.info('Stopped channel {channel}.', channel=channel)
@@ -39,4 +40,4 @@ async def run_channel(context: Context, channel: BaseChannel):
         else:
             pass  # TODO: reset error counter.
         logger.error('Restarting in a minute.')
-        await sleep(60.0)  # TODO: something smarter.
+        await sleep(60.0)  # TODO: something smarter, depending on the counter.

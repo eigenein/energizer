@@ -37,10 +37,10 @@ class Context:
     on_close: Callable[[], Awaitable[Any]] = None
 
     def __post_init__(self, setup: Any):
-        self.channels = getattr(setup, 'channels', [])
-        self.on_event = getattr(setup, 'on_event', None)
-        self.on_close = getattr(setup, 'on_close', None)
-        self.users = getattr(setup, 'USERS', [])
+        self.channels = getattr(setup, 'channels', [])  # TODO: should be auto-discovered.
+        self.on_event = getattr(setup, 'on_event', None)  # TODO: should be set by a user code.
+        self.on_close = getattr(setup, 'on_close', None)  # TODO: should be set by a user code.
+        self.users = getattr(setup, 'USERS', [])  # TODO: should be set by a user code.
 
     def get_actual(self) -> Mapping[str, Event]:
         """
