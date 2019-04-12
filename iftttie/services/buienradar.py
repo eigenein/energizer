@@ -8,7 +8,7 @@ from aiohttp import ClientSession
 from loguru import logger
 from pytz import timezone
 
-from iftttie.channels.base import BaseChannel
+from iftttie.services.base import Service
 from iftttie.types_ import Event, Unit
 
 tz = timezone('Europe/Amsterdam')
@@ -28,7 +28,7 @@ channels = (
 )
 
 
-class Buienradar(BaseChannel):
+class Buienradar(Service):
     def __init__(self, station_id: int, interval=timedelta(seconds=300.0)):
         self.station_id = station_id
         self.interval = interval.total_seconds()

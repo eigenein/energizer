@@ -9,7 +9,7 @@ from loguru import logger
 from multidict import MultiDict
 from ujson import loads
 
-from iftttie.channels.base import BaseChannel
+from iftttie.services.base import Service
 from iftttie.types_ import Event, Unit
 
 url = 'https://developer-api.nest.com'
@@ -17,7 +17,7 @@ headers = MultiDict([('Accept', 'text/event-stream')])
 timestamp_format = '%Y-%m-%dT%H:%M:%S.%f%z'
 
 
-class Nest(BaseChannel):
+class Nest(Service):
     def __init__(self, token: str):
         self.token = token
         self.params = {'auth': self.token}

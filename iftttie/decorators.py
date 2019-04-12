@@ -29,7 +29,7 @@ def authenticate_user(handler: THandler[T]):
         except ValueError:
             raise HTTPUnauthorized(text='Invalid authorization header', headers=headers)
 
-        for login, hash_ in request.app['context'].users:
+        for login, hash_ in request.app['context'].automation.users:
             if login != auth.login:
                 continue
             if pbkdf2_sha256.verify(auth.password, hash_):

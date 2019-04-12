@@ -7,11 +7,11 @@ from typing import Optional
 
 from loguru import logger
 
-from iftttie.channels.base import BaseChannel
+from iftttie.services.base import Service
 from iftttie.types_ import Event
 
 
-class Clock(BaseChannel):
+class Clock(Service):
     def __init__(self, channel_id: str, interval: timedelta, title: Optional[str] = None):
         self.channel_id = channel_id
         self.interval = interval.total_seconds()

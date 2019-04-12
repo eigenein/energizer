@@ -1,5 +1,6 @@
 ## `master`
 
+- **Change: #72 #54 make user setup class-based**
 - New: log Telegram errors
 - New: #67 add the events page (work in progress)
 - Fix: fire-and-forget user `on_event` handler

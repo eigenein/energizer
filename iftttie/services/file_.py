@@ -7,11 +7,11 @@ from typing import Any, Optional
 
 from loguru import logger
 
-from iftttie.channels.base import BaseChannel
+from iftttie.services.base import Service
 from iftttie.types_ import Event, Unit
 
 
-class File(BaseChannel):
+class File(Service):
     def __init__(self, path: Path, channel_id: str, interval: timedelta, unit: Unit, title: Optional[str] = None):
         self.path = path
         self.channel_id = channel_id

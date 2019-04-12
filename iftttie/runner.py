@@ -6,37 +6,42 @@ from concurrent.futures import CancelledError
 from aiohttp import ClientConnectorError
 from loguru import logger
 
-from iftttie.channels.base import BaseChannel
+from iftttie.services.base import Service
 from iftttie.context import Context
 
 
-async def run_channels(context: Context):
+async def run_services(context: Context):
     """
-    Run channels from the configuration.
+    Run services from the configuration.
     """
 
-    logger.info('Running channels…')
-    await gather(*[run_channel(context, channel) for channel in context.channels])
+    logger.info('Running services…')
+    try:
+        await gather(*[run_service(context, service) for service in context.automation.services])
+    except CancelledError:
+        pass
+    except Exception as e:
+        logger.opt(exception=e).critical('Failed to run services.')
 
 
-async def run_channel(context: Context, channel: BaseChannel):
+async def run_service(context: Context, service: Service):
     """
-    Run the single channel.
+    Run the single service.
     """
     while True:
-        logger.info('Running {channel}…', channel=channel)
+        logger.info('Running {}…', service)
         try:
-            async for event in channel.events:
+            async for event in service.events:
                 # TODO: reset error counter.
                 await context.trigger_event(event)
         except CancelledError:
-            logger.info('Stopped channel {channel}.', channel=channel)
+            logger.info('Stopped service {}.', service)
             break
         except (ConnectionError, ClientConnectorError) as e:
-            logger.error('{channel} has raised a connection error:', channel=channel)
+            logger.error('{} has raised a connection error:', service)
             logger.error('{e}', e=e)
         except Exception as e:
-            logger.opt(exception=e).error('{channel} has failed.', channel=channel)
+            logger.opt(exception=e).error('{} has failed.', service)
         else:
             pass  # TODO: reset error counter.
         logger.error('Restarting in a minute.')

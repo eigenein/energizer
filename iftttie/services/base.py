@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 
 
-class BaseChannel(metaclass=ABCMeta):
+class Service(metaclass=ABCMeta):
     @property
     @abstractmethod
     async def events(self):

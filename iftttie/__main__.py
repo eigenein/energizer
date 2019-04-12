@@ -3,7 +3,6 @@ from __future__ import annotations
 import ssl
 import sys
 from asyncio import create_task
-from types import ModuleType
 from typing import Optional
 
 import click
@@ -13,8 +12,9 @@ from loguru import logger
 from sqlitemap import Connection
 
 from iftttie import web
+from iftttie.automation import Automation
 from iftttie.logging_ import init_logging, logged
-from iftttie.runner import run_channels
+from iftttie.runner import run_services
 from iftttie.web import Context
 
 
@@ -24,8 +24,8 @@ def option(*args, **kwargs):
 
 @click.command(context_settings={'max_content_width': 120})
 @click.argument(
-    'setup_path',
-    envvar='IFTTTIE_SETUP_PATH',
+    'automation_path',
+    envvar='IFTTTIE_AUTOMATION_PATH',
     type=click.Path(exists=True, dir_okay=True, file_okay=False),
 )
 @option(
@@ -55,7 +55,7 @@ def option(*args, **kwargs):
     type=int,
 )
 def main(
-    setup_path: str,
+    automation_path: str,
     cert_path: Optional[str],
     key_path: Optional[str],
     verbosity: int,
@@ -69,9 +69,9 @@ def main(
 
     # noinspection PyBroadException
     try:
-        setup = import_setup(setup_path)
+        automation = import_automation(automation_path)
     except Exception:
-        setup = None
+        automation = None
 
     if cert_path and key_path:
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
@@ -80,7 +80,7 @@ def main(
         ssl_context = None
 
     db = Connection('db.sqlite3', dumps_=umsgpack.packb, loads_=umsgpack.unpackb)
-    web.start(ssl_context, port, Context(setup=setup, db=db), on_startup, on_cleanup)
+    web.start(ssl_context, port, Context(db=db, automation=automation), on_startup, on_cleanup)
     logger.info('IFTTTie stopped.')
 
 
@@ -88,37 +88,32 @@ async def on_startup(app: Application):
     """
     Set up the web application.
     """
-    context: Context = app['context']
-    context.background_task = create_task(run_channels(context))
+    # noinspection PyAsyncCall
+    create_task(run_services(app['context']))
 
 
 @logged(
-    enter_message='Importing setup from {}…',
-    success_message='Successfully imported the setup.',
-    error_message='Error occurred while importing the setup',
+    enter_message='Importing automation from {}…',
+    success_message='Successfully imported the automation.',
+    error_message='Error occurred while importing the automation',
 )
-def import_setup(path: str) -> ModuleType:
+def import_automation(path: str) -> Automation:
     sys.path.append(path)
-    # noinspection PyUnresolvedReferences
-    import iftttie_setup
-    return iftttie_setup
+    # noinspection PyUnresolvedReferences, PyPackageRequirements
+    from automation import MyAutomation
+    return MyAutomation()
 
 
 async def on_cleanup(app: Application):
     """
     Cancel and close everything.
     """
-    logger.info('Stopping channels…')
-    app['context'].background_task.cancel()
-    await app['context'].background_task
-    logger.info('Channels stopped.')
-    if app['context'].on_close:
-        try:
-            await app['context'].on_close()
-        except Exception as e:
-            logger.opt(exception=e).error('The error occurred in `on_close` handler.')
-        else:
-            logger.info('Cleaned up the configuration.')
+    try:
+        await app['context'].automation.on_cleanup()
+    except Exception as e:
+        logger.opt(exception=e).error('The error occurred in `on_cleanup` handler.')
+    else:
+        logger.info('Cleaned up the automation.')
     app['context'].db.close()
     logger.info('Database is closed.')
 
