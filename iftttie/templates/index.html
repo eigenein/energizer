@@ -18,7 +18,7 @@
 {% block body %}
   <section class="hero is-info">
     <div class="hero-head">
-      {% include "navbar.html" %}
+      {% include "includes/navbar.html" %}
     </div>
     <div class="hero-body">
       <div class="container">
@@ -36,7 +36,7 @@
           <div class="tile is-ancestor">
             {% for event in batch %}
               {% if event %}
-                {% include "tile.html" %}
+                {% include "includes/tile.html" %}
               {% endif %}
             {% endfor %}
           </div>

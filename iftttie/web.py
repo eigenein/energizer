@@ -40,9 +40,7 @@ def start(
     """Start the web app."""
     app = web.Application()
     app['context'] = context
-    # noinspection PyUnresolvedReferences
     app.on_startup.append(on_startup)
-    # noinspection PyUnresolvedReferences
     app.on_cleanup.append(on_cleanup)
     app.add_routes(routes)
 
@@ -53,19 +51,19 @@ def start(
     web.run_app(app, port=port, ssl_context=ssl_context, print=None)
 
 
-@routes.get(r'/', name='index')
+@routes.get(r'/')
 @template('index.html')
 @authenticate_user
-async def index(request: web.Request) -> dict:
+async def get_index(request: web.Request) -> dict:
     return {
         'actual': request.app['context'].get_actual().values(),
     }
 
 
-@routes.get(r'/channel/{channel_id}', name='view')
+@routes.get(r'/channel/{channel_id}')
 @template('channel.html')
 @authenticate_user
-async def channel(request: web.Request) -> dict:
+async def get_channel(request: web.Request) -> dict:
     try:
         event: Dict[Any, Any] = request.app['context'].db[ACTUAL_KEY][request.match_info['channel_id']]
     except KeyError:
@@ -73,17 +71,25 @@ async def channel(request: web.Request) -> dict:
     return {'event': Event(**event), 'raw_event': event}
 
 
-@routes.get(r'/{name:[^/]+}')
-async def static(request: web.Request) -> web.Response:
+@routes.get(r'/downloads/db.sqlite3')
+@authenticate_user
+async def get_db(_: web.Request) -> web.FileResponse:
+    return web.FileResponse('db.sqlite3', headers={'Content-Type': 'application/x-sqlite3'})
+
+
+@routes.get(r'/events')
+@template('events.html')
+@authenticate_user
+async def get_events(request: web.Request) -> dict:
+    return {}
+
+
+# Must go at the end.
+@routes.get(r'/{name:.+}')
+async def get_static(request: web.Request) -> web.Response:
     try:
         body = statics[request.match_info['name']]
     except KeyError:
         raise HTTPNotFound()
     else:
         return web.Response(body=body)
-
-
-@routes.get(r'/downloads/db.sqlite3')
-@authenticate_user
-async def download_db(_: web.Request) -> web.FileResponse:
-    return web.FileResponse('db.sqlite3', headers={'Content-Type': 'application/x-sqlite3'})

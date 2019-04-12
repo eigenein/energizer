@@ -1,6 +1,7 @@
 ## `master`
 
 - New: log Telegram errors
+- New: #67 add the events page (work in progress)
 - Fix: fire-and-forget user `on_event` handler
 - Opt: #54 refactor channel runner
 - Opt: remove unneeded `{% with %}`
