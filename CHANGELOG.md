@@ -3,6 +3,7 @@
 - New: log Telegram errors
 - Fix: fire-and-forget user `on_event` handler
 - Opt: #54 refactor channel runner
+- Opt: remove unneeded `{% with %}`
 
 ## `0.11.0`
 

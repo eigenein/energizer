@@ -3,7 +3,7 @@
 {% block title %}{{ event.display_title }} – IFTTTie{% endblock %}
 
 {% block body %}
-  <section class="hero {% with %}{% include "class-background.html" %}{% endwith %}">
+  <section class="hero {% include "class-background.html" %}">
     <div class="hero-head">
       {% include "navbar.html" %}
     </div>
@@ -11,8 +11,8 @@
       <div class="container">
         <h1 class="title is-4">
           {% if event.unit.is_inline %}
-            <span class="{% with %}{% include "class-foreground.html" %}{% endwith %}">
-              {% with %}{% include "value.html" %}{% endwith %}
+            <span class="{% include "class-foreground.html" %}">
+              {% include "value.html" %}
             </span>
           {% else %}
             {{ event.display_title }}
@@ -20,7 +20,7 @@
         </h1>
         <h2 class="subtitle is-6">
           {% if event.unit.is_inline %}{{ event.display_title }}{% endif %}
-          <span><i class="far fa-clock"></i></span> {% with %}{% include "timestamp.html" %}{% endwith %}
+          <span><i class="far fa-clock"></i></span> {% include "timestamp.html" %}
         </h2>
       </div>
     </div>
@@ -31,7 +31,7 @@
       <div class="container">
         <h3 class="title is-5">Actual</h3>
         <div class="notification">
-          {% with %}{% include "value.html" %}{% endwith %}
+          {% include "value.html" %}
         </div>
       </div>
     </section>
