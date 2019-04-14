@@ -8,6 +8,7 @@ from aiohttp import ClientSession
 from loguru import logger
 from pytz import timezone
 
+from iftttie.constants import HTTP_TIMEOUT
 from iftttie.services.base import Service
 from iftttie.types_ import Event, Unit
 
@@ -35,7 +36,7 @@ class Buienradar(Service):
 
     @property
     async def events(self):
-        async with ClientSession(headers=headers) as session:
+        async with ClientSession(headers=headers, timeout=HTTP_TIMEOUT) as session:
             while True:
                 async with session.get(url, headers=headers) as response:
                     # FIXME: use `pydantic` for the feed.

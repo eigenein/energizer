@@ -5,6 +5,7 @@
 - New: #67 add the events page (work in progress)
 - New: #70 `on_startup` handler
 - Fix: fire-and-forget user `on_event` handler
+- Fix: #47 `Buienradar` HTTP timeout
 - Opt: #54 refactor channel runner
 - Opt: remove unneeded `{% with %}`
 

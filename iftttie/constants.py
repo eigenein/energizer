@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from aiohttp import ClientTimeout
+
 LOGURU_FORMAT = ' '.join((
     '<green>{time:MMM DD HH:mm:ss}</green>',
     '<cyan>({name}:{line})</cyan>',
@@ -17,3 +19,5 @@ VERBOSITY_LEVELS = {
 
 # Collection with the actual sensor values.
 ACTUAL_KEY = 'actual'
+
+HTTP_TIMEOUT = ClientTimeout(total=10.0)
