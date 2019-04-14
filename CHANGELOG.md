@@ -7,6 +7,7 @@
 - New: #42 IFTTTie version channel
 - Fix: fire-and-forget user `on_event` handler
 - Fix: #47 `Buienradar` HTTP timeout
+- Fix: upgrade `jinja2`
 - Opt: #54 refactor channel runner
 - Opt: remove unneeded `{% with %}`
 
