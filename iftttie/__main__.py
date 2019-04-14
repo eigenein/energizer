@@ -6,6 +6,7 @@ from asyncio import create_task
 from typing import Optional
 
 import click
+import pkg_resources
 import umsgpack
 from aiohttp.web import Application
 from loguru import logger
@@ -13,8 +14,10 @@ from sqlitemap import Connection
 
 from iftttie import web
 from iftttie.automation import Automation
+from iftttie.helpers import call_handler
 from iftttie.logging_ import init_logging
 from iftttie.runner import run_services
+from iftttie.types_ import Event, Unit
 from iftttie.web import Context
 
 
@@ -89,12 +92,15 @@ async def on_startup(app: Application):
     """
     Set up the web application.
     """
-    try:
-        await app['context'].automation.on_startup()
-    except Exception as e:
-        logger.opt(exception=e).error('Error occurred in `on_startup` handler.')
-    # noinspection PyAsyncCall
-    create_task(run_services(app['context']))
+    context: Context = app['context']
+    await call_handler(context.automation.on_startup())
+    context.trigger_event(Event(
+        value=pkg_resources.get_distribution('iftttie').version,
+        channel_id='iftttie:version',
+        unit=Unit.TEXT,
+        title='IFTTTie version',
+    ))
+    _ = create_task(run_services(context))
 
 
 def import_automation(path: str) -> Automation:
@@ -110,10 +116,7 @@ async def on_cleanup(app: Application):
     Cancel and close everything.
     """
     logger.info('Cleaning up…')
-    try:
-        await app['context'].automation.on_cleanup()
-    except Exception as e:
-        logger.opt(exception=e).error('Error occurred in `on_cleanup` handler.')
+    await call_handler(app['context'].automation.on_cleanup())
     app['context'].db.close()
 
 

@@ -4,6 +4,7 @@
 - New: log Telegram errors
 - New: #67 add the events page (work in progress)
 - New: #70 `on_startup` handler
+- New: #42 IFTTTie version channel
 - Fix: fire-and-forget user `on_event` handler
 - Fix: #47 `Buienradar` HTTP timeout
 - Opt: #54 refactor channel runner

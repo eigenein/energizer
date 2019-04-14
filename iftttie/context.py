@@ -9,6 +9,7 @@ from sqlitemap import Connection
 
 from iftttie.automation import Automation
 from iftttie.constants import ACTUAL_KEY
+from iftttie.helpers import call_handler
 from iftttie.types_ import Event
 
 
@@ -26,7 +27,7 @@ class Context:
         """
         return {key: Event(**value) for key, value in self.db[ACTUAL_KEY].items()}
 
-    async def trigger_event(self, event: Event):
+    def trigger_event(self, event: Event):
         """
         Handle a single event in the application context.
         """
@@ -41,11 +42,4 @@ class Context:
 
         previous = Event(**previous) if previous is not None else None
         # noinspection PyAsyncCall
-        create_task(self.call_event_handler(event=event, previous=previous, actual=self.get_actual()))
-
-    async def call_event_handler(self, **kwargs):
-        # This has to stay in a separate function to be able to catch errors.
-        try:
-            await self.automation.on_event(**kwargs)
-        except Exception as e:
-            logger.opt(exception=e).error('Error while handling the event.')
+        create_task(call_handler(self.automation.on_event(event=event, previous=previous, actual=self.get_actual())))

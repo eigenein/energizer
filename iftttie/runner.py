@@ -33,7 +33,7 @@ async def run_service(context: Context, service: Service):
         try:
             async for event in service.events:
                 # TODO: reset error counter.
-                await context.trigger_event(event)
+                context.trigger_event(event)
         except CancelledError:
             logger.info('Stopped service {}.', service)
             break
