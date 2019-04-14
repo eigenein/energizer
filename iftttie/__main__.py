@@ -13,7 +13,7 @@ from sqlitemap import Connection
 
 from iftttie import web
 from iftttie.automation import Automation
-from iftttie.logging_ import init_logging, logged
+from iftttie.logging_ import init_logging
 from iftttie.runner import run_services
 from iftttie.web import Context
 
@@ -70,7 +70,8 @@ def main(
     # noinspection PyBroadException
     try:
         automation = import_automation(automation_path)
-    except Exception:
+    except Exception as e:
+        logger.opt(exception=e).error('Failed to import the automation.')
         automation = None
 
     if cert_path and key_path:
@@ -88,16 +89,16 @@ async def on_startup(app: Application):
     """
     Set up the web application.
     """
+    try:
+        await app['context'].automation.on_startup()
+    except Exception as e:
+        logger.opt(exception=e).error('Error occurred in `on_startup` handler.')
     # noinspection PyAsyncCall
     create_task(run_services(app['context']))
 
 
-@logged(
-    enter_message='Importing automation from {}…',
-    success_message='Successfully imported the automation.',
-    error_message='Error occurred while importing the automation',
-)
 def import_automation(path: str) -> Automation:
+    logger.info('Importing automation from {}…', path)
     sys.path.append(path)
     # noinspection PyUnresolvedReferences, PyPackageRequirements
     from automation import MyAutomation
@@ -108,14 +109,12 @@ async def on_cleanup(app: Application):
     """
     Cancel and close everything.
     """
+    logger.info('Cleaning up…')
     try:
         await app['context'].automation.on_cleanup()
     except Exception as e:
-        logger.opt(exception=e).error('The error occurred in `on_cleanup` handler.')
-    else:
-        logger.info('Cleaned up the automation.')
+        logger.opt(exception=e).error('Error occurred in `on_cleanup` handler.')
     app['context'].db.close()
-    logger.info('Database is closed.')
 
 
 if __name__ == '__main__':
