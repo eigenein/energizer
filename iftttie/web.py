@@ -10,6 +10,7 @@ from loguru import logger
 from pkg_resources import resource_string
 
 from iftttie import templates
+from iftttie.automation import Automation
 from iftttie.constants import ACTUAL_KEY
 from iftttie.context import Context
 from iftttie.decorators import authenticate_user
@@ -82,6 +83,14 @@ async def get_db(_: web.Request) -> web.FileResponse:
 @authenticate_user
 async def get_events(request: web.Request) -> dict:
     return {}
+
+
+@routes.get(r'/services')
+@template('services.html')
+@authenticate_user
+async def get_services(request: web.Request) -> dict:
+    automation: Automation = request.app['context'].automation
+    return {'services': automation.services}
 
 
 # Must go at the end.
