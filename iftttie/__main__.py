@@ -100,7 +100,8 @@ async def on_startup(app: Application):
         unit=Unit.TEXT,
         title='IFTTTie version',
     ))
-    _ = create_task(run_services(context))
+    # noinspection PyAsyncCall
+    create_task(run_services(context))
 
 
 def import_automation(path: str) -> Automation:

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 from datetime import datetime
 from typing import Iterable, List, Tuple
 
@@ -24,19 +23,13 @@ class Nest(Service):
 
     @property
     async def events(self):
-        while True:
-            try:
-                logger.info('Connecting to the streaming API…')
-                async with EventSource(url, params=self.params, headers=headers, timeout=None) as source:
-                    logger.info('Connected.')
-                    async for server_event in source:
-                        if server_event.type == 'put':
-                            for event in yield_events(server_event):
-                                yield event
-            except asyncio.TimeoutError:
-                logger.warning('Connection timeout.')
-            except ConnectionError as e:
-                logger.opt(exception=e).error('Connection error.')
+        logger.info('Connecting to the streaming API…')
+        async with EventSource(url, params=self.params, headers=headers, timeout=None) as source:
+            logger.info('Connected.')
+            async for server_event in source:
+                if server_event.type == 'put':
+                    for event in yield_events(server_event):
+                        yield event
 
     def __str__(self) -> str:
         return f'{Nest.__name__}(token="{self.token[:4]}…{self.token[-4:]}")'

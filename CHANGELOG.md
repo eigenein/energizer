@@ -1,6 +1,7 @@
 ## `master`
 
 - **Change: #72 #54 make user setup class-based**
+- **Change: #69 improve service autorestart**
 - New: log Telegram errors
 - New: #67 add the events page (work in progress)
 - New: #70 `on_startup` handler

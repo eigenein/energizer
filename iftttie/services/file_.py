@@ -21,19 +21,18 @@ class File(Service):
 
     @property
     async def events(self):
-        while True:
-            try:
-                yield Event(
-                    channel_id=f'file:{self.channel_id}',
-                    value=self.preprocess_value(self.path.read_text()),
-                    unit=self.unit,
-                    title=self.title,
-                )
-            except IOError as e:
-                logger.error('I/O error in {channel}:', channel=self)
-                logger.error('{e}', e=e)
-            logger.debug('Next reading in {interval} seconds.', interval=self.interval)
-            await sleep(self.interval)
+        try:
+            yield Event(
+                channel_id=f'file:{self.channel_id}',
+                value=self.preprocess_value(self.path.read_text()),
+                unit=self.unit,
+                title=self.title,
+            )
+        except IOError as e:
+            logger.error('I/O error in {channel}:', channel=self)
+            logger.error('{e}', e=e)
+        logger.debug('Next reading in {interval} seconds.', interval=self.interval)
+        await sleep(self.interval)
 
     def preprocess_value(self, value: str) -> Any:
         return value
