@@ -28,31 +28,31 @@ def option(*args, **kwargs):
 @click.command(context_settings={'max_content_width': 120})
 @click.argument(
     'automation_path',
-    envvar='MYIOT_AUTOMATION_PATH',
+    envvar='MY_IOT_AUTOMATION_PATH',
     type=click.Path(exists=True, dir_okay=True, file_okay=False),
 )
 @option(
     'cert_path', '--cert',
-    envvar='MYIOT_CERT_PATH',
+    envvar='MY_IOT_CERT_PATH',
     help='Server certificate path.',
     type=click.Path(exists=True, dir_okay=False),
 )
 @option(
     'key_path', '--key',
-    envvar='MYIOT_KEY_PATH',
+    envvar='MY_IOT_KEY_PATH',
     help='Server private key path.',
     type=click.Path(exists=True, dir_okay=False),
 )
 @option(
     'verbosity', '-v', '--verbose',
     count=True,
-    envvar='MYIOT_VERBOSITY',
+    envvar='MY_IOT_VERBOSITY',
     help='Logging verbosity.',
 )
 @option(
     'port', '-p', '--port',
     default=8443,
-    envvar='MYIOT_PORT',
+    envvar='MY_IOT_PORT',
     help='Web interface and webhook API port.',
     show_default=True,
     type=int,
@@ -96,7 +96,7 @@ async def on_startup(app: Application):
     await call_handler(context.automation.on_startup())
     context.trigger_event(Event(
         value=pkg_resources.get_distribution('myiot').version,
-        channel_id='myiot:version',
+        channel_id='my-iot:version',
         unit=Unit.TEXT,
         title='My IoT version',
     ))

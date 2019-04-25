@@ -5,9 +5,9 @@
 ```text
 $ virtualenv -p python3.7 venv
 $ source venv/bin/activate
-$ pip install myiot
-$ myiot --help
-Usage: myiot [OPTIONS]
+$ pip install my-iot
+$ my-iot --help
+Usage: my-iot [OPTIONS]
 
   Yet another home automation service.
 
@@ -24,18 +24,18 @@ Options:
 The image supports running on Raspberry Pi out-of-the-box:
 
 ```bash
-docker volume create myiot
+docker volume create my-iot
 docker run \
     --detach \
     --restart always \
     --name myiot \
     --net host \
     --sysctl net.ipv4.ip_unprivileged_port_start=0 \
-    -v myiot:/app \
+    -v my-iot:/app \
     -v /etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro \
     -v /etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro \
     -e TZ=Europe/Amsterdam
-    eigenein/myiot -vvv -c https://gist.githubusercontent.com/user/repo/raw --cert cert.pem --key privkey.pem
+    eigenein/my-iot -vvv -c https://gist.githubusercontent.com/user/repo/raw --cert cert.pem --key privkey.pem
 ```
 
 ### `docker-compose.yml`
@@ -44,20 +44,20 @@ docker run \
 version: '3.7'
 services:
   myiot:
-    image: eigenein/myiot:latest
+    image: eigenein/my-iot:latest
     restart: always
     network_mode: 'host'
     sysctls:
     - net.ipv4.ip_unprivileged_port_start=0
     volumes:
-    - '/home/pi/myiot.sqlite3:/app/db.sqlite3'
+    - '/home/pi/my-iot.sqlite3:/app/db.sqlite3'
     - '/etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro'
     - '/etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro'
     environment:
       TZ: 'Europe/Amsterdam'
-      MYIOT_VERBOSITY: '3'
-      MYIOT_CONFIGURATION_URL: 'https://gist.githubusercontent.com/user/repo/raw'
-      MYIOT_CERT_PATH: 'cert.pem'
-      MYIOT_KEY_PATH: 'privkey.pem'
-      MYIOT_PORT: 443
+      MY_IOT_VERBOSITY: '3'
+      MY_IOT_CONFIGURATION_URL: 'https://gist.githubusercontent.com/user/repo/raw'
+      MY_IOT_CERT_PATH: 'cert.pem'
+      MY_IOT_KEY_PATH: 'privkey.pem'
+      MY_IOT_PORT: 443
 ```
