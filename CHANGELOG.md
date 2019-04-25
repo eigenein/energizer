@@ -1,4 +1,4 @@
-## `master`
+## `0.12.0`
 
 - Change: #80 new name for the project
 - Change: #72 #54 make user setup class-based
