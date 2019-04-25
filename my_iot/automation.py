@@ -3,8 +3,8 @@ from __future__ import annotations
 from abc import ABCMeta
 from typing import Any, List, Mapping, Optional, Tuple
 
-from myiot.services.base import Service
-from myiot.types_ import Event
+from my_iot.services.base import Service
+from my_iot.types_ import Event
 
 
 class Automation(metaclass=ABCMeta):

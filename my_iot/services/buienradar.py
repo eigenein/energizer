@@ -8,9 +8,9 @@ from aiohttp import ClientSession
 from loguru import logger
 from pytz import timezone
 
-from myiot.constants import HTTP_TIMEOUT
-from myiot.services.base import Service
-from myiot.types_ import Event, Unit
+from my_iot.constants import HTTP_TIMEOUT
+from my_iot.services.base import Service
+from my_iot.types_ import Event, Unit
 
 tz = timezone('Europe/Amsterdam')
 url = 'https://api.buienradar.nl/data/public/2.0/jsonfeed'

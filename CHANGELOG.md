@@ -1,3 +1,7 @@
+## `master`
+
+- Change: #80 change namespace from `myiot` to `my_iot`
+
 ## `0.12.0`
 
 - Change: #80 new name for the project

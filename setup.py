@@ -8,7 +8,7 @@ setuptools.setup(
     description='Yet another home automation',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://github.com/eigenein/myiot',
+    url='https://github.com/eigenein/my-iot',
     packages=setuptools.find_packages(exclude=['tests']),
     package_data={
         '': ['*'],
@@ -35,8 +35,8 @@ setuptools.setup(
     },
     entry_points={
         'console_scripts': [
-            'my-iot = myiot.__main__:main',
-            'my-iot-utils = myiot.utils:main',
+            'my-iot = my_iot.__main__:main',
+            'my-iot-utils = my_iot.utils:main',
         ],
     },
     classifiers=[

@@ -12,13 +12,13 @@ from aiohttp.web import Application
 from loguru import logger
 from sqlitemap import Connection
 
-from myiot import web
-from myiot.automation import Automation
-from myiot.helpers import call_handler
-from myiot.logging_ import init_logging
-from myiot.runner import run_services
-from myiot.types_ import Event, Unit
-from myiot.web import Context
+from my_iot import web
+from my_iot.automation import Automation
+from my_iot.helpers import call_handler
+from my_iot.logging_ import init_logging
+from my_iot.runner import run_services
+from my_iot.types_ import Event, Unit
+from my_iot.web import Context
 
 
 def option(*args, **kwargs):
@@ -95,8 +95,8 @@ async def on_startup(app: Application):
     context: Context = app['context']
     await call_handler(context.automation.on_startup())
     context.trigger_event(Event(
-        value=pkg_resources.get_distribution('myiot').version,
-        channel_id='my-iot:version',
+        value=pkg_resources.get_distribution('my_iot').version,
+        channel_id='my_iot:version',
         unit=Unit.TEXT,
         title='My IoT version',
     ))

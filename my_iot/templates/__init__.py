@@ -7,11 +7,11 @@ import pprintpp
 from aiohttp.web_app import Application
 from jinja2 import PackageLoader, select_autoescape
 
-from myiot.types_ import Unit
+from my_iot.types_ import Unit
 
 
 def setup(app: Application):
-    env = aiohttp_jinja2.setup(app, loader=PackageLoader('myiot'), autoescape=select_autoescape())
+    env = aiohttp_jinja2.setup(app, loader=PackageLoader('my_iot'), autoescape=select_autoescape())
     env.globals['Unit'] = Unit
     env.filters['fromseconds'] = from_seconds
     env.filters['fromtimestamp'] = from_timestamp

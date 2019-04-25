@@ -8,8 +8,8 @@ from datetime import timedelta
 from aiohttp import ClientConnectorError
 from loguru import logger
 
-from myiot.context import Context
-from myiot.services.base import Service
+from my_iot.context import Context
+from my_iot.services.base import Service
 
 
 async def run_services(context: Context):

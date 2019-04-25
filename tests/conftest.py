@@ -7,9 +7,9 @@ from aiohttp.web import Application
 from pytest import fixture
 from sqlitemap import Connection
 
-from myiot import templates
-from myiot.automation import Automation
-from myiot.web import Context, routes
+from my_iot import templates
+from my_iot.automation import Automation
+from my_iot.web import Context, routes
 
 pytest_plugins = 'aiohttp.pytest_plugin'
 

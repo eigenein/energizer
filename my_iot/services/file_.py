@@ -7,8 +7,8 @@ from typing import Any, Optional
 
 from loguru import logger
 
-from myiot.services.base import Service
-from myiot.types_ import Event, Unit
+from my_iot.services.base import Service
+from my_iot.types_ import Event, Unit
 
 
 class File(Service):

@@ -8,8 +8,8 @@ from loguru import logger
 from multidict import MultiDict
 from ujson import loads
 
-from myiot.services.base import Service
-from myiot.types_ import Event, Unit
+from my_iot.services.base import Service
+from my_iot.types_ import Event, Unit
 
 url = 'https://developer-api.nest.com'
 headers = MultiDict([('Accept', 'text/event-stream')])
