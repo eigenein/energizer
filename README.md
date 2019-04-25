@@ -1,8 +1,6 @@
 # My IoT
 
-Yet another home automation.
-
-Documentation: https://eigenein.github.io/my-iot
+Yet another home automation. Documentation: https://eigenein.github.io/my-iot
 
 [![Build Status](https://travis-ci.com/eigenein/my-iot.svg?branch=master)](https://travis-ci.com/eigenein/my-iot)
 [![Python Versions](https://img.shields.io/pypi/pyversions/my-iot.svg)](https://pypi.org/project/my-iot/)
