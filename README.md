@@ -9,5 +9,3 @@ Yet another home automation. Documentation: https://eigenein.github.io/my-iot
 ![License](https://img.shields.io/github/license/eigenein/my-iot.svg)
 [![Open issues](https://img.shields.io/github/issues-raw/eigenein/my-iot.svg)](https://github.com/eigenein/my-iot/issues)
 [![Closed issues](https://img.shields.io/github/issues-closed-raw/eigenein/my-iot.svg)](https://github.com/eigenein/my-iot/issues)
-
-![My IoT screenshot](https://eigenein.github.io/my-iot/README.png)
