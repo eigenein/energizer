@@ -13,7 +13,7 @@ indent_size=2
 [*.py]
 line_length=120
 known_standard_library=dataclasses
-known_first_party=myiot
+known_first_party=my_iot
 default_section=THIRDPARTY
 not_skip=__init__.py
 use_parentheses=true
