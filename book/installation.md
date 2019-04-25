@@ -5,9 +5,9 @@
 ```text
 $ virtualenv -p python3.7 venv
 $ source venv/bin/activate
-$ pip install iftttie
-$ iftttie --help
-Usage: iftttie [OPTIONS]
+$ pip install myiot
+$ myiot --help
+Usage: myiot [OPTIONS]
 
   Yet another home automation service.
 
@@ -24,18 +24,18 @@ Options:
 The image supports running on Raspberry Pi out-of-the-box:
 
 ```bash
-docker volume create iftttie
+docker volume create myiot
 docker run \
     --detach \
     --restart always \
-    --name iftttie \
+    --name myiot \
     --net host \
     --sysctl net.ipv4.ip_unprivileged_port_start=0 \
-    -v iftttie:/app \
+    -v myiot:/app \
     -v /etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro \
     -v /etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro \
     -e TZ=Europe/Amsterdam
-    eigenein/iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw --cert cert.pem --key privkey.pem
+    eigenein/myiot -vvv -c https://gist.githubusercontent.com/user/repo/raw --cert cert.pem --key privkey.pem
 ```
 
 ### `docker-compose.yml`
@@ -43,21 +43,21 @@ docker run \
 ```yaml
 version: '3.7'
 services:
-  iftttie:
-    image: eigenein/iftttie:latest
+  myiot:
+    image: eigenein/myiot:latest
     restart: always
     network_mode: 'host'
     sysctls:
     - net.ipv4.ip_unprivileged_port_start=0
     volumes:
-    - '/home/pi/iftttie.sqlite3:/app/db.sqlite3'
+    - '/home/pi/myiot.sqlite3:/app/db.sqlite3'
     - '/etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro'
     - '/etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro'
     environment:
       TZ: 'Europe/Amsterdam'
-      IFTTTIE_VERBOSITY: '3'
-      IFTTTIE_CONFIGURATION_URL: 'https://gist.githubusercontent.com/user/repo/raw'
-      IFTTTIE_CERT_PATH: 'cert.pem'
-      IFTTTIE_KEY_PATH: 'privkey.pem'
-      IFTTTIE_PORT: 443
+      MYIOT_VERBOSITY: '3'
+      MYIOT_CONFIGURATION_URL: 'https://gist.githubusercontent.com/user/repo/raw'
+      MYIOT_CERT_PATH: 'cert.pem'
+      MYIOT_KEY_PATH: 'privkey.pem'
+      MYIOT_PORT: 443
 ```

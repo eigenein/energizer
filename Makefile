@@ -1,3 +1,6 @@
+docs: book book.toml
+	mdbook build
+
 .PHONY: venv
 venv:
 	@virtualenv -p python3.7 venv
@@ -10,13 +13,15 @@ requirements.txt:
 .PHONY: test
 test:
 	@pytest
-	@flake8 iftttie
+	@flake8 myiot
+	@isort -rc -c myiot tests
 
 .PHONY: tag
 tag:
 	@$(eval VERSION = $(shell python setup.py --version))
 	@git tag -a '$(VERSION)' -m '$(VERSION)'
 
+# TODO: push all tags.
 .PHONY: publish/tag
 publish/tag: tag
 	@$(eval VERSION = $(shell python setup.py --version))
@@ -24,17 +29,18 @@ publish/tag: tag
 
 .PHONY: docker
 docker:
-	@docker build -t eigenein/iftttie .
+	@docker build -t eigenein/my-iot .
 
 .PHONY:
 publish/docker/latest: docker
-	@docker push 'eigenein/iftttie:latest'
+	@docker push 'eigenein/my-iot:latest'
 
+# TODO: check the current commit is tagged.
 .PHONY: publish/docker/tag
 publish/docker/tag: docker
 	@$(eval VERSION = $(shell python setup.py --version))
-	@docker tag 'eigenein/iftttie:latest' 'eigenein/iftttie:$(VERSION)'
-	@docker push 'eigenein/iftttie:$(VERSION)'
+	@docker tag 'eigenein/my-iot:latest' 'eigenein/my-iot:$(VERSION)'
+	@docker push 'eigenein/my-iot:$(VERSION)'
 
 .PHONY: publish/docker
 publish/docker: publish/docker/latest publish/docker/tag
@@ -44,6 +50,7 @@ dist:
 	@rm -rf dist
 	@python setup.py sdist bdist_wheel
 
+# TODO: check the current commit is tagged.
 .PHONY: publish/dist
 publish/dist: dist
 	@twine upload --verbose dist/*

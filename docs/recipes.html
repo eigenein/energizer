@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Recipes - IFTTTie</title>
+        <title>Recipes - My IoT</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -75,7 +75,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="running.html"><strong aria-hidden="true">2.</strong> Running</a></li><li><a href="recipes.html" class="active"><strong aria-hidden="true">3.</strong> Recipes</a></li></ol>
+            <ol class="chapter"><li><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="quickstart.html"><strong aria-hidden="true">2.</strong> Quickstart</a></li><li><a href="installation.html"><strong aria-hidden="true">3.</strong> Installation</a></li><li><a href="recipes.html" class="active"><strong aria-hidden="true">4.</strong> Recipes</a></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -105,7 +105,7 @@
                             
                         </div>
 
-                        <h1 class="menu-title">IFTTTie</h1> 
+                        <h1 class="menu-title">My IoT</h1> 
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
@@ -145,8 +145,8 @@
 <pre><code class="language-python">from datetime import timedelta
 from pathlib import Path
 
-from iftttie.channels.file_ import FloatValueFile
-from iftttie.types import Unit
+from myiot.channels.file_ import FloatValueFile
+from myiot.types import Unit
 
 channels = [
     FloatValueFile(
@@ -167,8 +167,8 @@ from typing import Any, Dict, Optional
 
 from aiohttp import ClientSession
 
-from iftttie.actions.telegram import send_animation
-from iftttie.types import Event
+from myiot.actions.telegram import send_animation
+from myiot.types import Event
 
 session = ClientSession()
 
@@ -196,8 +196,8 @@ from typing import Any, Dict, Optional
 
 from aiohttp import ClientSession
 
-from iftttie.actions.telegram import send_message
-from iftttie.types import Event
+from myiot.actions.telegram import send_message
+from myiot.types import Event
 
 session = ClientSession()
 
@@ -221,7 +221,7 @@ async def on_close():
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="running.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="installation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
@@ -235,7 +235,7 @@ async def on_close():
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="running.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a href="installation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Running - IFTTTie</title>
+        <title>Quickstart - My IoT</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -75,7 +75,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="running.html" class="active"><strong aria-hidden="true">2.</strong> Running</a></li><li><a href="recipes.html"><strong aria-hidden="true">3.</strong> Recipes</a></li></ol>
+            <ol class="chapter"><li><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="quickstart.html" class="active"><strong aria-hidden="true">2.</strong> Quickstart</a></li><li><a href="installation.html"><strong aria-hidden="true">3.</strong> Installation</a></li><li><a href="recipes.html"><strong aria-hidden="true">4.</strong> Recipes</a></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -105,7 +105,7 @@
                             
                         </div>
 
-                        <h1 class="menu-title">IFTTTie</h1> 
+                        <h1 class="menu-title">My IoT</h1> 
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
@@ -140,59 +140,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#running" id="running"><h1>Running</h1></a>
-<a class="header" href="#locally" id="locally"><h2>Locally</h2></a>
-<pre><code class="language-text">$ virtualenv -p python3.7 venv
-$ source venv/bin/activate
-$ pip install iftttie
-$ iftttie --help
-Usage: iftttie [OPTIONS]
-
-  Yet another home automation service.
-
-Options:
-  -c, --config TEXT  Configuration URL.  [required]
-  --cert FILE        Server certificate path.
-  --key FILE         Server private key path.
-  -v, --verbose      Logging verbosity.
-  --help             Show this message and exit.
-</code></pre>
-<a class="header" href="#docker" id="docker"><h2>Docker</h2></a>
-<p>The image supports running on Raspberry Pi out-of-the-box:</p>
-<pre><code class="language-bash">docker volume create iftttie
-docker run \
-    --detach \
-    --restart always \
-    --name iftttie \
-    --net host \
-    --sysctl net.ipv4.ip_unprivileged_port_start=0 \
-    -v iftttie:/app \
-    -v /etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro \
-    -v /etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro \
-    -e TZ=Europe/Amsterdam
-    eigenein/iftttie -vvv -c https://gist.githubusercontent.com/user/repo/raw --cert cert.pem --key privkey.pem
-</code></pre>
-<a class="header" href="#docker-composeyml" id="docker-composeyml"><h3><code>docker-compose.yml</code></h3></a>
-<pre><code class="language-yaml">version: '3.7'
-services:
-  iftttie:
-    image: eigenein/iftttie:latest
-    restart: always
-    network_mode: 'host'
-    sysctls:
-    - net.ipv4.ip_unprivileged_port_start=0
-    volumes:
-    - '/home/pi/iftttie.sqlite3:/app/db.sqlite3'
-    - '/etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro'
-    - '/etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro'
-    environment:
-      TZ: 'Europe/Amsterdam'
-      IFTTTIE_VERBOSITY: '3'
-      IFTTTIE_CONFIGURATION_URL: 'https://gist.githubusercontent.com/user/repo/raw'
-      IFTTTIE_CERT_PATH: 'cert.pem'
-      IFTTTIE_KEY_PATH: 'privkey.pem'
-      IFTTTIE_PORT: 443
-</code></pre>
+                        <a class="header" href="#quickstart" id="quickstart"><h1>Quickstart</h1></a>
 
                     </main>
 
@@ -205,7 +153,7 @@ services:
                         
 
                         
-                            <a rel="next" href="recipes.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -223,7 +171,7 @@ services:
                 
 
                 
-                    <a href="recipes.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a href="installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

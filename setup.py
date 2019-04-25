@@ -1,14 +1,14 @@
 import setuptools
 
 setuptools.setup(
-    name='iftttie',
+    name='my-iot',
     version='0.11.0',
     author='Pavel Perestoronin',
     author_email='eigenein@gmail.com',
     description='Yet another home automation',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://github.com/eigenein/iftttie',
+    url='https://github.com/eigenein/myiot',
     packages=setuptools.find_packages(exclude=['tests']),
     package_data={
         '': ['*'],
@@ -35,8 +35,8 @@ setuptools.setup(
     },
     entry_points={
         'console_scripts': [
-            'iftttie = iftttie.__main__:main',
-            'iftttie.utils = iftttie.utils:main',
+            'my-iot = myiot.__main__:main',
+            'my-iot-utils = myiot.utils:main',
         ],
     },
     classifiers=[

@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 from typing import AsyncIterable
 
-from iftttie.types_ import Event
+from myiot.types_ import Event
 
 
 class Service(metaclass=ABCMeta):

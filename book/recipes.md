@@ -6,8 +6,8 @@
 from datetime import timedelta
 from pathlib import Path
 
-from iftttie.channels.file_ import FloatValueFile
-from iftttie.types import Unit
+from myiot.channels.file_ import FloatValueFile
+from myiot.types import Unit
 
 channels = [
     FloatValueFile(
@@ -31,8 +31,8 @@ from typing import Any, Dict, Optional
 
 from aiohttp import ClientSession
 
-from iftttie.actions.telegram import send_animation
-from iftttie.types import Event
+from myiot.actions.telegram import send_animation
+from myiot.types import Event
 
 session = ClientSession()
 
@@ -63,8 +63,8 @@ from typing import Any, Dict, Optional
 
 from aiohttp import ClientSession
 
-from iftttie.actions.telegram import send_message
-from iftttie.types import Event
+from myiot.actions.telegram import send_message
+from myiot.types import Event
 
 session = ClientSession()
 

@@ -12,13 +12,13 @@ from aiohttp.web import Application
 from loguru import logger
 from sqlitemap import Connection
 
-from iftttie import web
-from iftttie.automation import Automation
-from iftttie.helpers import call_handler
-from iftttie.logging_ import init_logging
-from iftttie.runner import run_services
-from iftttie.types_ import Event, Unit
-from iftttie.web import Context
+from myiot import web
+from myiot.automation import Automation
+from myiot.helpers import call_handler
+from myiot.logging_ import init_logging
+from myiot.runner import run_services
+from myiot.types_ import Event, Unit
+from myiot.web import Context
 
 
 def option(*args, **kwargs):
@@ -28,31 +28,31 @@ def option(*args, **kwargs):
 @click.command(context_settings={'max_content_width': 120})
 @click.argument(
     'automation_path',
-    envvar='IFTTTIE_AUTOMATION_PATH',
+    envvar='MYIOT_AUTOMATION_PATH',
     type=click.Path(exists=True, dir_okay=True, file_okay=False),
 )
 @option(
     'cert_path', '--cert',
-    envvar='IFTTTIE_CERT_PATH',
+    envvar='MYIOT_CERT_PATH',
     help='Server certificate path.',
     type=click.Path(exists=True, dir_okay=False),
 )
 @option(
     'key_path', '--key',
-    envvar='IFTTTIE_KEY_PATH',
+    envvar='MYIOT_KEY_PATH',
     help='Server private key path.',
     type=click.Path(exists=True, dir_okay=False),
 )
 @option(
     'verbosity', '-v', '--verbose',
     count=True,
-    envvar='IFTTTIE_VERBOSITY',
+    envvar='MYIOT_VERBOSITY',
     help='Logging verbosity.',
 )
 @option(
     'port', '-p', '--port',
     default=8443,
-    envvar='IFTTTIE_PORT',
+    envvar='MYIOT_PORT',
     help='Web interface and webhook API port.',
     show_default=True,
     type=int,
@@ -68,7 +68,7 @@ def main(
     Yet another home automation service.
     """
     init_logging(verbosity)
-    logger.info('Starting IFTTTie…')
+    logger.info('Starting My IoT…')
 
     # noinspection PyBroadException
     try:
@@ -85,7 +85,7 @@ def main(
 
     db = Connection('db.sqlite3', dumps_=umsgpack.packb, loads_=umsgpack.unpackb)
     web.start(ssl_context, port, Context(db=db, automation=automation), on_startup, on_cleanup)
-    logger.info('IFTTTie stopped.')
+    logger.info('My IoT stopped.')
 
 
 async def on_startup(app: Application):
@@ -95,10 +95,10 @@ async def on_startup(app: Application):
     context: Context = app['context']
     await call_handler(context.automation.on_startup())
     context.trigger_event(Event(
-        value=pkg_resources.get_distribution('iftttie').version,
-        channel_id='iftttie:version',
+        value=pkg_resources.get_distribution('myiot').version,
+        channel_id='myiot:version',
         unit=Unit.TEXT,
-        title='IFTTTie version',
+        title='My IoT version',
     ))
     # noinspection PyAsyncCall
     create_task(run_services(context))

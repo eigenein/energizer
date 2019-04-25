@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - My IoT</title>
+        <title>Installation - My IoT</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -75,7 +75,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="quickstart.html"><strong aria-hidden="true">2.</strong> Quickstart</a></li><li><a href="installation.html"><strong aria-hidden="true">3.</strong> Installation</a></li><li><a href="recipes.html"><strong aria-hidden="true">4.</strong> Recipes</a></li></ol>
+            <ol class="chapter"><li><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="quickstart.html"><strong aria-hidden="true">2.</strong> Quickstart</a></li><li><a href="installation.html" class="active"><strong aria-hidden="true">3.</strong> Installation</a></li><li><a href="recipes.html"><strong aria-hidden="true">4.</strong> Recipes</a></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -140,24 +140,74 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="#introduction" id="introduction"><h1>Introduction</h1></a>
-<p><strong>Documentation is still in progress and very poor.</strong></p>
-<a class="header" href="#why-not-a-hrefhttpswwwhome-assistantiohome-assistanta-or-a-hrefhttpswwwopenhaborgopenhaba" id="why-not-a-hrefhttpswwwhome-assistantiohome-assistanta-or-a-hrefhttpswwwopenhaborgopenhaba"><h2>Why not <a href="https://www.home-assistant.io/">Home Assistant</a> or <a href="https://www.openhab.org/">OpenHAB</a>?</h2></a>
-<p>There’re multiple reasons why I didn’t like them:</p>
-<ul>
-<li>Quite heavy. Their restart or configuration update takes ages.</li>
-<li>I can’t catch all those <em>things</em>, <em>entities</em>, <em>channels</em> and etc and relations between them. I want something simpler.</li>
-<li>Too flexible. While this may be good, I’m getting tired configuring all those <em>things</em>.</li>
-<li>Custom automation syntax. This may be perfect for non-developers, but I prefer to write in <a href="https://www.python.org/">my favorite language</a>.</li>
-<li>Inconvenient configuration. It’s stored inside a container, separate web interfaces are needed to edit it via browser.</li>
-</ul>
+                        <a class="header" href="#running" id="running"><h1>Running</h1></a>
+<a class="header" href="#locally" id="locally"><h2>Locally</h2></a>
+<pre><code class="language-text">$ virtualenv -p python3.7 venv
+$ source venv/bin/activate
+$ pip install myiot
+$ myiot --help
+Usage: myiot [OPTIONS]
+
+  Yet another home automation service.
+
+Options:
+  -c, --config TEXT  Configuration URL.  [required]
+  --cert FILE        Server certificate path.
+  --key FILE         Server private key path.
+  -v, --verbose      Logging verbosity.
+  --help             Show this message and exit.
+</code></pre>
+<a class="header" href="#docker" id="docker"><h2>Docker</h2></a>
+<p>The image supports running on Raspberry Pi out-of-the-box:</p>
+<pre><code class="language-bash">docker volume create myiot
+docker run \
+    --detach \
+    --restart always \
+    --name myiot \
+    --net host \
+    --sysctl net.ipv4.ip_unprivileged_port_start=0 \
+    -v myiot:/app \
+    -v /etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro \
+    -v /etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro \
+    -e TZ=Europe/Amsterdam
+    eigenein/myiot -vvv -c https://gist.githubusercontent.com/user/repo/raw --cert cert.pem --key privkey.pem
+</code></pre>
+<a class="header" href="#docker-composeyml" id="docker-composeyml"><h3><code>docker-compose.yml</code></h3></a>
+<pre><code class="language-yaml">version: '3.7'
+services:
+  myiot:
+    image: eigenein/myiot:latest
+    restart: always
+    network_mode: 'host'
+    sysctls:
+    - net.ipv4.ip_unprivileged_port_start=0
+    volumes:
+    - '/home/pi/myiot.sqlite3:/app/db.sqlite3'
+    - '/etc/letsencrypt/live/example.com/cert.pem:/app/cert.pem:ro'
+    - '/etc/letsencrypt/live/example.com/privkey.pem:/app/privkey.pem:ro'
+    environment:
+      TZ: 'Europe/Amsterdam'
+      MYIOT_VERBOSITY: '3'
+      MYIOT_CONFIGURATION_URL: 'https://gist.githubusercontent.com/user/repo/raw'
+      MYIOT_CERT_PATH: 'cert.pem'
+      MYIOT_KEY_PATH: 'privkey.pem'
+      MYIOT_PORT: 443
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
+                            <a rel="prev" href="quickstart.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
 
+                        
+                            <a rel="next" href="recipes.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
                         
 
                         <div style="clear: both"></div>
@@ -167,7 +217,15 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
+                    <a href="quickstart.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
 
+                
+                    <a href="recipes.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
                 
             </nav>
 

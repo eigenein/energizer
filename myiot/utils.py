@@ -8,7 +8,7 @@ from passlib.handlers.pbkdf2 import pbkdf2_sha256
 @click.group()
 def main():
     """
-    IFTTTie utils.
+    My IoT utils.
     """
     pass
 
@@ -17,7 +17,7 @@ def main():
 @click.password_option('-p', '--password')
 def hash_password(password: str):
     """
-    Print password hash for the IFTTTie dashboard authentication.
+    Print password hash for the My IoT dashboard authentication.
     """
     hash_ = pbkdf2_sha256.hash(password)
 

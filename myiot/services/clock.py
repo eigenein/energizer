@@ -7,8 +7,8 @@ from typing import Optional
 
 from loguru import logger
 
-from iftttie.services.base import Service
-from iftttie.types_ import Event
+from myiot.services.base import Service
+from myiot.types_ import Event
 
 
 class Clock(Service):

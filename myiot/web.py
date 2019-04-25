@@ -9,16 +9,16 @@ from aiohttp_jinja2 import template
 from loguru import logger
 from pkg_resources import resource_string
 
-from iftttie import templates
-from iftttie.automation import Automation
-from iftttie.constants import ACTUAL_KEY
-from iftttie.context import Context
-from iftttie.decorators import authenticate_user
-from iftttie.types_ import Event
+from myiot import templates
+from myiot.automation import Automation
+from myiot.constants import ACTUAL_KEY
+from myiot.context import Context
+from myiot.decorators import authenticate_user
+from myiot.types_ import Event
 
 routes = web.RouteTableDef()
 statics = {
-    name: resource_string('iftttie', f'static/{name}')
+    name: resource_string('myiot', f'static/{name}')
     for name in [
         'android-chrome-192x192.png',
         'android-chrome-512x512.png',

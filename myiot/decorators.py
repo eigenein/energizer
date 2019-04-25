@@ -14,7 +14,7 @@ THandler = Callable[[Request], Awaitable[T]]
 
 
 def authenticate_user(handler: THandler[T]):
-    headers = {'WWW-Authenticate': 'Basic realm="IFTTTie"'}
+    headers = {'WWW-Authenticate': 'Basic realm="My IoT"'}
 
     @wraps(handler)
     async def wrapper(request: Request) -> T:
@@ -22,7 +22,7 @@ def authenticate_user(handler: THandler[T]):
 
         header = request.headers.get(hdrs.AUTHORIZATION)
         if not header:
-            raise HTTPUnauthorized(text='Welcome to IFTTTie! Please authenticate', headers=headers)
+            raise HTTPUnauthorized(text='Welcome to My IoT! Please authenticate', headers=headers)
 
         try:
             auth = BasicAuth.decode(auth_header=header)

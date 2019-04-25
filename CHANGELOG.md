@@ -1,11 +1,12 @@
 ## `master`
 
-- **Change: #72 #54 make user setup class-based**
-- **Change: #69 improve service autorestart**
+- Change: #80 new name for the project
+- Change: #72 #54 make user setup class-based
+- Change: #69 improve service autorestart
 - New: log Telegram errors
 - New: #67 add the events page (work in progress)
 - New: #70 `on_startup` handler
-- New: #42 IFTTTie version channel
+- New: #42 version channel
 - New: #61 services page
 - Fix: fire-and-forget user `on_event` handler
 - Fix: #47 `Buienradar` HTTP timeout
@@ -15,7 +16,7 @@
 
 ## `0.11.0`
 
-- **Change: #54 `Event.key` is changed to `Event.channel_id`**
+- Change: #54 `Event.key` is changed to `Event.channel_id`
 - New: #17 automatically refresh page every minute
 - New: #66 print raw event data on the channel page
 - Fix: #64 Nest image URLs should not be logged
@@ -25,9 +26,9 @@
 
 ## `0.10.0`
 
-- **Change: #55 switch to a local setup instead of a configuration URL**
-- **Change: #53 migrate to `sqlitemap`. This will invalidate all the existing data in the database**
-- **Change: #51 use MessagePack for the database serialization**
+- Change: #55 switch to a local setup instead of a configuration URL
+- Change: #53 migrate to `sqlitemap`. This will invalidate all the existing data in the database
+- Change: #51 use MessagePack for the database serialization
 - Change: brush up the navigation bar
 - Change: brush up favicon
 - Fix: not having `pytest` in `dev` extras

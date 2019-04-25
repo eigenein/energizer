@@ -5,7 +5,7 @@ import sys
 
 from loguru import logger
 
-from iftttie.constants import LOGURU_FORMAT, VERBOSITY_LEVELS
+from myiot.constants import LOGURU_FORMAT, VERBOSITY_LEVELS
 
 
 class InterceptHandler(logging.Handler):

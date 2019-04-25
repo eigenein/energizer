@@ -2,7 +2,7 @@
 authors = ["Pavel Perestoronin"]
 multilingual = false
 src = "book"
-title = "IFTTTie"
+title = "My IoT"
 
 [build]
 build-dir = "docs"

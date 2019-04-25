@@ -7,10 +7,10 @@ from typing import Mapping
 from loguru import logger
 from sqlitemap import Connection
 
-from iftttie.automation import Automation
-from iftttie.constants import ACTUAL_KEY
-from iftttie.helpers import call_handler
-from iftttie.types_ import Event
+from myiot.automation import Automation
+from myiot.constants import ACTUAL_KEY
+from myiot.helpers import call_handler
+from myiot.types_ import Event
 
 
 @dataclass
