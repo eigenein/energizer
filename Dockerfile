@@ -10,10 +10,10 @@ RUN setcap cap_net_raw=ep /usr/local/bin/python3.7
 
 RUN pip install --no-cache-dir --upgrade ipython pip
 
-COPY requirements.txt /tmp/myiot/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/myiot/requirements.txt
-COPY . /tmp/myiot
-RUN pip install --no-cache-dir --no-deps /tmp/myiot && rm -r /tmp/myiot
+COPY requirements.txt /tmp/my-iot/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/my-iot/requirements.txt
+COPY . /tmp/my-iot
+RUN pip install --no-cache-dir --no-deps /tmp/my-iot && rm -r /tmp/my-iot
 
 RUN mkdir /app && touch /app/db.sqlite3 && chown -R nobody:nogroup /app
 WORKDIR /app
@@ -21,5 +21,5 @@ WORKDIR /app
 USER nobody:nogroup
 EXPOSE 8443
 STOPSIGNAL SIGINT
-ENTRYPOINT ["myiot"]
+ENTRYPOINT ["my-iot"]
 CMD []
