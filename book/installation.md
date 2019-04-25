@@ -43,7 +43,7 @@ docker run \
 ```yaml
 version: '3.7'
 services:
-  myiot:
+  my-iot:
     image: eigenein/my-iot:latest
     restart: always
     network_mode: 'host'
