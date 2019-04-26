@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+from datetime import timedelta
 from typing import Any, Awaitable, Callable, Dict
 
 from aiohttp import web
-from aiohttp.web_exceptions import HTTPNotFound
+from aiohttp.web_exceptions import HTTPBadRequest, HTTPNotFound
 from aiohttp_jinja2 import template
 from pkg_resources import resource_string
 
@@ -58,14 +59,21 @@ async def get_index(request: web.Request) -> dict:
 @routes.get(r'/channel/{channel}')
 @template('channel.html')
 async def get_channel(request: web.Request) -> dict:
+    context: Context = request.app['context']
+    channel: str = request.match_info['channel']
     try:
-        event: Dict[Any, Any] = request.app['context'].db[ACTUAL_KEY][request.match_info['channel']]
+        event: Dict[Any, Any] = context.db[ACTUAL_KEY][channel]
     except KeyError:
         raise HTTPNotFound(text='Channel is not found.')
+    try:
+        period = timedelta(seconds=max(int(request.query.get('period') or 300), 0))
+    except ValueError:
+        raise HTTPBadRequest()
     return {
         'event': Event(**event),
         'raw_event': event,
         'request': request,
+        'events': context.get_log(channel, period),
     }
 
 

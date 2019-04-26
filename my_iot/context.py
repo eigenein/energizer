@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from asyncio import create_task
 from dataclasses import InitVar, dataclass, field
+from datetime import timedelta, datetime
 from types import ModuleType
-from typing import Iterable, Mapping
+from typing import Iterable, Mapping, List
 
 from aiohttp import ClientSession
 from loguru import logger
@@ -42,9 +43,18 @@ class Context:
 
     def get_actual(self) -> Mapping[str, Event]:
         """
-        Get actual sensor values.
+        Get actual channel values.
         """
         return {key: Event(**value) for key, value in self.db[ACTUAL_KEY].items()}
+
+    def get_log(self, channel: str, period: timedelta) -> List[Event]:
+        """
+        Gets the channel log within the specified period until now.
+        """
+        return [
+            Event(**event)
+            for event in self.db[f'log:{channel}'][timestamp_key(datetime.now() - period):]
+        ]
 
     def trigger_event(self, event: Event):
         """
