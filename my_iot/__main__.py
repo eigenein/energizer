@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import ssl
 from asyncio import create_task
 from pathlib import Path
 from types import ModuleType
-from typing import Optional
 
 import click
 import pkg_resources
@@ -30,18 +28,7 @@ def option(*args, **kwargs):
     'automation_path',
     envvar='MY_IOT_AUTOMATION_PATH',
     type=click.Path(exists=True, dir_okay=False, file_okay=True),
-)
-@option(
-    'cert_path', '--cert',
-    envvar='MY_IOT_CERT_PATH',
-    help='Server certificate path.',
-    type=click.Path(exists=True, dir_okay=False),
-)
-@option(
-    'key_path', '--key',
-    envvar='MY_IOT_KEY_PATH',
-    help='Server private key path.',
-    type=click.Path(exists=True, dir_okay=False),
+    default='automation.py',
 )
 @option(
     'verbosity', '-v', '--verbose',
@@ -49,37 +36,15 @@ def option(*args, **kwargs):
     envvar='MY_IOT_VERBOSITY',
     help='Logging verbosity.',
 )
-@option(
-    'port', '-p', '--port',
-    default=8443,
-    envvar='MY_IOT_PORT',
-    help='Web interface and webhook API port.',
-    show_default=True,
-    type=int,
-)
-def main(
-    automation_path: str,
-    cert_path: Optional[str],
-    key_path: Optional[str],
-    verbosity: int,
-    port: int,
-):
+def main(automation_path: str, verbosity: int):
     """
     Yet another home automation service.
     """
     init_logging(verbosity)
     logger.info('Starting My IoT…')
-
     automation = import_automation(Path(automation_path))
-
-    if cert_path and key_path:
-        ssl_context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-        ssl_context.load_cert_chain(cert_path, key_path)
-    else:
-        ssl_context = None
-
     db = Connection('db.sqlite3', dumps_=umsgpack.packb, loads_=umsgpack.unpackb)
-    web.start(ssl_context, port, Context(db=db, automation=automation), on_startup, on_cleanup)
+    web.start(Context(db=db, automation=automation), on_startup, on_cleanup)
     logger.info('My IoT stopped.')
 
 

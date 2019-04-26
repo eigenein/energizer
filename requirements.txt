@@ -102,7 +102,8 @@ idna==2.7 \
     # via yarl
 jinja2==2.10.1 \
     --hash=sha256:065c4f02ebe7f7cf559e49ee5a95fb800a9e4528727aec6f24402a5374c65013 \
-    --hash=sha256:14dd6caf1527abb21f08f86c784eac40853ba93edb79552aa1e4b8aef1b61c7b
+    --hash=sha256:14dd6caf1527abb21f08f86c784eac40853ba93edb79552aa1e4b8aef1b61c7b \
+    # via aiohttp-jinja2
 loguru==0.2.5 \
     --hash=sha256:68297d9f23064c2f4764bb5d0c5c767f3ed7f9fc1218244841878f5fc7c94add \
     --hash=sha256:ebac59630946721fd6207264679b267a8bdc290b086226067d6aad86830e3123
@@ -167,9 +168,6 @@ multidict==4.4.2 \
     --hash=sha256:e8a048bfd7d5a280f27527d11449a509ddedf08b58a09a24314828631c099306 \
     --hash=sha256:f6dd28a0ac60e2426a6918f36f1b4e2620fc785a0de7654cd206ba842eee57fd \
     # via aiohttp, aiohttp-sse-client, yarl
-passlib==1.7.1 \
-    --hash=sha256:3d948f64138c25633613f303bcc471126eae67c04d5e3f6b7b8ce6242f8653e0 \
-    --hash=sha256:43526aea08fa32c6b6dbbbe9963c4c767285b78147b7437597f992812f69d280
 pprintpp==0.4.0 \
     --hash=sha256:b6b4dcdd0c0c0d75e4d7b2f21a9e933e5b2ce62b26e1a54537f9651ae5a5c01d \
     --hash=sha256:ea826108e2c7f49dc6d66c752973c3fc9749142a798d6b254e1e301cfdbc6403

@@ -1,13 +1,23 @@
 # Introduction
 
-**Documentation is still in progress and very poor.**
+## What is it?
 
-## Why not [Home Assistant](https://www.home-assistant.io/) or [OpenHAB](https://www.openhab.org/)?
+This is yet another home automation that I'm building for myself as an open-source project.
 
-There're multiple reasons why I didn't like them:
+## Features and goals
 
-- Quite heavy. Their restart or configuration update takes ages.
-- I can't catch all those _things_, _entities_, _channels_ and etc and relations between them. I want something simpler.
-- Too flexible. While this may be good, I'm getting tired configuring all those _things_.
-- Custom automation syntax. This may be perfect for non-developers, but I prefer to write in [my favorite language](https://www.python.org/).
-- Inconvenient configuration. It's stored inside a container, separate web interfaces are needed to edit it via browser.
+- As less configuration and customization as possible. It should just work without my close attention.
+- Automation is a normal Python module, you can code whatever you want.
+- Able to run on Raspberry Pi Zero (W).
+- Does not require a custom OS image to be flashed onto SD-card. The Docker image should just work on any normal OS distribution.
+- As less JavaScript as possible to speed up development.
+- Custom devices built with [ESPHome](https://esphome.io/) should be supported.
+
+## Technology stack
+
+- Python 3.x: backend
+- [AIOHTTP](https://aiohttp.readthedocs.io/): HTTP server and client
+- [Bulma](https://bulma.io/): frontend
+- [Jinja2](http://jinja.pocoo.org/): template engine
+- [Nginx](https://nginx.org/): reverse-proxy for authentication and HTTPS support
+- [Docker](https://www.docker.com/): for production deployment

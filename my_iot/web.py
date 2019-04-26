@@ -1,18 +1,15 @@
 from __future__ import annotations
 
-import ssl
-from typing import Any, Awaitable, Callable, Dict, Optional
+from typing import Any, Awaitable, Callable, Dict
 
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPNotFound
 from aiohttp_jinja2 import template
-from loguru import logger
 from pkg_resources import resource_string
 
 from my_iot import templates
-from my_iot.constants import ACTUAL_KEY
+from my_iot.constants import ACTUAL_KEY, HTTP_PORT
 from my_iot.context import Context
-from my_iot.decorators import authenticate_user
 from my_iot.types_ import Event
 
 routes = web.RouteTableDef()
@@ -31,8 +28,6 @@ statics = {
 
 
 def start(
-    ssl_context: Optional[ssl.SSLContext],
-    port: int,
     context: Context,
     on_startup: Callable[[web.Application], Awaitable[Any]],
     on_cleanup: Callable[[web.Application], Awaitable[Any]],
@@ -48,14 +43,12 @@ def start(
 
     templates.setup(app)
 
-    logger.info('Using port {}.', port)
     # noinspection PyTypeChecker
-    web.run_app(app, port=port, ssl_context=ssl_context, print=None)
+    web.run_app(app, port=HTTP_PORT, print=None)
 
 
 @routes.get(r'/')
 @template('index.html')
-@authenticate_user
 async def get_index(request: web.Request) -> dict:
     return {
         'actual': request.app['context'].get_actual().values(),
@@ -64,7 +57,6 @@ async def get_index(request: web.Request) -> dict:
 
 @routes.get(r'/channel/{channel}')
 @template('channel.html')
-@authenticate_user
 async def get_channel(request: web.Request) -> dict:
     try:
         event: Dict[Any, Any] = request.app['context'].db[ACTUAL_KEY][request.match_info['channel']]
@@ -74,21 +66,18 @@ async def get_channel(request: web.Request) -> dict:
 
 
 @routes.get(r'/downloads/db.sqlite3')
-@authenticate_user
 async def get_db(_: web.Request) -> web.FileResponse:
     return web.FileResponse('db.sqlite3', headers={'Content-Type': 'application/x-sqlite3'})
 
 
 @routes.get(r'/events')
 @template('events.html')
-@authenticate_user
 async def get_events(request: web.Request) -> dict:
     return {}
 
 
 @routes.get(r'/services')
 @template('services.html')
-@authenticate_user
 async def get_services(request: web.Request) -> dict:
     return {'services': request.app['context'].services}
 

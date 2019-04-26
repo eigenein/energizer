@@ -22,7 +22,6 @@ setuptools.setup(
         'pygal',
         'ujson',
         'aiohttp-sse-client',
-        'passlib',
         'aioping',
         'sqlitemap',
         'pydantic[ujson]',
@@ -36,7 +35,6 @@ setuptools.setup(
     entry_points={
         'console_scripts': [
             'my-iot = my_iot.__main__:main',
-            'my-iot-utils = my_iot.utils:main',
         ],
     },
     classifiers=[

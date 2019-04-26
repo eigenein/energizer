@@ -20,4 +20,5 @@ VERBOSITY_LEVELS = {
 # Collection with the actual sensor values.
 ACTUAL_KEY = 'actual'
 
+HTTP_PORT = 8080
 HTTP_TIMEOUT = ClientTimeout(total=10.0)

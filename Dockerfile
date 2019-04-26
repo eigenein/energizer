@@ -19,7 +19,7 @@ RUN mkdir /app && touch /app/db.sqlite3 && chown -R nobody:nogroup /app
 WORKDIR /app
 
 USER nobody:nogroup
-EXPOSE 8443
+EXPOSE 8080
 STOPSIGNAL SIGINT
 ENTRYPOINT ["my-iot"]
 CMD []

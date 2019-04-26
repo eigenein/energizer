@@ -2,6 +2,7 @@
 
 - Change: #80 change namespace from `myiot` to `my_iot`
 - Change: #59 add event router
+- Change: #63 remove authentication and SSL support, use [Nginx](https://nginx.org/) as a reverse-proxy instead. Also remove `--port` option, the bundled Docker image exposes port 8080
 
 ## `0.12.0`
 
