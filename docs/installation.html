@@ -141,14 +141,14 @@
                 <div id="content" class="content">
                     <main>
                         <a class="header" href="#installation" id="installation"><h1>Installation</h1></a>
-<p>My IoT is developed as a normal Python package and thus could be run via the console entry point. This is what you would do to develop it. But for production deployment it is recommended to use <a href="https://docs.docker.com/compose/">Docker Compose</a>. Then Docker becomes the only pre-requisite.</p>
+<p>My IoT is being developed as a normal Python package and thus could be run via the console entry point. This is what you would normally do to test it locally. But for production deployment it is recommended to use <a href="https://docs.docker.com/compose/">Docker Compose</a>. Then Docker becomes virtually the only pre-requisite.</p>
 <a class="header" href="#https" id="https"><h2>HTTPS</h2></a>
 <p>Set up <a href="https://letsencrypt.org/">Let’s Encrypt</a>. That is out of scope for this tutorial.</p>
 <a class="header" href="#nginxconf" id="nginxconf"><h2><code>nginx.conf</code></h2></a>
-<p>You’ll need an Nginx reverse proxy configuration. Don’t worry, just copy-paste the following one and change paths in <code>ssl_certificate</code> and <code>ssl_certificate_key</code>:</p>
+<p>You’ll need an Nginx reverse proxy configuration. Copy-paste the following one and put correct paths into <code>ssl_certificate</code> and <code>ssl_certificate_key</code>:</p>
 <pre><code class="language-nginx">http {
     upstream backend {
-        server localhost:8080;
+        server 127.0.0.1:8080;
         keepalive 32;
     }
 
@@ -161,7 +161,7 @@
         
         ssl_session_cache shared:SSL:10m;
         ssl_session_timeout 10m;
-        ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
         ssl_certificate /etc/letsencrypt/live/example.com/cert.pem;
         ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
         ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
@@ -200,17 +200,17 @@
 htpasswd -c .htpasswd [username]
 </code></pre>
 <a class="header" href="#automationpy" id="automationpy"><h2><code>automation.py</code></h2></a>
-<p>Here lives your configuration and automation. Start with the following <code>automation.py</code> file:</p>
+<p>Here lives your services configuration and automation. Start with the following <code>automation.py</code> file:</p>
 <pre><code class="language-python"># TODO
 </code></pre>
 <p>It’s strictly advised to keep it under version control. <a href="https://github.com/">GitHub</a> allows you to have a private repo for free.</p>
 <a class="header" href="#docker-composeyml" id="docker-composeyml"><h2><code>docker-compose.yml</code></h2></a>
-<p>We’re almost ready to bring it up. Create the <code>docker-compose.yml</code>. Here you’ll need to ensure that it contains correct paths to your:</p>
+<p>We’re almost ready to bring it up. Create the <code>docker-compose.yml</code>. You’ll need to ensure that it contains correct paths in the <code>volumes</code> sections.</p>
+<p>The following configuration provides good defaults for Raspberry Pi. Pay attention:</p>
 <ul>
-<li>SQLite database file</li>
-<li>Nginx configuration file</li>
+<li><code>network_mode: 'host'</code> is needed for My IoT to talk to other devices.</li>
+<li><code>image: tobi312/rpi-nginx</code> is needed specifically for Raspberry Pi. Use normal <code>image: nginx</code> otherwise.</li>
 </ul>
-<p>The following configuration provides good defaults for Raspberry Pi:</p>
 <pre><code class="language-yaml">version: '3.7'
 services:
   my-iot:
@@ -226,7 +226,7 @@ services:
       MY_IOT_VERBOSITY: '2'
   nginx:
     container_name: nginx
-    image: nginx
+    image: tobi312/rpi-nginx
     restart: always
     network_mode: 'host'
     volumes:
@@ -234,7 +234,6 @@ services:
     - './.htpasswd:/etc/nginx/.htpasswd:ro'
     - '/etc/letsencrypt/:/etc/letsencrypt/:ro'
 </code></pre>
-<p>Pay attention, that <code>network_mode: 'host'</code> is needed for My IoT to talk to other devices.</p>
 <p>And finally, just do:</p>
 <pre><code class="language-bash">docker-compose up -d
 </code></pre>
