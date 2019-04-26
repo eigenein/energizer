@@ -51,12 +51,13 @@ class Context:
         Handle a single event in the application context.
         """
         logger.info('{key} = {value!r}', key=event.channel, value=event.value)
-
         previous = self.db[ACTUAL_KEY].get(event.channel)
-        self.db[ACTUAL_KEY][event.channel] = event.dict(exclude=EVENT_EXCLUDE)
-        if event.is_logged:
-            # Historical value uses optimised representation.
-            self.db[f'log:{event.channel}'][timestamp_key(event.timestamp)] = event.dict(include=EVENT_INCLUDE)
+
+        with self.db:
+            self.db[ACTUAL_KEY][event.channel] = event.dict(exclude=EVENT_EXCLUDE)
+            if event.is_logged:
+                # Historical value uses optimised representation.
+                self.db[f'log:{event.channel}'][timestamp_key(event.timestamp)] = event.dict(include=EVENT_INCLUDE)
 
         previous = Event(**previous) if previous is not None else None
         # noinspection PyAsyncCall
