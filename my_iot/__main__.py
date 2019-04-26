@@ -44,6 +44,7 @@ def main(automation_path: str, verbosity: int):
     logger.info('Starting My IoT…')
     automation = import_automation(Path(automation_path))
     db = Connection('db.sqlite3', dumps_=umsgpack.packb, loads_=umsgpack.unpackb)
+    db.connection.execute('PRAGMA journal_mode = MEMORY')
     web.start(Context(db=db, automation=automation), on_startup, on_cleanup)
     logger.info('My IoT stopped.')
 
