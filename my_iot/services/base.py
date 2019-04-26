@@ -16,3 +16,5 @@ class Service(metaclass=ABCMeta):
         raise NotImplementedError()
         # noinspection PyUnreachableCode
         yield NotImplemented
+
+    # TODO: `close` method to allow freeing up resources like a `ClientSession`.

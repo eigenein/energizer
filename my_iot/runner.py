@@ -11,6 +11,8 @@ from loguru import logger
 from my_iot.context import Context
 from my_iot.services.base import Service
 
+# TODO: perhaps merge this with `Context`.
+
 
 async def run_services(context: Context):
     """
@@ -21,7 +23,7 @@ async def run_services(context: Context):
     try:
         await gather(*[run_service(context, service) for service in context.services])
     except CancelledError:
-        pass
+        pass  # TODO: close all services.
     except Exception as e:
         logger.opt(exception=e).critical('Failed to run services.')
 
@@ -40,6 +42,7 @@ async def run_service(context: Context, service: Service):
         except CancelledError:
             logger.info('Stopped service {}.', service)
             break
+        # FIXME: refactor the following 2 `except` clauses.
         except (ConnectionError, ClientConnectorError, asyncio.TimeoutError) as e:
             logger.error('{} has raised a connection error: {}', service, e)
             n_errors += 1

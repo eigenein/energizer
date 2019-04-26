@@ -3,7 +3,7 @@ from __future__ import annotations
 from asyncio import create_task
 from dataclasses import InitVar, dataclass, field
 from types import ModuleType
-from typing import Iterable, List, Mapping, Tuple
+from typing import Iterable, Mapping
 
 from aiohttp import ClientSession
 from loguru import logger
@@ -23,20 +23,16 @@ class Context:
     # Database connection.
     db: Connection
 
-    # User names and password hashes.
-    users: List[Tuple[str, str]] = field(default_factory=list)
-
     # Event router.
     router: EventRouter = EventRouter()
 
     # User-defined services.
     services: Iterable[Service] = field(default_factory=list)
 
-    # HTTP client session available for user.
+    # HTTP client session for user's automation needs.
     session: ClientSession = field(default_factory=lambda: ClientSession(timeout=HTTP_TIMEOUT))
 
     def __post_init__(self, automation: ModuleType):
-        self.users = getattr(automation, 'USERS', self.users)
         self.router = getattr(automation, 'router', None) or self.router
         self.services = getattr(automation, 'SERVICES', self.services)
 
