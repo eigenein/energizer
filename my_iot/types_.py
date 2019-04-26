@@ -23,10 +23,11 @@ class Unit(str, Enum):
     TIMEDELTA = 'TIMEDELTA'  # seconds
     WATT = 'WATT'
 
+    # TODO: make `is_inline` the enum value.
     @property
     def is_inline(self) -> bool:
         """
-        Get whether a value can be nicely inlined in the web interface.
+        Get whether a value can be nicely in-lined in the web interface.
         """
         return self != Unit.IMAGE_URL
 
@@ -38,7 +39,7 @@ class Event(BaseModel):
     timestamp: datetime = None
 
     # Channel ID is not saved in the logs.
-    channel_id: Optional[str] = None
+    channel: Optional[str] = None
 
     # Unit is not saved in the logs.
     unit: Optional[Unit] = None
@@ -48,6 +49,8 @@ class Event(BaseModel):
 
     # Tells if the event should be stored in the database logs.
     is_logged: bool = True
+
+    # TODO: `is_actual_stored`.
 
     @property
     def key(self) -> str:
@@ -59,7 +62,7 @@ class Event(BaseModel):
 
     @property
     def display_title(self) -> str:
-        return self.title or self.channel_id
+        return self.title or self.channel
 
     # noinspection PyMethodParameters
     @validator('timestamp', pre=True, always=True)

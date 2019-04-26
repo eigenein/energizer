@@ -63,7 +63,7 @@ def yield_events(event: MessageEvent) -> Iterable[Event]:
         last_event = camera.get('last_event')
         if last_event:
             yield Event(
-                channel_id=f'nest:camera:{camera_id}:last_animated_image_url',
+                channel=f'nest:camera:{camera_id}:last_animated_image_url',
                 value=last_event['animated_image_url'],
                 unit=Unit.IMAGE_URL,
                 timestamp=datetime.strptime(last_event['start_time'], timestamp_format),
@@ -76,7 +76,7 @@ def yield_devices_events(devices: dict, prefix: str, keys: List[Tuple[str, Unit,
     for id_, device in devices.items():
         for key, unit, title in keys:
             yield Event(
-                channel_id=f'{prefix}:{id_}:{key}',
+                channel=f'{prefix}:{id_}:{key}',
                 value=device[key],
                 unit=unit,
                 title=f'{device["name"]} {title}',

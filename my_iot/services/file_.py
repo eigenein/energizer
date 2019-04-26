@@ -12,9 +12,9 @@ from my_iot.types_ import Event, Unit
 
 
 class File(Service):
-    def __init__(self, path: Path, channel_id: str, interval: timedelta, unit: Unit, title: Optional[str] = None):
+    def __init__(self, path: Path, sub_channel: str, interval: timedelta, unit: Unit, title: Optional[str] = None):
         self.path = path
-        self.channel_id = channel_id
+        self.sub_channel = sub_channel
         self.interval = interval.total_seconds()
         self.unit = unit
         self.title = title
@@ -23,7 +23,7 @@ class File(Service):
     async def events(self):
         try:
             yield Event(
-                channel_id=f'file:{self.channel_id}',
+                channel=f'file:{self.sub_channel}',
                 value=self.preprocess_value(self.path.read_text()),
                 unit=self.unit,
                 title=self.title,
@@ -45,12 +45,12 @@ class FloatValueFile(File):
     def __init__(
         self,
         path: Path,
-        channel_id: str,
+        sub_channel: str,
         interval: timedelta,
         unit: Unit, scale=1.0,
         title: Optional[str] = None,
     ):
-        super().__init__(path, channel_id, interval, unit, title)
+        super().__init__(path, sub_channel, interval, unit, title)
         self.scale = scale
 
     def preprocess_value(self, value: str):

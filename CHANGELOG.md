@@ -1,6 +1,7 @@
 ## `master`
 
 - Change: #80 change namespace from `myiot` to `my_iot`
+- Change: #59 add event router
 
 ## `0.12.0`
 

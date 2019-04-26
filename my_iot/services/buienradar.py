@@ -50,7 +50,7 @@ class Buienradar(Service):
         if feed['actual']['sunrise']:
             sunrise = parse_datetime(feed['actual']['sunrise'])
             yield Event(
-                channel_id='buienradar:sunrise',
+                channel='buienradar:sunrise',
                 value=sunrise,
                 unit=Unit.DATETIME,
                 title='Sunrise',
@@ -61,7 +61,7 @@ class Buienradar(Service):
         if feed['actual']['sunset']:
             sunset = parse_datetime(feed['actual']['sunset'])
             yield Event(
-                channel_id='buienradar:sunset',
+                channel='buienradar:sunset',
                 value=sunset,
                 unit=Unit.DATETIME,
                 title='Sunset',
@@ -71,7 +71,7 @@ class Buienradar(Service):
             sunset = None
         if sunset and sunrise:
             yield Event(
-                channel_id='buienradar:day_length',
+                channel='buienradar:day_length',
                 value=(sunset - sunrise),
                 unit=Unit.TIMEDELTA,
                 title='Day Length',
@@ -82,9 +82,9 @@ class Buienradar(Service):
             logger.error('Station ID {} is not found.', e)
             return
         timestamp = parse_datetime(measurement['timestamp'])
-        for key, channel_id, unit, title in channels:
+        for key, channel, unit, title in channels:
             yield Event(
-                channel_id=f'buienradar:{self.station_id}:{channel_id}',
+                channel=f'buienradar:{self.station_id}:{channel}',
                 value=measurement[key],
                 unit=unit,
                 timestamp=timestamp,

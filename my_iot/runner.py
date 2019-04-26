@@ -19,7 +19,7 @@ async def run_services(context: Context):
 
     logger.info('Running services…')
     try:
-        await gather(*[run_service(context, service) for service in context.automation.services])
+        await gather(*[run_service(context, service) for service in context.services])
     except CancelledError:
         pass
     except Exception as e:

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import ssl
-import sys
 from asyncio import create_task
+from pathlib import Path
+from types import ModuleType
 from typing import Optional
 
 import click
@@ -13,8 +14,7 @@ from loguru import logger
 from sqlitemap import Connection
 
 from my_iot import web
-from my_iot.automation import Automation
-from my_iot.helpers import call_handler
+from my_iot.imp_ import create_module
 from my_iot.logging_ import init_logging
 from my_iot.runner import run_services
 from my_iot.types_ import Event, Unit
@@ -29,7 +29,7 @@ def option(*args, **kwargs):
 @click.argument(
     'automation_path',
     envvar='MY_IOT_AUTOMATION_PATH',
-    type=click.Path(exists=True, dir_okay=True, file_okay=False),
+    type=click.Path(exists=True, dir_okay=False, file_okay=True),
 )
 @option(
     'cert_path', '--cert',
@@ -70,12 +70,7 @@ def main(
     init_logging(verbosity)
     logger.info('Starting My IoT…')
 
-    # noinspection PyBroadException
-    try:
-        automation = import_automation(automation_path)
-    except Exception as e:
-        logger.opt(exception=e).error('Failed to import the automation.')
-        automation = None
+    automation = import_automation(Path(automation_path))
 
     if cert_path and key_path:
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
@@ -93,10 +88,9 @@ async def on_startup(app: Application):
     Set up the web application.
     """
     context: Context = app['context']
-    await call_handler(context.automation.on_startup())
     context.trigger_event(Event(
         value=pkg_resources.get_distribution('my_iot').version,
-        channel_id='my_iot:version',
+        channel='my_iot:version',
         unit=Unit.TEXT,
         title='My IoT version',
     ))
@@ -104,12 +98,9 @@ async def on_startup(app: Application):
     create_task(run_services(context))
 
 
-def import_automation(path: str) -> Automation:
+def import_automation(path: Path) -> ModuleType:
     logger.info('Importing automation from {}…', path)
-    sys.path.append(path)
-    # noinspection PyUnresolvedReferences, PyPackageRequirements
-    from automation import MyAutomation
-    return MyAutomation()
+    return create_module(name='automation', source=path.read_text(encoding='utf-8'))
 
 
 async def on_cleanup(app: Application):
@@ -117,8 +108,7 @@ async def on_cleanup(app: Application):
     Cancel and close everything.
     """
     logger.info('Cleaning up…')
-    await call_handler(app['context'].automation.on_cleanup())
-    app['context'].db.close()
+    await app['context'].close()
 
 
 if __name__ == '__main__':

@@ -10,7 +10,6 @@ from loguru import logger
 from pkg_resources import resource_string
 
 from my_iot import templates
-from my_iot.automation import Automation
 from my_iot.constants import ACTUAL_KEY
 from my_iot.context import Context
 from my_iot.decorators import authenticate_user
@@ -38,7 +37,9 @@ def start(
     on_startup: Callable[[web.Application], Awaitable[Any]],
     on_cleanup: Callable[[web.Application], Awaitable[Any]],
 ):
-    """Start the web app."""
+    """
+    Start the web app.
+    """
     app = web.Application()
     app['context'] = context
     app.on_startup.append(on_startup)
@@ -61,12 +62,12 @@ async def get_index(request: web.Request) -> dict:
     }
 
 
-@routes.get(r'/channel/{channel_id}')
+@routes.get(r'/channel/{channel}')
 @template('channel.html')
 @authenticate_user
 async def get_channel(request: web.Request) -> dict:
     try:
-        event: Dict[Any, Any] = request.app['context'].db[ACTUAL_KEY][request.match_info['channel_id']]
+        event: Dict[Any, Any] = request.app['context'].db[ACTUAL_KEY][request.match_info['channel']]
     except KeyError:
         raise HTTPNotFound(text='Channel is not found.')
     return {'event': Event(**event), 'raw_event': event}
@@ -89,8 +90,7 @@ async def get_events(request: web.Request) -> dict:
 @template('services.html')
 @authenticate_user
 async def get_services(request: web.Request) -> dict:
-    automation: Automation = request.app['context'].automation
-    return {'services': automation.services}
+    return {'services': request.app['context'].services}
 
 
 # Must go at the end.
