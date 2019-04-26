@@ -39,6 +39,7 @@ async def run_service(context: Context, service: Service):
             async for event in service.events:
                 n_errors = 0  # the service successfully generated an event
                 context.trigger_event(event)
+                await sleep(0)  # force task switch
         except CancelledError:
             logger.info('Stopped service {}.', service)
             break

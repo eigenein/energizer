@@ -1,12 +1,12 @@
 <nav class="tabs is-boxed is-fullwidth">
   <div class="container">
     <ul>
-      <li><a>5 minutes</a></li>
-      <li><a>1 hour</a></li>
-      <li><a>12 hours</a></li>
-      <li><a>1 day</a></li>
-      <li><a>1 week</a></li>
-      <li><a>1 month</a></li>
+      <li><a href="{{ request.path }}">5 minutes</a></li>
+      <li><a href="{{ request.path }}?period=3600">1 hour</a></li>
+      <li><a href="{{ request.path }}?period=43200">12 hours</a></li>
+      <li><a href="{{ request.path }}?period=86400">1 day</a></li>
+      <li><a href="{{ request.path }}?period=604800">1 week</a></li>
+      <li><a href="{{ request.path }}?period=2592000">1 month</a></li>
     </ul>
   </div>
 </nav>

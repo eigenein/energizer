@@ -10,9 +10,13 @@ from loguru import logger
 from sqlitemap import Connection
 
 from my_iot.constants import ACTUAL_KEY, HTTP_TIMEOUT
+from my_iot.helpers import timestamp_key
 from my_iot.routing import EventRouter
 from my_iot.services.base import Service
 from my_iot.types_ import Event
+
+EVENT_INCLUDE = {'timestamp', 'value'}
+EVENT_EXCLUDE = {'is_logged'}
 
 
 @dataclass
@@ -47,13 +51,12 @@ class Context:
         Handle a single event in the application context.
         """
         logger.info('{key} = {value!r}', key=event.channel, value=event.value)
-        previous = self.db[ACTUAL_KEY].get(event.channel)
 
-        with self.db:
-            self.db[ACTUAL_KEY][event.channel] = event.dict(exclude={'is_logged'})
-            if event.is_logged:
-                # Historical value uses optimised representation.
-                self.db[f'log:{event.channel}'][event.key] = event.dict(include={'timestamp', 'value'})
+        previous = self.db[ACTUAL_KEY].get(event.channel)
+        self.db[ACTUAL_KEY][event.channel] = event.dict(exclude=EVENT_EXCLUDE)
+        if event.is_logged:
+            # Historical value uses optimised representation.
+            self.db[f'log:{event.channel}'][timestamp_key(event.timestamp)] = event.dict(include=EVENT_INCLUDE)
 
         previous = Event(**previous) if previous is not None else None
         # noinspection PyAsyncCall

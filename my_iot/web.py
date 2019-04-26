@@ -62,7 +62,11 @@ async def get_channel(request: web.Request) -> dict:
         event: Dict[Any, Any] = request.app['context'].db[ACTUAL_KEY][request.match_info['channel']]
     except KeyError:
         raise HTTPNotFound(text='Channel is not found.')
-    return {'event': Event(**event), 'raw_event': event}
+    return {
+        'event': Event(**event),
+        'raw_event': event,
+        'request': request,
+    }
 
 
 @routes.get(r'/downloads/db.sqlite3')
@@ -73,7 +77,7 @@ async def get_db(_: web.Request) -> web.FileResponse:
 @routes.get(r'/events')
 @template('events.html')
 async def get_events(request: web.Request) -> dict:
-    return {}
+    return {'request': request}
 
 
 @routes.get(r'/services')

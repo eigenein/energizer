@@ -53,14 +53,6 @@ class Event(BaseModel):
     # TODO: `is_actual_stored`.
 
     @property
-    def key(self) -> str:
-        """
-        Get the key under which the event is stored in a collection.
-        Supposed to be monotonic (non-decreasing).
-        """
-        return self.timestamp.astimezone(utc).strftime('%Y%m%d%H%M%S%f')
-
-    @property
     def display_title(self) -> str:
         return self.title or self.channel
 
