@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from asyncio import CancelledError
 from functools import wraps
 from typing import Any, Awaitable, Callable, List, Mapping, Optional
 
@@ -32,6 +33,8 @@ class EventRouter:
         for handler in self.handlers:
             try:
                 await handler(**kwargs)
+            except CancelledError:
+                logger.warning('Handler `{}` was interrupted.', handler)
             except Exception as e:
                 logger.opt(exception=e).error('Error in handler `{}`.', handler)
 

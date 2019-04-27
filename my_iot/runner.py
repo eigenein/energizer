@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from asyncio.tasks import gather, sleep
 from concurrent.futures import CancelledError
+from contextlib import suppress
 from datetime import timedelta
 
 from aiohttp import ClientConnectorError
@@ -23,7 +24,10 @@ async def run_services(context: Context):
     try:
         await gather(*[run_service(context, service) for service in context.services])
     except CancelledError:
-        pass  # TODO: close all services.
+        for service in context.services:
+            with suppress(Exception):
+                logger.info('Closing {}…', service)
+                await service.close()
     except Exception as e:
         logger.opt(exception=e).critical('Failed to run services.')
 

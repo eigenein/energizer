@@ -17,4 +17,7 @@ class Service(metaclass=ABCMeta):
         # noinspection PyUnreachableCode
         yield NotImplemented
 
-    # TODO: `close` method to allow freeing up resources like a `ClientSession`.
+    async def close(self):
+        """
+        Free up the service resources.
+        """
