@@ -54,7 +54,7 @@ async def on_startup(app: Application):
     Set up the web application.
     """
     context: Context = app['context']
-    context.trigger_event(Event(
+    await context.trigger_event(Event(
         value=pkg_resources.get_distribution('my_iot').version,
         channel='my_iot:version',
         unit=Unit.TEXT,

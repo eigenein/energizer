@@ -2,22 +2,22 @@ from __future__ import annotations
 
 from asyncio import create_task
 from dataclasses import InitVar, dataclass, field
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from types import ModuleType
-from typing import Iterable, Mapping, List
+from typing import Iterable, List, Mapping
 
 from aiohttp import ClientSession
 from loguru import logger
 from sqlitemap import Connection
 
 from my_iot.constants import ACTUAL_KEY, HTTP_TIMEOUT
-from my_iot.helpers import timestamp_key
+from my_iot.helpers import setattr_async, timestamp_key
 from my_iot.routing import EventRouter
 from my_iot.services.base import Service
 from my_iot.types_ import Event
 
-EVENT_INCLUDE = {'timestamp', 'value'}
-EVENT_EXCLUDE = {'is_logged'}
+EVENT_INCLUDE = {'timestamp', 'value'}  # logged value uses optimised representation
+EVENT_EXCLUDE = {'is_logged'}  # is only needed before writing
 
 
 @dataclass
@@ -56,18 +56,17 @@ class Context:
             for event in self.db[f'log:{channel}'][timestamp_key(datetime.now() - period):]
         ]
 
-    def trigger_event(self, event: Event):
+    async def trigger_event(self, event: Event):
         """
         Handle a single event in the application context.
         """
         logger.info('{key} = {value!r}', key=event.channel, value=event.value)
         previous = self.db[ACTUAL_KEY].get(event.channel)
 
-        with self.db:
-            self.db[ACTUAL_KEY][event.channel] = event.dict(exclude=EVENT_EXCLUDE)
-            if event.is_logged:
-                # Historical value uses optimised representation.
-                self.db[f'log:{event.channel}'][timestamp_key(event.timestamp)] = event.dict(include=EVENT_INCLUDE)
+        await setattr_async(self.db[ACTUAL_KEY], event.channel, event.dict(exclude=EVENT_EXCLUDE))
+        if event.is_logged:
+            collection = self.db[f'log:{event.channel}']
+            await setattr_async(collection, timestamp_key(event.timestamp), event.dict(include=EVENT_INCLUDE))
 
         previous = Event(**previous) if previous is not None else None
         # noinspection PyAsyncCall
