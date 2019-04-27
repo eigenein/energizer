@@ -42,16 +42,15 @@ async def run_service(context: Context, service: Service):
         except CancelledError:
             logger.info('Stopped service {}.', service)
             break
-        # FIXME: refactor the following 2 `except` clauses.
-        except (ConnectionError, ClientConnectorError, asyncio.TimeoutError) as e:
-            logger.error('{} has raised a connection error: {}', service, e)
-            n_errors += 1
         except Exception as e:
-            logger.opt(exception=e).error('{} has failed.', service)
             n_errors += 1
+            if isinstance(e, (ConnectionError, ClientConnectorError, asyncio.TimeoutError)):
+                logger.error('{} has raised a connection error: {}', service, e)
+            else:
+                logger.opt(exception=e).error('{} has failed.', service)
         else:
-            n_errors = 0  # the service normally returned
+            n_errors = 0  # the service has finished normally
         if n_errors:
             delay = 2.0 ** min(n_errors, 16)
-            logger.error('Restarting in {}…', timedelta(seconds=delay))
+            logger.error('{} errors. Restarting in {}…', n_errors, timedelta(seconds=delay))
             await sleep(delay)
