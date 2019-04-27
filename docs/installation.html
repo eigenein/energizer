@@ -146,7 +146,9 @@
 <p>Set up <a href="https://letsencrypt.org/">Let’s Encrypt</a>. That is out of scope for this tutorial.</p>
 <a class="header" href="#nginxconf" id="nginxconf"><h2><code>nginx.conf</code></h2></a>
 <p>You’ll need an Nginx reverse proxy configuration. Copy-paste the following one and put correct paths into <code>ssl_certificate</code> and <code>ssl_certificate_key</code>:</p>
-<pre><code class="language-nginx">http {
+<pre><code class="language-nginx">events { }
+
+http {
     upstream backend {
         server 127.0.0.1:8080;
         keepalive 32;
@@ -190,6 +192,8 @@
             proxy_pass http://backend;
             proxy_http_version 1.1;
             proxy_set_header Connection &quot;&quot;;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
     }
 }
@@ -205,7 +209,7 @@ htpasswd -c .htpasswd [username]
 </code></pre>
 <p>It’s strictly advised to keep it under version control. <a href="https://github.com/">GitHub</a> allows you to have a private repo for free.</p>
 <a class="header" href="#docker-composeyml" id="docker-composeyml"><h2><code>docker-compose.yml</code></h2></a>
-<p>We’re almost ready to bring it up. Create the <code>docker-compose.yml</code>. You’ll need to ensure that it contains correct paths in the <code>volumes</code> sections.</p>
+<p>We’re almost ready to bring it up. Copy-paste the following <code>docker-compose.yml</code> file. You’ll need to ensure that it contains correct paths in the <code>volumes</code> sections.</p>
 <p>The following configuration provides good defaults for Raspberry Pi. Pay attention:</p>
 <ul>
 <li><code>network_mode: 'host'</code> is needed for My IoT to talk to other devices.</li>
