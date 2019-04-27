@@ -5,6 +5,7 @@
 - Change: #63 remove authentication and SSL support, use [Nginx](https://nginx.org/) as a reverse-proxy instead. Also remove `--port` option, the bundled Docker image exposes port 8080
 - New: #67 one step towards displaying historical values
 - Opt: run SQLite operation in executor
+- Chore: merge `runner` and `context`
 
 ## `0.12.0`
 

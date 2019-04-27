@@ -14,7 +14,6 @@ from sqlitemap import Connection
 from my_iot import web
 from my_iot.imp_ import create_module
 from my_iot.logging_ import init_logging
-from my_iot.runner import run_services
 from my_iot.types_ import Event, Unit
 from my_iot.web import Context
 
@@ -43,8 +42,7 @@ def main(automation_path: str, verbosity: int):
     init_logging(verbosity)
     logger.info('Starting My IoT…')
     automation = import_automation(Path(automation_path))
-    db = Connection('db.sqlite3', dumps_=umsgpack.packb, loads_=umsgpack.unpackb)
-    db.connection.execute('PRAGMA journal_mode = MEMORY')
+    db = Connection('db.sqlite3', dumps_=umsgpack.packb, loads_=umsgpack.unpackb, check_same_thread=False)
     web.start(Context(db=db, automation=automation), on_startup, on_cleanup)
     logger.info('My IoT stopped.')
 
@@ -54,14 +52,14 @@ async def on_startup(app: Application):
     Set up the web application.
     """
     context: Context = app['context']
-    await context.trigger_event(Event(
+    await context.on_event(Event(
         value=pkg_resources.get_distribution('my_iot').version,
         channel='my_iot:version',
         unit=Unit.TEXT,
         title='My IoT version',
     ))
     # noinspection PyAsyncCall
-    create_task(run_services(context))
+    create_task(context.run_services())
 
 
 def import_automation(path: Path) -> ModuleType:
