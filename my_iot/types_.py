@@ -6,8 +6,6 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, validator
 
-utc = timezone.utc
-
 
 class Unit(str, Enum):
     BEAUFORT = 'BEAUFORT'
@@ -22,14 +20,6 @@ class Unit(str, Enum):
     TEXT = 'TEXT'
     TIMEDELTA = 'TIMEDELTA'  # seconds
     WATT = 'WATT'
-
-    # TODO: make `is_inline` the enum value.
-    @property
-    def is_inline(self) -> bool:
-        """
-        Get whether a value can be nicely in-lined in the web interface.
-        """
-        return self != Unit.IMAGE_URL
 
 
 class Event(BaseModel):
@@ -62,4 +52,4 @@ class Event(BaseModel):
         """
         Sets the current timestamp by default.
         """
-        return value or datetime.now(utc)
+        return value or datetime.now(timezone.utc)

@@ -10,7 +10,7 @@
     <div class="hero-body">
       <div class="container">
         <h1 class="title is-4">
-          {% if event.unit.is_inline %}
+          {% if event.unit != Unit.IMAGE_URL %}
             <span class="{% include "classes/value.html" %}">
               {% include "includes/value.html" %}
             </span>
@@ -19,7 +19,7 @@
           {% endif %}
         </h1>
         <h2 class="subtitle is-6">
-          {% if event.unit.is_inline %}{{ event.display_title }}{% endif %}
+          {% if event.unit != Unit.IMAGE_URL %}{{ event.display_title }}{% endif %}
           <span><i class="far fa-clock"></i></span> {% include "includes/timestamp.html" %}
         </h2>
       </div>
@@ -29,7 +29,7 @@
     </div>
   </section>
 
-  {% if not event.unit.is_inline %}
+  {% if event.unit == Unit.IMAGE_URL %}
     <section class="section">
       <div class="container">
         <h3 class="title is-5">Actual</h3>
@@ -40,21 +40,23 @@
     </section>
   {% endif %}
 
-  <section class="section">
-    <div class="container">
-      <h3 class="title is-5">Events</h3>
-      <table class="table is-striped is-fullwidth">
-        <tbody>
-        {% for event in events|reverse %}
-          <tr>
-            <td>{{ event.timestamp }}</td>
-            <td>{{ event.value }}</td>
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </section>
+  {% if events %}
+    <section class="section">
+      <div class="container">
+        <h3 class="title is-5">Events</h3>
+        <table class="table is-striped is-fullwidth">
+          <tbody>
+          {% for event in events|reverse %}
+            <tr>
+              <td>{{ event.timestamp }}</td>
+              <td>{{ event.value }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {% endif %}
 
   <section class="section">
     <div class="container">
