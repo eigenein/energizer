@@ -7,6 +7,7 @@
 - Opt: run SQLite operations in executor
 - Chore: merge `runner` and `context`
 - Change: #85 remove SQLite export via the web interface
+- Opt: provide a singleton `EventRouter` instance
 
 ## `0.12.0`
 

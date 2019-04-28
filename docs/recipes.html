@@ -145,14 +145,14 @@
 <pre><code class="language-python">from datetime import timedelta
 from pathlib import Path
 
-from myiot.channels.file_ import FloatValueFile
-from myiot.types import Unit
+from my_iot.services.file_ import FloatValueFile
+from my_iot.types_ import Unit
 
-channels = [
+SERVICES = [
     FloatValueFile(
         Path('/sys/class/thermal/thermal_zone0/temp'), 
         'cpu_temperature', 
-        timedelta(seconds=10.0),
+        timedelta(seconds=5.0),
         Unit.CELSIUS,
         0.001,
         'CPU Temperature',
@@ -162,58 +162,66 @@ channels = [
 <a class="header" href="#if-new-nest-cam-event-occurred-then-send-an-animation-to-telegram" id="if-new-nest-cam-event-occurred-then-send-an-animation-to-telegram"><h2>If new Nest Cam event occurred, then send an animation to Telegram</h2></a>
 <pre><code class="language-python">TELEGRAM_TOKEN = ...
 TELEGRAM_CHAT_ID = ...
+NEST_STRUCTURE_ID = ...
+AWAY_CHANNEL = f'nest:structure:{NEST_STRUCTURE_ID}:away'
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from aiohttp import ClientSession
 
-from myiot.actions.telegram import send_animation
-from myiot.types import Event
-
-session = ClientSession()
-
-
-async def on_event(*, event: Event, old_event: Optional[Event], latest_events: Dict[str, Event], **kwargs: Any):
-    if event.key.endswith(':last_animated_image_url') and (old_event is None or event.timestamp &gt; old_event.timestamp):
-        await send_animation(
-            session=session, 
-            token=TELEGRAM_TOKEN, 
-            chat_id=TELEGRAM_CHAT_ID, 
-            animation=event.value,
-            disable_notification=True,
-            caption=event.title,
-        )
+from my_iot.actions.telegram import ParseMode, send_animation
+from my_iot.routing import (
+    router,
+    if_actual_value_not_equal,
+    if_channel_like,
+    if_newer,
+)
+from my_iot.types_ import Event
 
 
-async def on_close():
-    await session.close()
+@router
+@if_channel_like(r'.*:last_animated_image_url')
+@if_newer
+@if_actual_value_not_equal(AWAY_CHANNEL, 'home')
+async def on_away_camera_event(*, event: Event, session: ClientSession, **_: Any):
+    await send_animation(
+        session=session,
+        token=TELEGRAM_TOKEN,
+        chat_id=TELEGRAM_CHAT_ID,
+        animation=event.value,
+        disable_notification=True,
+        caption=f'*{event.title}*\n{event.timestamp:%b %d, %H:%M:%S}',
+        parse_mode=ParseMode.MARKDOWN,
+    )
 </code></pre>
 <a class="header" href="#if-nest-detects-an-intrusion-then-send-a-message-to-telegram" id="if-nest-detects-an-intrusion-then-send-a-message-to-telegram"><h2>If Nest detects an intrusion, then send a message to Telegram</h2></a>
 <pre><code class="language-python">TELEGRAM_TOKEN = ...
 TELEGRAM_CHAT_ID = ...
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from aiohttp import ClientSession
 
-from myiot.actions.telegram import send_message
-from myiot.types import Event
-
-session = ClientSession()
-
-
-async def on_event(*, event: Event, old_event: Optional[Event], latest_events: Dict[str, Event], **kwargs: Any):
-    if event.key.endswith(':wwn_security_state') and (old_event is None or event.value != old_event.value):
-        await send_message(
-            session=session,
-            token=TELEGRAM_TOKEN,
-            chat_id=TELEGRAM_CHAT_ID,
-            text=('🚨 Intrusion detected' if event.value != 'ok' else '✅ Security state is okay'),
-        )
+from my_iot.actions.telegram import send_message
+from my_iot.routing import (
+    if_channel_like,
+    if_changed,
+    if_not_equal,
+    router,
+)
 
 
-async def on_close():
-    await session.close()
+@router
+@if_channel_like(r'.*:wwn_security_state')
+@if_changed
+@if_not_equal('ok')
+async def on_deter(*, session: ClientSession, **_: Any):
+    await send_message(
+        session=session,
+        token=TELEGRAM_TOKEN,
+        chat_id=TELEGRAM_CHAT_ID,
+        text='🔴 Intrusion detected',
+    )
 </code></pre>
 
                     </main>

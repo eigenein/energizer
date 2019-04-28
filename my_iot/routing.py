@@ -118,3 +118,7 @@ def if_actual_value_not_equal(channel: str, value: Any) -> DecorateAsyncCallable
         event = actual.get(channel)
         return bool(event is None or event.value != value)
     return if_(predicate)
+
+
+# Router singleton for a user's automation code.
+router = EventRouter()
