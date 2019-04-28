@@ -4,22 +4,20 @@ import asyncio
 from asyncio import CancelledError, create_task, gather, sleep
 from contextlib import suppress
 from dataclasses import InitVar, dataclass, field
-from datetime import datetime, timedelta
+from datetime import timedelta
 from types import ModuleType
-from typing import Iterable, List, Mapping
+from typing import Iterable
 
 from aiohttp import ClientConnectorError, ClientSession
 from loguru import logger
 from sqlitemap import Connection
 
 from my_iot.constants import ACTUAL_KEY, HTTP_TIMEOUT
-from my_iot.helpers import run_in_executor, timestamp_key
+from my_iot.database import get_actual, save_event
+from my_iot.helpers import run_in_executor
 from my_iot.routing import EventRouter
 from my_iot.services.base import Service
 from my_iot.types_ import Event
-
-EVENT_INCLUDE = {'timestamp', 'value'}  # logged value uses optimised representation
-EVENT_EXCLUDE = {'is_logged'}  # is only needed before writing
 
 
 # FIXME: should be named `Runner`.
@@ -92,39 +90,15 @@ class Context:
         """
         logger.info('{key} = {value!r}', key=event.channel, value=event.value)
         previous = self.db[ACTUAL_KEY].get(event.channel)
-        await self.save_event(event)
+        await run_in_executor(save_event, self.db, event)
         previous = Event(**previous) if previous is not None else None
         # noinspection PyAsyncCall
         create_task(self.router.on_event(
             event=event,
             previous=previous,
-            actual=self.get_actual(),
+            actual=(await run_in_executor(get_actual, self.db)),
             session=self.session,
         ))
-
-    @run_in_executor
-    def save_event(self, event: Event):
-        with self.db:
-            self.db[ACTUAL_KEY][event.channel] = event.dict(exclude=EVENT_EXCLUDE)
-            if event.is_logged:
-                self.db[f'log:{event.channel}'][timestamp_key(event.timestamp)] = event.dict(include=EVENT_INCLUDE)
-
-    # TODO: perhaps move to `db_utils`.
-    def get_actual(self) -> Mapping[str, Event]:
-        """
-        Get actual channel values.
-        """
-        return {key: Event(**value) for key, value in self.db[ACTUAL_KEY].items()}
-
-    # TODO: perhaps move to `db_utils`.
-    def get_log(self, channel: str, period: timedelta) -> List[Event]:
-        """
-        Gets the channel log within the specified period until now.
-        """
-        return [
-            Event(**event)
-            for event in self.db[f'log:{channel}'][timestamp_key(datetime.now() - period):]
-        ]
 
     async def close(self):
         self.db.close()

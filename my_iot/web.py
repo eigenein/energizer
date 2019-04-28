@@ -11,6 +11,8 @@ from pkg_resources import resource_string
 from my_iot import templates
 from my_iot.constants import ACTUAL_KEY, HTTP_PORT
 from my_iot.context import Context
+from my_iot.database import get_actual, get_log
+from my_iot.helpers import run_in_executor
 from my_iot.types_ import Event
 
 routes = web.RouteTableDef()
@@ -24,7 +26,7 @@ statics = {
         'favicon-16x16.png',
         'favicon-32x32.png',
         'site.webmanifest',
-    ]
+    ]  # TODO: should go to `constants`.
 }
 
 
@@ -51,8 +53,9 @@ def start(
 @routes.get(r'/')
 @template('index.html')
 async def get_index(request: web.Request) -> dict:
+    context: Context = request.app['context']
     return {
-        'actual': request.app['context'].get_actual().values(),
+        'actual': (await run_in_executor(get_actual, context.db)).values(),
     }
 
 
@@ -73,7 +76,7 @@ async def get_channel(request: web.Request) -> dict:
         'event': Event(**event),
         'raw_event': event,
         'request': request,
-        'events': context.get_log(channel, period),
+        'events': await run_in_executor(get_log, context.db, channel, period),
     }
 
 

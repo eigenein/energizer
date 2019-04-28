@@ -6,12 +6,12 @@ from types import ModuleType
 
 import click
 import pkg_resources
-import umsgpack
 from aiohttp.web import Application
 from loguru import logger
 from sqlitemap import Connection
 
 from my_iot import web
+from my_iot.constants import DATABASE_OPTIONS
 from my_iot.imp_ import create_module
 from my_iot.logging_ import init_logging
 from my_iot.types_ import Event, Unit
@@ -42,7 +42,7 @@ def main(automation_path: str, verbosity: int):
     init_logging(verbosity)
     logger.info('Starting My IoT…')
     automation = import_automation(Path(automation_path))
-    db = Connection('db.sqlite3', dumps_=umsgpack.packb, loads_=umsgpack.unpackb, check_same_thread=False)
+    db = Connection('db.sqlite3', **DATABASE_OPTIONS)
     web.start(Context(db=db, automation=automation), on_startup, on_cleanup)
     logger.info('My IoT stopped.')
 

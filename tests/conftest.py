@@ -10,6 +10,7 @@ from pytest import fixture
 from sqlitemap import Connection
 
 from my_iot import templates
+from my_iot.constants import DATABASE_OPTIONS
 from my_iot.imp_ import create_module
 from my_iot.web import Context, routes
 
@@ -18,7 +19,7 @@ pytest_plugins = 'aiohttp.pytest_plugin'
 
 @fixture
 async def db() -> Connection:
-    return Connection(':memory:')
+    return Connection(':memory:', **DATABASE_OPTIONS)
 
 
 @fixture

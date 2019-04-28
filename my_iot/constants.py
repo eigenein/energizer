@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import umsgpack
 from aiohttp import ClientTimeout
 
 LOGURU_FORMAT = ' '.join((
@@ -22,3 +23,9 @@ ACTUAL_KEY = 'actual'
 
 HTTP_PORT = 8080
 HTTP_TIMEOUT = ClientTimeout(total=10.0)
+
+DATABASE_OPTIONS = {
+    'dumps_': umsgpack.packb,
+    'loads_': umsgpack.unpackb,
+    'check_same_thread': False,
+}
