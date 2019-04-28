@@ -21,3 +21,17 @@ This is yet another home automation that I'm building for myself as an open-sour
 - [Jinja2](http://jinja.pocoo.org/): template engine
 - [Nginx](https://nginx.org/): reverse-proxy for authentication and HTTPS support
 - [Docker](https://www.docker.com/): for production deployment
+
+## How it looks like
+
+### Home
+
+![Home](index.png)
+
+### Services
+
+![Services](services.png)
+
+### Channel
+
+![Channel](channel.png)
