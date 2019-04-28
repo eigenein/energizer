@@ -15,7 +15,7 @@ from sqlitemap import Connection
 from my_iot.constants import ACTUAL_KEY, HTTP_TIMEOUT
 from my_iot.database import get_actual, save_event
 from my_iot.helpers import run_in_executor
-from my_iot.routing import EventRouter
+from my_iot.routing import router
 from my_iot.services.base import Service
 from my_iot.types_ import Event
 
@@ -29,9 +29,6 @@ class Context:
     # Database connection.
     db: Connection
 
-    # Event router.
-    router: EventRouter = EventRouter()
-
     # User-defined services.
     services: Iterable[Service] = field(default_factory=list)
 
@@ -39,7 +36,6 @@ class Context:
     session: ClientSession = field(default_factory=lambda: ClientSession(timeout=HTTP_TIMEOUT))
 
     def __post_init__(self, automation: ModuleType):
-        self.router = getattr(automation, 'router', None) or self.router
         self.services = getattr(automation, 'SERVICES', self.services)
 
     async def run_services(self):
@@ -93,7 +89,7 @@ class Context:
         await run_in_executor(save_event, self.db, event)
         previous = Event(**previous) if previous is not None else None
         # noinspection PyAsyncCall
-        create_task(self.router.on_event(
+        create_task(router.on_event(
             event=event,
             previous=previous,
             actual=(await run_in_executor(get_actual, self.db)),
