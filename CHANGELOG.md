@@ -6,6 +6,7 @@
 - New: #67 one step towards displaying historical values
 - Opt: run SQLite operations in executor
 - Chore: merge `runner` and `context`
+- Change: #85 remove SQLite export via the web interface
 
 ## `0.12.0`
 

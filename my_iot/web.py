@@ -80,11 +80,6 @@ async def get_channel(request: web.Request) -> dict:
     }
 
 
-@routes.get(r'/downloads/db.sqlite3')
-async def get_db(_: web.Request) -> web.FileResponse:
-    return web.FileResponse('db.sqlite3', headers={'Content-Type': 'application/x-sqlite3'})
-
-
 @routes.get(r'/events')
 @template('events.html')
 async def get_events(request: web.Request) -> dict:

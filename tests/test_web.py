@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from aiohttp import test_utils
-from aiohttp.web_response import Response
 from pytest import mark
 
 
@@ -22,9 +21,3 @@ async def test_url_200(client: test_utils.TestClient, url: str):
 async def test_not_found(client: test_utils.TestClient, url: str):
     response = await client.get(url)
     assert response.status == 404
-
-
-async def test_download(client: test_utils.TestClient):
-    response: Response = await client.get('/downloads/db.sqlite3')
-    assert response.status == 200
-    assert response.content_type == 'application/x-sqlite3'

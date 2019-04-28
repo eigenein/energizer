@@ -13,7 +13,7 @@ requirements.txt:
 .PHONY: test
 test:
 	@pytest
-	@flake8 my_iot
+	@flake8 my_iot tests
 	@isort -rc -c my_iot tests
 
 .PHONY: tag
