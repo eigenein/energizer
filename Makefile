@@ -1,4 +1,5 @@
-docs: book book.toml
+.PHONY: docs
+docs:
 	mdbook build
 
 .PHONY: venv
