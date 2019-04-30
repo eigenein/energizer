@@ -326,7 +326,7 @@ async def on_away_camera_event(*, event: Event, session: ClientSession, **_: Any
         chat_id=TELEGRAM_CHAT_ID,
         animation=event.value,
         disable_notification=True,
-        caption=f'*{event.title}*\n{event.timestamp:%b %d, %H:%M:%S}',
+        caption=f'*{event.title}*\n{event.timestamp.astimezone():%b %d, %H:%M:%S}',
         parse_mode=ParseMode.MARKDOWN,
     )
 </code></pre>
