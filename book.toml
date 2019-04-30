@@ -10,3 +10,6 @@ create-missing = false
 
 [output.html]
 curly-quotes = true
+google-analytics = "UA-65034198-8"
+git-repository-url = "https://github.com/eigenein/my-iot"
+git-repository-icon = "fa-code-fork"

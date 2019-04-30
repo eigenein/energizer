@@ -22,7 +22,6 @@ tag:
 	@$(eval VERSION = $(shell python setup.py --version))
 	@git tag -a '$(VERSION)' -m '$(VERSION)'
 
-# TODO: push all tags.
 .PHONY: publish/tag
 publish/tag: tag
 	@$(eval VERSION = $(shell python setup.py --version))
@@ -36,7 +35,6 @@ docker:
 publish/docker/latest: docker
 	@docker push 'eigenein/my-iot:latest'
 
-# TODO: check the current commit is tagged.
 .PHONY: publish/docker/tag
 publish/docker/tag: docker
 	@$(eval VERSION = $(shell python setup.py --version))
@@ -51,7 +49,6 @@ dist:
 	@rm -rf dist
 	@python setup.py sdist bdist_wheel
 
-# TODO: check the current commit is tagged.
 .PHONY: publish/dist
 publish/dist: dist
 	@twine upload --verbose dist/*
