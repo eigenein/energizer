@@ -19,7 +19,7 @@ def setup(app: Application):
 
 
 def from_timestamp(timestamp: float) -> str:
-    return datetime.fromtimestamp(timestamp).strftime('%b %d, %H:%M:%S')
+    return datetime.fromtimestamp(timestamp).astimezone().strftime('%b %d, %H:%M:%S')
 
 
 def from_seconds(seconds: float) -> str:

@@ -8,6 +8,7 @@
 - Chore: merge `runner` and `context`
 - Change: #85 remove SQLite export via the web interface
 - Opt: provide a singleton `EventRouter` instance
+- New: #32 charts
 
 ## `0.12.0`
 

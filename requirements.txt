@@ -192,9 +192,6 @@ pycparser==2.19 \
 pydantic[ujson]==0.23 \
     --hash=sha256:1205cd1213e8acee40a9ad7160b24de74484fd79ec3f09150b255896a3f506ab \
     --hash=sha256:58b71804e9a6b4e1ccf8b3dbbca8c0f9cf4b494e5bea219a96e2e2ecb5af688e
-pygal==2.4.0 \
-    --hash=sha256:27abab93cbc31e21f3c6bdecc05bda6cd3570cbdbd8297b7caa6904051b50d72 \
-    --hash=sha256:9204f05380b02a8a32f9bf99d310b51aa2a932cba5b369f7a4dc3705f0a4ce83
 pygments==2.3.0 \
     --hash=sha256:6301ecb0997a52d2d31385e62d0a4a4cf18d2f2da7054a5ddad5c366cd39cee7 \
     --hash=sha256:82666aac15622bd7bb685a4ee7f6625dd716da3ef7473620c192c0168aae64fc \

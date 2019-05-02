@@ -15,11 +15,30 @@ class Unit(str, Enum):
     ENUM = 'ENUM'
     HPA = 'HPA'  # hPa
     IMAGE_URL = 'IMAGE_URL'
+    JPEG = 'JPEG'  # bytes
     MPS = 'MPS'  # m/s
     RH = 'RH'  # relative humidity
     TEXT = 'TEXT'
     TIMEDELTA = 'TIMEDELTA'  # seconds
     WATT = 'WATT'
+
+    @property
+    def is_logged(self) -> bool:
+        """
+        Is value of this type stored in a log collection.
+        """
+        return self not in (Unit.IMAGE_URL, Unit.JPEG)
+
+    @property
+    def is_stored(self) -> bool:
+        """
+        Is value of this type stored in the `actual` collection.
+        """
+        return self not in (Unit.JPEG,)
+
+    @property
+    def is_float(self) -> bool:
+        return self in (Unit.BEAUFORT, Unit.CELSIUS, Unit.HPA, Unit.MPS, Unit.RH, Unit.WATT, Unit.TIMEDELTA)
 
 
 class Event(BaseModel):
@@ -36,11 +55,6 @@ class Event(BaseModel):
 
     # Title is not saved in the logs.
     title: Optional[str] = None
-
-    # Tells if the event should be stored in the database logs.
-    is_logged: bool = True
-
-    # TODO: `is_actual_stored`.
 
     @property
     def display_title(self) -> str:

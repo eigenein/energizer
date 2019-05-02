@@ -9,7 +9,6 @@ from my_iot.constants import ACTUAL_KEY
 from my_iot.types_ import Event
 
 EVENT_INCLUDE = {'timestamp', 'value'}  # logged value uses optimised representation
-EVENT_EXCLUDE = {'is_logged'}  # is only needed before writing
 
 
 def timestamp_key(timestamp: datetime) -> str:
@@ -22,8 +21,9 @@ def timestamp_key(timestamp: datetime) -> str:
 
 def save_event(db: Connection, event: Event) -> None:
     with db:
-        db[ACTUAL_KEY][event.channel] = event.dict(exclude=EVENT_EXCLUDE)
-        if event.is_logged:
+        if event.unit.is_stored:
+            db[ACTUAL_KEY][event.channel] = event.dict()
+        if event.unit.is_logged:
             db[f'log:{event.channel}'][timestamp_key(event.timestamp)] = event.dict(include=EVENT_INCLUDE)
 
 

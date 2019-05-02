@@ -68,7 +68,6 @@ def yield_events(event: MessageEvent) -> Iterable[Event]:
                 unit=Unit.IMAGE_URL,
                 timestamp=datetime.strptime(last_event['start_time'], timestamp_format),
                 title=f'{camera["name_long"]} Last Event',
-                is_logged=False,
             )
 
 
@@ -80,5 +79,4 @@ def yield_devices_events(devices: dict, prefix: str, keys: List[Tuple[str, Unit,
                 value=device[key],
                 unit=unit,
                 title=f'{device.get("name_long") or device["name"]} {title}',
-                is_logged=(unit != Unit.IMAGE_URL),
             )

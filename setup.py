@@ -19,7 +19,6 @@ setuptools.setup(
         'aiohttp_jinja2',
         'click',
         'loguru',
-        'pygal',
         'ujson',
         'aiohttp-sse-client',
         'aioping',

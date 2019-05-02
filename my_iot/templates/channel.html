@@ -11,7 +11,7 @@
       <div class="container">
         <h1 class="title is-4">
           {% if event.unit != Unit.IMAGE_URL %}
-            <span class="{% include "classes/value.html" %}">
+            <span class="{% include "classes/value.html" %}" title="{{ event.value }}">
               {% include "includes/value.html" %}
             </span>
           {% else %}
@@ -25,44 +25,49 @@
       </div>
     </div>
     <div class="hero-foot">
-      {% include "includes/period.html" %}
+      {% include "includes/periods.html" %}
     </div>
   </section>
 
   {% if event.unit == Unit.IMAGE_URL %}
     <section class="section">
       <div class="container">
-        <h3 class="title is-5">Actual</h3>
-        <div class="notification">
-          {% include "includes/value.html" %}
+        <div class="message">
+          <div class="message-body">
+            {% include "includes/value.html" %}
+          </div>
         </div>
       </div>
     </section>
   {% endif %}
 
-  {% if events %}
+  {% if event.unit.is_logged %}
     <section class="section">
       <div class="container">
-        <h3 class="title is-5">Events</h3>
-        <table class="table is-striped is-fullwidth">
-          <tbody>
-          {% for event in events|reverse %}
-            <tr>
-              <td>{{ event.timestamp }}</td>
-              <td>{{ event.value }}</td>
-            </tr>
-          {% endfor %}
-          </tbody>
-        </table>
+        {% if chart %}
+          <div id="chart"></div>
+          <script defer>Plotly.newPlot('chart', {{ chart|tojson }});</script>
+        {% elif not has_events %}
+          <div class="notification is-warning has-text-centered">
+            There were no historical values within the selected period
+          </div>
+        {% else %}
+          <div class="notification has-text-centered">
+            Charts are not supported on this channel
+          </div>
+        {% endif %}
       </div>
     </section>
   {% endif %}
 
   <section class="section">
     <div class="container">
-      <h3 class="title is-5">Last event</h3>
-      <div class="content">
-        <pre><code>{{ raw_event|pprint }}</code></pre>
+      <h3 class="title is-5">Latest raw event</h3>
+      <h4 class="subtitle is-7">This is what is stored in the database</h4>
+      <div class="message">
+        <div class="message-body">
+          <pre><code>{{ raw_event|pprint }}</code></pre>
+        </div>
       </div>
     </div>
   </section>
