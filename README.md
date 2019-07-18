@@ -1,5 +1,7 @@
 # My IoT
 
+**The repo is archived in favour of [my-iot-rs](https://github.com/eigenein/my-iot-rs).**
+
 Yet another home automation. Documentation: https://eigenein.github.io/my-iot
 
 [![Build Status](https://travis-ci.com/eigenein/my-iot.svg?branch=master)](https://travis-ci.com/eigenein/my-iot)
